@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body>
+    <header class="bg-white shadow p-4 flex justify-between items-center mb-3">
+      <div class="flex space-x-4">
+        <button class="bg-green-300 text-white px-3 py-1 rounded hover:bg-blue-600 transition">Тесты</button>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-green-300 rounded-full flex items-center justify-center text-white"></div>
+        <span class="text-gray-700 font-medium">{{ user }}</span>
+      </div>
+    </header>
+    {% block content %}{% endblock %}
+  </body>
+</html>
