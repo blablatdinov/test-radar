@@ -10,6 +10,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "django-debug-toolbar>=5.2.0",
     "flake8-aaa>=0.17.0",
     "mypy>=1.16.0",
     "ondivi>=0.7.2",
@@ -32,15 +33,21 @@ line-length = 120
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+  "ANN101",
   "D100",
+  "D101",
+  "D102",
   "D104",
+  "D106",
   "D203",
   "D213",
   "Q000",
+  "RUF012",
   "S105"
 ]
 exclude = [
-  "manage.py"
+  "manage.py",
+  "*/migrations/*"
 ]
 
 [tool.ruff.format]
