@@ -44,9 +44,10 @@ ignore = [
   "PGH003",
   "Q000",
   "RUF012",
+  "RUF100",
   "S105",
   "TD002",
-  "TD003",
+  "TD003"
 ]
 exclude = [
   "manage.py",
@@ -55,3 +56,7 @@ exclude = [
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = {extras = ["compatible-mypy"], version = "^5.2.0"}
+

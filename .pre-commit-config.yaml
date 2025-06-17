@@ -15,3 +15,4 @@ repos:
     hooks:
       - id: mypy
         exclude: (manage.py|settings.py|migrations/)
+        additional_dependencies: ["django-stubs[compatible-mypy]"]

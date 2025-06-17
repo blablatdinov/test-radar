@@ -14,7 +14,7 @@ def filtered_records(request: HttpRequest) -> dict[str, Any]:
     grouped_records = defaultdict(lambda: defaultdict(list))  # type: ignore
     for record in records:
         date = record.timestamp
-        grouped_records[date.strftime('%d.%m.%Y')][date.strftime('%H:%M')].append(record)
+        grouped_records[date.strftime('%d.%m.%Y')][date.strftime('%H:%M')].append(record)  # noqa: WPS221
 
     return {'records': {date: dict(times) for date, times in grouped_records.items()}}
 
