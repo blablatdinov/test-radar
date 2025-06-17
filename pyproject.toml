@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django>=5.2.3",
+    "django-stubs>=5.2.0",
 ]
 
 [dependency-groups]
@@ -34,16 +35,19 @@ line-length = 120
 select = ["ALL"]
 ignore = [
   "ANN101",
-  "D100",
-  "D101",
-  "D102",
-  "D104",
-  "D106",
+  "ANN401",
+  "D1",
   "D203",
   "D213",
+  "ERA001",
+  "FIX002",
+  "PGH003",
   "Q000",
   "RUF012",
-  "S105"
+  "RUF100",
+  "S105",
+  "TD002",
+  "TD003"
 ]
 exclude = [
   "manage.py",
@@ -52,3 +56,7 @@ exclude = [
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = {extras = ["compatible-mypy"], version = "^5.2.0"}
+
