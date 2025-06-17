@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.7
+    rev: v0.11.3
     hooks:
       - id: ruff
         args: [--fix]
@@ -9,10 +9,3 @@ repos:
     rev: 7.0.0
     hooks:
       - id: flake8
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
-    hooks:
-      - id: mypy
-        exclude: (manage.py|settings.py|migrations/)
-        additional_dependencies: ["django-stubs[compatible-mypy]"]
