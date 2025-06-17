@@ -6,4 +6,5 @@ urlpatterns = [
     *debug_toolbar_urls(),
     path('admin/', admin.site.urls),
     path('', include('gui.urls')),
+    path('api/v1/', include('api.urls')),
 ]

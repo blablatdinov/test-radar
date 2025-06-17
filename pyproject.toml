@@ -7,7 +7,16 @@ requires-python = ">=3.12"
 dependencies = [
     "django>=5.2.3",
     "django-stubs>=5.2.0",
+    "djangorestframework>=3.16.0",
+    "httpx>=0.28.1",
+    "pytest>=8.4.0",
 ]
+
+[project.entry-points.pytest11]
+pytest_radar = "pytest_radar.plugin"
+
+[tool.setuptools.packages.find]
+where = ["."]
 
 [dependency-groups]
 dev = [
@@ -27,6 +36,7 @@ test = [
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "server.settings"
+# radar_endpoint = 'http://127.0.0.1:8000'
 
 [tool.ruff]
 line-length = 120
@@ -46,13 +56,22 @@ ignore = [
   "RUF012",
   "RUF100",
   "S105",
+  "S603",
+  "S607",
   "TD002",
-  "TD003"
+  "TD003",
+  "UP022",
+  "UP032"
 ]
 exclude = [
   "manage.py",
-  "*/migrations/*"
+  "*/migrations/*",
+  "pytest_radar",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["ARG001", "FLY002", "S101"]
+"pytest_radar/*" = ["ARG001", "EM101", "INP001", "T201"]
 
 [tool.ruff.format]
 quote-style = "single"
