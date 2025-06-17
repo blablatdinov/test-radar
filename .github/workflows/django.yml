@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.12
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v6.1.0
+      with:
+        python-version: 3.12
+        activate-environment: true
+    - name: Install Dependencies
+      run: uv sync --no-default-groups
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.12
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v6.1.0
+      with:
+        python-version: 3.12
+        activate-environment: true
+    - name: Install Dependencies
+      run: uv sync --no-default-groups
+    - name: Lint with mypy
+      run: cd src && uv run mypy .
+    - name: Lint with flake8
+      run: uv run flake8 .
+    - name: Lint with ruff
+      run: uv run ruff check .
