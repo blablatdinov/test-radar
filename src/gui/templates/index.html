@@ -1,71 +1,55 @@
 {% extends 'base.html' %}
 {% block title %}Test radar{% endblock %}
 {% block content %}
-<div class="max-w-full mx-auto px-3"auto>
-  <h1 class="text-2xl font-bold mb-6">Test Radar</h1>
+<div class="max-w-full mx-auto px-3 mb-4">
+  <form method="get" class="flex items-center space-x-2">
+    <label for="date" class="text-sm text-gray-700">Фильтр по дате:</label>
+    <input
+      type="date"
+      id="date"
+      name="date"
+      value="{{ request.GET.date }}"
+      class="border border-gray-300 rounded px-2 py-1 text-sm"
+    />
+    <button
+      type="submit"
+      class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition cursor-pointer"
+    >
+      Применить
+    </button>
+    {% if request.GET.date %}
+    <a href="?" class="text-sm text-gray-500 underline hover:text-gray-700">Сбросить</a>
+    {% endif %}
+  </form>
+</div>
 
+<div class="max-w-full mx-auto px-3"auto>
   <div class="overflow-x-auto">
     <div class="flex select-none flex-col space-y-2">
 
-      <div class="flex space-x-12 text-center text-sm text-gray-700 font-semibold">
-        <div class="w-52">14 июня</div>
-        <div class="w-52">15 июня</div>
-        <div class="w-52">16 июня</div>
-      </div>
-
       <div class="flex space-x-12">
-        <div class="w-52 space-y-2">
-          <div class="text-xs text-gray-500">15:01</div>
-          <div class="bg-white break-all p-2 rounded shadow space-y-1">
-            <div class="flex items-center space-x-1 text-sm">
-              <span class="text-red-500">❌</span>
-              <span>test_api.py::test_get_user</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-52 space-y-4">
-          <div>
-            <div class="text-xs text-gray-500">15:01</div>
+        {% for date, timed_records in records.items %}
+        <div class="flex flex-col space-x-12 space-y-1">
+          <div class="w-52 text-center text-sm text-gray-700 font-semibold">{{ date }}</div>
+          {% for time, records in timed_records.items %}
+          <div class="w-52 space-y-2">
+            <div class="text-xs text-gray-500">{{ time }}</div>
+            {% for record in records %}
             <div class="bg-white break-all p-2 rounded shadow space-y-1">
-              <div class="flex items-center space-x-1 text-sm">
-                <span class="text-green-500">✔️</span>
-                <span>test_models.py::test_user_model</span>
-              </div>
-              <div class="flex items-center space-x-1 text-sm">
-                <span class="text-green-500">✔️</span>
-                <span>test_models.py::test_product_model</span>
-              </div>
+              <a href="{% url 'test_info' record.pk %}">
+                <div class="flex w-52 items-center space-x-2 text-sm">
+                  <span>{% if record.success %}✅{% else %}❌{% endif %}</span>
+                  <span>{{ record.label }}</span>
+                </div>
+              </a>
             </div>
+            {% endfor %}
           </div>
-          <div>
-            <div class="text-xs text-gray-500">17:30</div>
-            <div class="bg-white break-all p-2 rounded shadow space-y-1">
-              <div class="flex items-center space-x-1 text-sm">
-                <span class="text-red-500">❌</span>
-                <span>test_api.py::test_create_user</span>
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
-
-        <div class="w-52 space-y-2">
-          <div class="text-xs text-gray-500">15:01</div>
-          <div class="bg-white break-all p-2 rounded shadow space-y-1">
-            <div class="flex items-center space-x-1 text-sm">
-              <span class="text-green-500">✔️</span>
-              <span>test_views.py::test_about_view</span>
-            </div>
-            <div class="flex items-center space-x-1 text-sm">
-              <span class="text-red-500">❌</span>
-              <span>test_views.py::test_index_view</span>
-            </div>
-          </div>
-        </div>
-
+        {% endfor %}
       </div>
     </div>
   </div>
-
 </div>
 {% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Test info{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+  <a
+    href="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}{% url 'index_page' %}{% endif %}"
+    class="text-blue-600 hover:underline text-sm mb-4 inline-block"
+  >
+    ← Назад
+  </a>
+
+  <h1 class="text-2xl font-bold mb-2">{{ record.label }}</h1>
+
+  <div class="mb-4 text-sm text-gray-600">
+    {% with timestamp=record.timestamp %}
+    Запущен: <span class="font-medium">{{ timestamp|date:'d.m.Y' }}, {{ timestamp|date:'H:i' }}</span><br>
+    {% endwith %}
+    Статус:
+    {% if record.success %}
+    <span class="font-medium text-green-600">
+      ✅ Успешно
+    {% else %}
+    <span class="font-medium text-red-600">
+      ❌ Провалено
+    {% endif %}
+    </span>
+  </div>
+
+  <div>
+    <h2 class="text-lg font-semibold mb-2">Логи выполнения</h2>
+    <!-- TODO: put record logs below in <pre> tag -->
+    <pre class="bg-gray-100 text-gray-800 p-4 rounded overflow-x-auto text-sm">
+[INFO] Starting test...
+[DEBUG] Checking /about URL response
+[PASS] Status code 200 OK
+[PASS] Template rendered: about.html
+[INFO] Test completed successfully.
+    </pre>
+  </div>
+</div>
+{% endblock %}
