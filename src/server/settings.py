@@ -1,19 +1,21 @@
+import tomllib
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+config = tomllib.load((BASE_DIR.parent / 'config/config.toml').open('rb'))
+django_config = config['django']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9a%7=m6ju@_1ju6%4()a$u=%llzg_j^8w6lc%x%)x5^m)1t)2f'
+SECRET_KEY = django_config['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = django_config['debug']
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = django_config['allowed_hosts']
 INTERNAL_IPS = ['127.0.0.1']
 
 
@@ -113,6 +115,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

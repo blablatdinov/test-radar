@@ -8,6 +8,8 @@ dependencies = [
     "django>=5.2.3",
     "django-stubs>=5.2.0",
     "djangorestframework>=3.16.0",
+    "django-debug-toolbar>=5.2.0",
+    "gunicorn>=23.0.0",
     "httpx>=0.28.1",
     "pytest>=8.4.0",
 ]
@@ -20,7 +22,6 @@ where = ["."]
 
 [dependency-groups]
 dev = [
-    "django-debug-toolbar>=5.2.0",
     "flake8-aaa>=0.17.0",
     "mypy>=1.16.0",
     "ondivi>=0.7.2",
