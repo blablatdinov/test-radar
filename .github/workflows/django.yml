@@ -41,7 +41,7 @@ jobs:
     - name: Install Dependencies
       run: uv sync --no-default-groups
     - name: Lint with mypy
-      run: cd src && uv run mypy .
+      run: mv config/config.toml.example config/config.toml && cd src && uv run mypy .
     - name: Lint with flake8
       run: uv run flake8 .
     - name: Lint with ruff
