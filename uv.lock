@@ -636,7 +636,6 @@ dev = [
     { name = "wemake-python-styleguide" },
 ]
 test = [
-    { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-django" },
 ]
@@ -662,7 +661,6 @@ dev = [
     { name = "wemake-python-styleguide", specifier = ">=1.1.0" },
 ]
 test = [
-    { name = "pytest", specifier = ">=8.4.0" },
     { name = "pytest-cov", specifier = ">=6.2.1" },
     { name = "pytest-django", specifier = ">=4.11.1" },
 ]
