@@ -1,21 +1,23 @@
-import tomllib
 from pathlib import Path
+import environ  # type: ignore [import-untyped]
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-config = tomllib.load((BASE_DIR.parent / 'config/config.toml').open('rb'))
-django_config = config['django']
+
+env = environ.Env(
+    DEBUG=(bool, False),
+)
+environ.Env.read_env(BASE_DIR.parent / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = django_config['secret_key']
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = django_config['debug']
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS: list[str] = django_config['allowed_hosts']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 INTERNAL_IPS = ['127.0.0.1']
 
 
