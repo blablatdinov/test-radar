@@ -735,12 +735,10 @@ dev = [
     { name = "mypy" },
     { name = "ondivi" },
     { name = "pre-commit" },
-    { name = "ruff" },
-    { name = "wemake-python-styleguide" },
-]
-test = [
     { name = "pytest-cov" },
     { name = "pytest-django" },
+    { name = "ruff" },
+    { name = "wemake-python-styleguide" },
 ]
 
 [package.metadata]
@@ -762,12 +760,10 @@ dev = [
     { name = "mypy", specifier = "==1.16.0" },
     { name = "ondivi", specifier = "==0.7.2" },
     { name = "pre-commit", specifier = "==4.2.0" },
-    { name = "ruff", specifier = "==0.11.13" },
-    { name = "wemake-python-styleguide", specifier = "==1.1.0" },
-]
-test = [
     { name = "pytest-cov", specifier = "==6.2.1" },
     { name = "pytest-django", specifier = "==4.11.1" },
+    { name = "ruff", specifier = "==0.11.13" },
+    { name = "wemake-python-styleguide", specifier = "==1.1.0" },
 ]
 
 [[package]]
