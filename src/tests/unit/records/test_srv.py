@@ -10,7 +10,9 @@ from records.srv.record import filtered_records, record_by_id
 @pytest.mark.django_db
 def test_filtered_records(test_record_pk: str) -> None:
     request = Mock(HttpRequest)
-    request.GET = {'date': datetime.datetime.now(tz=datetime.UTC).strftime('%Y-%m-%d')}
+    request.GET = {
+        'date': datetime.datetime.now(tz=datetime.UTC).strftime('%Y-%m-%d'),
+    }
 
     records = filtered_records(request)
 

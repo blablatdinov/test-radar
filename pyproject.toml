@@ -15,22 +15,17 @@ dependencies = [
     "django-environ==0.12.0"
 ]
 
-[project.entry-points.pytest11]
-pytest_radar = "pytest_radar.plugin"
-
 [tool.setuptools.packages.find]
 where = ["."]
 
 [dependency-groups]
 dev = [
-    "flake8-aaa==0.17.0",
+    "djangorestframework-stubs==3.16.0",
     "mypy==1.16.0",
     "ondivi==0.7.2",
     "pre-commit==4.2.0",
     "ruff==0.11.13",
     "wemake-python-styleguide==1.1.0",
-]
-test = [
     "pytest-cov==6.2.1",
     "pytest-django==4.11.1",
 ]
@@ -39,6 +34,14 @@ test = [
 DJANGO_SETTINGS_MODULE = "server.settings"
 pythonpath = ["src"]
 # radar_endpoint = 'http://127.0.0.1:8000'
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+mypy_path = "src"
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "server.settings"
 
 [tool.ruff]
 line-length = 120
@@ -68,12 +71,10 @@ ignore = [
 exclude = [
   "manage.py",
   "*/migrations/*",
-  "pytest_radar",
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101"]
-"pytest_radar/*" = ["ARG001", "EM101", "INP001", "T201"]
+"src/tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101"]
 
 [tool.ruff.format]
 quote-style = "single"
