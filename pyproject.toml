@@ -23,6 +23,7 @@ where = ["."]
 
 [dependency-groups]
 dev = [
+    "djangorestframework-stubs==3.16.0",
     "flake8-aaa==0.17.0",
     "mypy==1.16.0",
     "ondivi==0.7.2",
@@ -37,8 +38,15 @@ test = [
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "server.settings"
-pythonpath = ["src"]
 # radar_endpoint = 'http://127.0.0.1:8000'
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+mypy_path = "src"
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "server.settings"
 
 [tool.ruff]
 line-length = 120
