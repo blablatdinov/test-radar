@@ -5,7 +5,13 @@ import datetime
 
 import pytest
 
+from auth.models import User
 from records.models import TestRecord
+
+
+@pytest.fixture
+def user() -> User:
+    return User.objects.create_user(username='testuser', password='test-password-123')
 
 
 @pytest.fixture

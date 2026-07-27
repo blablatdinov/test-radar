@@ -16,9 +16,32 @@ SPDX-License-Identifier: MIT
         <a href="{% url 'index_page' %}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">Тесты</a>
       </div>
 
-      <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white"></div>
-        <span class="text-gray-700 font-medium">{{ user }}</span>
+      <div class="flex items-center space-x-4">
+        {% if user.is_authenticated %}
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+            {{ user.username|make_list|first|upper }}
+          </div>
+          <span class="text-gray-700 font-medium">{{ user.username }}</span>
+        </div>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="text-sm text-gray-600 hover:text-gray-800 underline cursor-pointer"
+          >
+            Выйти
+          </button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}" class="text-sm text-gray-600 hover:text-gray-800">Войти</a>
+        <a
+          href="{% url 'register' %}"
+          class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition"
+        >
+          Регистрация
+        </a>
+        {% endif %}
       </div>
     </header>
     {% block content %}{% endblock %}
