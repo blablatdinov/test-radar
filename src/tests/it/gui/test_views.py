@@ -9,6 +9,7 @@ def test_index(client: Client, test_record_pk: str) -> None:
 
     assert 'test_file.py::test_view' in response.text
     assert response.status_code == 200
+    assert response.context_data
     assert response.context_data.get('records') is not None
 
 
@@ -18,4 +19,5 @@ def test_test_info(client: Client, test_record_pk: str) -> None:
 
     assert '✅' in response.text
     assert response.status_code == 200
+    assert response.context_data
     assert response.context_data['record'].pk == test_record_pk
