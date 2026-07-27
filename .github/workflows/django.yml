@@ -65,3 +65,22 @@ jobs:
       run: uv sync --all-groups
     - name: Test
       run: uv run pytest src/tests -vv
+
+  deltaver:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.12
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v6.1.0
+      with:
+        python-version: 3.12
+        activate-environment: true
+    - name: Install Dependencies
+      run: uv export > requirements.txt
+    - name: Run deltaver
+      run: uv run deltaver requirements.txt --format pip-freeze
