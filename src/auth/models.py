@@ -1,4 +1,7 @@
-from typing import Generic, TypeVar
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-License-Identifier: MIT
+
+from typing import TypeVar
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -8,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 T = TypeVar('T', bound=AbstractBaseUser)
 
 
-class UserManager(BaseUserManager, Generic[T]):
+class UserManager(BaseUserManager):
     def create_user(self, username: str, password: str) -> AbstractBaseUser:
         user = self.model(username=username, is_superuser=False)
         user.password = make_password(password)
