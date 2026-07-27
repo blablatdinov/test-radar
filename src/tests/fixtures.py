@@ -11,7 +11,7 @@ from records.models import TestRecord
 
 @pytest.fixture
 def user() -> User:
-    return User.objects.create_user(username='testuser', password='test-password-123')
+    return User.objects.create_user(username='testuser', password='test-password-123')  # noqa: S106
 
 
 @pytest.fixture
