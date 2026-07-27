@@ -56,4 +56,6 @@ def test_failed_record_create(client: Client) -> None:
     assert json['label'] == 'test_file.py::test_some'
     assert json['timestamp'] == timestamp.isoformat().replace('+00:00', 'Z')
     assert not json['success']
-    assert zlib.decompress(base64.b64decode(json['logs'])).decode('utf-8') == logs
+    assert zlib.decompress(
+        base64.b64decode(json['logs'])
+    ).decode('utf-8') == logs

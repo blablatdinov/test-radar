@@ -26,15 +26,6 @@ wheels = [
 ]
 
 [[package]]
-name = "asttokens"
-version = "3.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/4a/e7/82da0a03e7ba5141f05cce0d302e6eed121ae055e0456ca228bf693984bc/asttokens-3.0.0.tar.gz", hash = "sha256:0dcd8baa8d62b0c1d118b399b2ddba3c4aff271d0d7a9e0d4c1681c79035bbc7", size = 61978, upload-time = "2024-11-30T04:30:14.439Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/8a/c46dcc25341b5bce5472c718902eb3d38600a903b14fa6aeecef3f21a46f/asttokens-3.0.0-py3-none-any.whl", hash = "sha256:e3078351a059199dd5138cb1c706e6430c05eff2ff136af5eb4790f9d28932e2", size = 26918, upload-time = "2024-11-30T04:30:10.946Z" },
-]
-
-[[package]]
 name = "attrs"
 version = "25.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -308,19 +299,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e7/c4/5842fc9fc94584c455543540af62fd9900faade32511fab650e9891ec225/flake8-7.2.0.tar.gz", hash = "sha256:fa558ae3f6f7dbf2b4f22663e5343b6b6023620461f8d4ff2019ef4b5ee70426", size = 48177, upload-time = "2025-03-29T20:08:39.329Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/83/5c/0627be4c9976d56b1217cb5187b7504e7fd7d3503f8bfd312a04077bd4f7/flake8-7.2.0-py2.py3-none-any.whl", hash = "sha256:93b92ba5bdb60754a6da14fa3b93a9361fd00a59632ada61fd7b130436c40343", size = 57786, upload-time = "2025-03-29T20:08:37.902Z" },
-]
-
-[[package]]
-name = "flake8-aaa"
-version = "0.17.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "asttokens" },
-    { name = "flake8" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/70/488869c58c09bffd95eca7e3cc9b30988595105fb63057f9111975b2d9a1/flake8-aaa-0.17.0.tar.gz", hash = "sha256:97dccdffa8e603dcf9cd9b4c2012e6fa22d58a2264a8b51146dcc9b63be66803", size = 19989, upload-time = "2023-10-30T16:53:16.731Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/f0/82e3a6604959ac05a82e425784887af1aa200471d9e688ce8d54bd167000/flake8_aaa-0.17.0-py3-none-any.whl", hash = "sha256:c9212d1fb94d1a95433c2ae18a644f96c33ee6ac059644d116e4dade0f191988", size = 20599, upload-time = "2023-10-30T16:53:14.497Z" },
 ]
 
 [[package]]
@@ -731,7 +709,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "djangorestframework-stubs" },
-    { name = "flake8-aaa" },
     { name = "mypy" },
     { name = "ondivi" },
     { name = "pre-commit" },
@@ -756,7 +733,6 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "djangorestframework-stubs", specifier = "==3.16.0" },
-    { name = "flake8-aaa", specifier = "==0.17.0" },
     { name = "mypy", specifier = "==1.16.0" },
     { name = "ondivi", specifier = "==0.7.2" },
     { name = "pre-commit", specifier = "==4.2.0" },

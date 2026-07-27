@@ -21,7 +21,6 @@ where = ["."]
 [dependency-groups]
 dev = [
     "djangorestframework-stubs==3.16.0",
-    "flake8-aaa==0.17.0",
     "mypy==1.16.0",
     "ondivi==0.7.2",
     "pre-commit==4.2.0",
