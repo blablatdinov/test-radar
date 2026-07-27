@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-License-Identifier: MIT
+
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path

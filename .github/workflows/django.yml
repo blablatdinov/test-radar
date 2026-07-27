@@ -40,12 +40,12 @@ jobs:
         activate-environment: true
     - name: Install Dependencies
       run: uv sync --no-default-groups
-    - name: Lint with mypy
-      run: uv run mypy src
     - name: Lint with ruff
       run: uv run ruff check src
     - name: Lint with flake8
       run: uv run flake8 src
+    - name: Lint with mypy
+      run: uv run mypy src
 
   test:
     runs-on: ubuntu-latest

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-License-Identifier: MIT
+
 [project]
 name = "test-radar"
 version = "0.1.0"
@@ -5,14 +8,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "django==5.2.3",
-    "django-stubs==5.2.0",
-    "djangorestframework==3.16.0",
-    "django-debug-toolbar==5.2.0",
-    "gunicorn==23.0.0",
+    "django==6.0.7",
+    "django-stubs==6.0.7",
+    "djangorestframework==3.17.1",
+    "django-debug-toolbar==7.0.0",
+    "gunicorn==26.0.0",
     "httpx==0.28.1",
-    "pytest==8.4.0",
-    "django-environ==0.12.0"
+    "pytest==9.1.1",
+    "django-environ==0.14.0"
 ]
 
 [tool.setuptools.packages.find]
@@ -20,15 +23,14 @@ where = ["."]
 
 [dependency-groups]
 dev = [
-    "djangorestframework-stubs==3.16.0",
-    "mypy==1.16.0",
-    "ondivi==0.7.2",
-    "pre-commit==4.2.0",
-    "ruff==0.11.13",
-    "wemake-python-styleguide==1.1.0",
-    "pytest-cov==6.2.1",
-    "pytest-django==4.11.1",
-    "deltaver>=1.0.2",
+    "djangorestframework-stubs==3.17.0",
+    "mypy==2.3.0",
+    "ondivi==0.7.3",
+    "ruff==0.16.0",
+    "wemake-python-styleguide==1.7.0",
+    "pytest-cov==7.1.0",
+    "pytest-django==4.12.0",
+    "deltaver==1.0.2",
 ]
 
 [tool.pytest.ini_options]
@@ -72,6 +74,9 @@ ignore = [
 exclude = [
   "manage.py",
   "*/migrations/*",
+]
+external = [
+  "WPS",
 ]
 
 [tool.ruff.lint.per-file-ignores]
