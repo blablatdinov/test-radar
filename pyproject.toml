@@ -75,6 +75,9 @@ exclude = [
   "manage.py",
   "*/migrations/*",
 ]
+external = [
+  "WPS",
+]
 
 [tool.ruff.lint.per-file-ignores]
 "src/tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101"]
