@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 T = TypeVar('T', bound=AbstractBaseUser)
 
 
-class UserManager(BaseUserManager):
+class UserManager[T](BaseUserManager):
     def create_user(self, username: str, password: str) -> AbstractBaseUser:
         user = self.model(username=username, is_superuser=False)
         user.password = make_password(password)
