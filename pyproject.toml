@@ -5,14 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    # TODO #7:30min Lock dependencies
-    "django>=5.2.3",
-    "django-stubs>=5.2.0",
-    "djangorestframework>=3.16.0",
-    "django-debug-toolbar>=5.2.0",
-    "gunicorn>=23.0.0",
-    "httpx>=0.28.1",
-    "pytest>=8.4.0",
+    "django==5.2.3",
+    "django-stubs==5.2.0",
+    "djangorestframework==3.16.0",
+    "django-debug-toolbar==5.2.0",
+    "gunicorn==23.0.0",
+    "httpx==0.28.1",
+    "pytest==8.4.0",
     "django-environ==0.12.0"
 ]
 
@@ -24,16 +23,16 @@ where = ["."]
 
 [dependency-groups]
 dev = [
-    "flake8-aaa>=0.17.0",
-    "mypy>=1.16.0",
-    "ondivi>=0.7.2",
-    "pre-commit>=4.2.0",
-    "ruff>=0.11.13",
-    "wemake-python-styleguide>=1.1.0",
+    "flake8-aaa==0.17.0",
+    "mypy==1.16.0",
+    "ondivi==0.7.2",
+    "pre-commit==4.2.0",
+    "ruff==0.11.13",
+    "wemake-python-styleguide==1.1.0",
 ]
 test = [
-    "pytest-cov>=6.2.1",
-    "pytest-django>=4.11.1",
+    "pytest-cov==6.2.1",
+    "pytest-django==4.11.1",
 ]
 
 [tool.pytest.ini_options]
