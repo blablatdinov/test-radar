@@ -3,10 +3,16 @@
 
 from django import forms
 
-from records.models import Project
+from records.models import Agent, Project
 
 
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ('name',)
+
+
+class AgentForm(forms.ModelForm):
+    class Meta:
+        model = Agent
+        fields = ('name', 'type')

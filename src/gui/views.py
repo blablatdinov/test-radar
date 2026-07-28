@@ -4,13 +4,14 @@
 from typing import Any, cast
 
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView
 
 from auth.models import User  # noqa: TC001
-from records.forms import ProjectForm
-from records.models import Project
-from records.srv import record
+from records.forms import AgentForm, ProjectForm
+from records.models import Agent, Project
+from records.srv import record, token
 
 
 class IndexView(TemplateView):
@@ -19,7 +20,7 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
-        user = cast('User', self.request.user)
+        user = cast('User', self.request.user)  # noqa: WPS226
         return {'projects': Project.objects.filter(owner=user)}
 
 
@@ -44,10 +45,50 @@ class ProjectView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         user = cast('User', self.request.user)
-        project = Project.objects.get(pk=kwargs['pk'], owner=user)
+        project = Project.objects.get(pk=kwargs['pk'], owner=user)  # noqa: WPS226
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
+        context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['agent_form'] = AgentForm()
         return context
+
+
+class AgentCreateView(FormView):
+    """Create an agent and generate an API token for it."""
+
+    template_name = 'project.html'
+    form_class = AgentForm
+
+    def get_project(self) -> Project:
+        user = cast('User', self.request.user)
+        return get_object_or_404(Project, pk=self.kwargs['pk'], owner=user)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        project = self.get_project()
+        context = record.filtered_records(project.pk, self.request)
+        context['project'] = project
+        context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['agent_form'] = kwargs.get('form') or AgentForm()
+        return context
+
+    def form_valid(self, form: AgentForm) -> HttpResponse:
+        project = self.get_project()
+        agent = form.save(commit=False)
+        agent.project = project
+        agent.owner = cast('User', self.request.user)
+        agent.save()
+        raw_token = token.create_token_for_agent(agent)
+        context = self.get_context_data(form=form)
+        context['new_token'] = raw_token
+        context['new_agent_name'] = agent.name
+        return self.render_to_response(context)
+
+    def form_invalid(self, form: AgentForm) -> HttpResponse:
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
+
+    def get_success_url(self) -> str:
+        return reverse('project_detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class TestInfoView(TemplateView):

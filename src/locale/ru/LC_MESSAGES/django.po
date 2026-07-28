@@ -150,3 +150,51 @@ msgstr "Русский"
 
 msgid "English"
 msgstr "Английский"
+
+msgid "Agent"
+msgstr "Агент"
+
+msgid "Agents"
+msgstr "Агенты"
+
+msgid "Agent type"
+msgstr "Тип агента"
+
+msgid "CI"
+msgstr "CI"
+
+msgid "Local"
+msgstr "Локальный"
+
+msgid "API token"
+msgstr "API токен"
+
+msgid "API tokens"
+msgstr "API токены"
+
+msgid "Token hash"
+msgstr "Хеш токена"
+
+msgid "Token mask"
+msgstr "Маска токена"
+
+msgid "Scopes"
+msgstr "Области доступа"
+
+msgid "Expires at"
+msgstr "Истекает"
+
+msgid "Last used at"
+msgstr "Последнее использование"
+
+msgid "Last used IP"
+msgstr "Последний IP"
+
+msgid "Create agent"
+msgstr "Создать агента"
+
+msgid "No agents yet."
+msgstr "Агентов пока нет."
+
+msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgstr "Токен для агента \"%(agent_name)s\" — сохраните его сейчас, он больше не будет показан:"

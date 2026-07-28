@@ -3,13 +3,25 @@
 
 from django.contrib import admin
 
-from records.models import Project, TestRecord
+from records.models import Agent, ApiToken, Project, TestRecord  # noqa: WPS226
 
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
+    search_fields = ['name']  # noqa: WPS226
+    list_display = ['name', 'owner', 'created_at']  # noqa: WPS226
+
+
+@admin.register(Agent)
+class AgentAdmin(admin.ModelAdmin):
     search_fields = ['name']
-    list_display = ['name', 'owner', 'created_at']
+    list_display = ['name', 'type', 'project', 'owner', 'created_at']
+
+
+@admin.register(ApiToken)
+class ApiTokenAdmin(admin.ModelAdmin):
+    search_fields = ['token_mask']
+    list_display = ['token_mask', 'agent', 'scopes', 'expires_at', 'last_used_at', 'created_at']
 
 
 @admin.register(TestRecord)
