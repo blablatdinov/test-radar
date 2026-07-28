@@ -8,7 +8,7 @@ ENV PYTHONNUMBUFFERED 1
 
 WORKDIR /app
 
-RUN apt update -y && pip install -U pip && pip install uv
+RUN apt update -y && apt install -y gettext && pip install -U pip && pip install uv
 
 COPY entrypoint.sh pyproject.toml uv.lock /app/
 RUN uv pip install -r pyproject.toml --system

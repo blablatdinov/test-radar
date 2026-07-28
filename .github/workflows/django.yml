@@ -61,8 +61,12 @@ jobs:
       with:
         python-version: 3.12
         activate-environment: true
+    - name: Install gettext
+      run: sudo apt-get update && sudo apt-get install -y gettext
     - name: Install Dependencies
       run: uv sync --all-groups
+    - name: Compile translations
+      run: uv run python src/manage.py compilemessages
     - name: Test
       run: uv run pytest src/tests -vv
 

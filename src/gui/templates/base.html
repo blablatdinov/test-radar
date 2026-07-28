@@ -2,8 +2,9 @@
 SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 SPDX-License-Identifier: MIT
 -->
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +14,7 @@ SPDX-License-Identifier: MIT
   <body>
     <header class="bg-white shadow p-4 flex justify-between items-center mb-3">
       <div class="flex space-x-4">
-        <a href="{% url 'index_page' %}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">Тесты</a>
+        <a href="{% url 'index_page' %}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">{% trans "Tests" %}</a>
       </div>
 
       <div class="flex items-center space-x-4">
@@ -30,16 +31,16 @@ SPDX-License-Identifier: MIT
             type="submit"
             class="text-sm text-gray-600 hover:text-gray-800 underline cursor-pointer"
           >
-            Выйти
+            {% trans "Log out" %}
           </button>
         </form>
         {% else %}
-        <a href="{% url 'login' %}" class="text-sm text-gray-600 hover:text-gray-800">Войти</a>
+        <a href="{% url 'login' %}" class="text-sm text-gray-600 hover:text-gray-800">{% trans "Log in" %}</a>
         <a
           href="{% url 'register' %}"
           class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition"
         >
-          Регистрация
+          {% trans "Register" %}
         </a>
         {% endif %}
       </div>
