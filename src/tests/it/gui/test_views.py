@@ -16,6 +16,7 @@ def test_index_shows_projects(client: Client, user: User, project) -> None:  # n
 
     assert response.status_code == 200
     assert 'Test project' in response.text
+    assert response.context_data is not None
     assert response.context_data.get('projects') is not None
 
 
@@ -39,6 +40,7 @@ def test_project_detail_shows_records(
 
     assert 'test_file.py::test_view' in response.text
     assert response.status_code == 200
+    assert response.context_data is not None
     assert response.context_data.get('records') is not None
     assert response.context_data['project'].pk == project.pk
 

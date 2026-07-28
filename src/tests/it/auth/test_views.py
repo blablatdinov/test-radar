@@ -13,7 +13,7 @@ def test_login_page(client: Client) -> None:
     response = client.get(reverse('login'))
 
     assert response.status_code == 200
-    assert 'Вход' in response.text
+    assert 'Login' in response.text
 
 
 @pytest.mark.django_db
@@ -21,7 +21,7 @@ def test_register_page(client: Client) -> None:
     response = client.get(reverse('register'))
 
     assert response.status_code == 200
-    assert 'Регистрация' in response.text
+    assert 'Sign up' in response.text
 
 
 @pytest.mark.django_db

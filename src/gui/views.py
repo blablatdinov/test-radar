@@ -5,6 +5,7 @@ from typing import Any
 
 from django.views.generic import TemplateView
 
+from auth.models import User
 from records.models import Project
 from records.srv import record
 
@@ -15,7 +16,9 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
-        return {'projects': self.request.user.projects.all()}
+        user = self.request.user
+        assert isinstance(user, User)
+        return {'projects': user.projects.all()}
 
 
 class ProjectView(TemplateView):
@@ -24,7 +27,9 @@ class ProjectView(TemplateView):
     template_name = 'project.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        project = Project.objects.get(pk=kwargs['pk'], owner=self.request.user)
+        user = self.request.user
+        assert isinstance(user, User)
+        project = Project.objects.get(pk=kwargs['pk'], owner=user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         return context
