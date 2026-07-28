@@ -154,3 +154,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+ALLOWED_HOSTS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
