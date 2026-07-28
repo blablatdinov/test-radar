@@ -7,7 +7,6 @@ from django.urls import reverse
 
 from auth.models import User
 from records.models import Project
-# flake8: noqa: WPS202
 
 
 @pytest.mark.django_db
