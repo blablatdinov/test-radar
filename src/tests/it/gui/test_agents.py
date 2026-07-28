@@ -24,22 +24,33 @@ def test_project_detail_shows_agents_section(client: Client, user: User, project
 
 
 @pytest.mark.django_db
-def test_agent_create_creates_agent_and_token(  # noqa: WPS218
-    client: Client, user: User, project: Project,  # noqa: ARG001
-) -> None:
-    client.force_login(user)
+@pytest.mark.usefixtures('user', 'project')
+def test_agent_create_creates_agent(client: Client) -> None:
+    client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': project.pk}),
+        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
     assert response.status_code == 200
     agent = Agent.objects.get(name='CI Pipeline')
     assert agent.type == 'ci'
-    assert agent.project == project
-    assert agent.owner == user
+    assert agent.project == Project.objects.get()
+    assert agent.owner == User.objects.get(username='testuser')
     assert hasattr(agent, 'token')
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user', 'project')
+def test_agent_create_returns_plain_token(client: Client) -> None:
+    client.force_login(User.objects.get(username='testuser'))
+
+    response = client.post(
+        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        {'name': 'CI Pipeline', 'type': 'ci'},
+    )
+
     context = response.context_data
     assert context is not None
     new_token = context.get('new_token')
@@ -48,13 +59,12 @@ def test_agent_create_creates_agent_and_token(  # noqa: WPS218
 
 
 @pytest.mark.django_db
-def test_agent_shows_plain_token_once(  # noqa: WPS218
-    client: Client, user: User, project: Project,  # noqa: ARG001
-) -> None:
-    client.force_login(user)
+@pytest.mark.usefixtures('user', 'project')
+def test_agent_shows_plain_token_once(client: Client) -> None:
+    client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': project.pk}),
+        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
         {'name': 'Dev Laptop', 'type': 'local'},
     )
 
@@ -63,18 +73,41 @@ def test_agent_shows_plain_token_once(  # noqa: WPS218
     assert context is not None
     new_token = context['new_token']
     assert new_token.startswith('dev_')
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user', 'project')
+def test_agent_token_shown_with_warning(client: Client) -> None:
+    client.force_login(User.objects.get(username='testuser'))
+
+    response = client.post(
+        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        {'name': 'Dev Laptop', 'type': 'local'},
+    )
+
     assert 'save it now' in response.text
 
-    response2 = client.get(reverse('project_detail', kwargs={'pk': project.pk}))
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user', 'project')
+def test_project_view_no_token_after_creation(client: Client) -> None:
+    client.force_login(User.objects.get(username='testuser'))
+
+    client.post(
+        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        {'name': 'Dev Laptop', 'type': 'local'},
+    )
+
+    project_pk = Project.objects.get().pk
+    response2 = client.get(reverse('project_detail', kwargs={'pk': project_pk}))
     assert response2.context_data is not None
     assert response2.context_data.get('new_token') is None
 
 
 @pytest.mark.django_db
-def test_agent_token_mask_stored_not_plain(
-    client: Client, user: User, project: Project,  # noqa: ARG001
-) -> None:
-    client.force_login(user)
+@pytest.mark.usefixtures('user')
+def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> None:
+    client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
         reverse('agent_create', kwargs={'pk': project.pk}),
@@ -91,21 +124,20 @@ def test_agent_token_mask_stored_not_plain(
 
 
 @pytest.mark.django_db
-def test_project_detail_lists_existing_agents(
-    client: Client, user: User, project: Project,  # noqa: ARG001
-) -> None:
+@pytest.mark.usefixtures('user')
+def test_project_detail_lists_existing_agents(client: Client, project: Project) -> None:
     agent = Agent.objects.create(
         name='CI Pipeline',
         type='ci',
         project=project,
-        owner=user,
+        owner=User.objects.get(username='testuser'),
     )
     ApiToken.objects.create(
         agent=agent,
-        token_hash='$2b$12$somehash',  # noqa: S106
-        token_mask='ci_a8f...',  # noqa: S106
+        token_hash='$2b$12$somehash',
+        token_mask='ci_a8f...',
     )
-    client.force_login(user)
+    client.force_login(User.objects.get(username='testuser'))
 
     response = client.get(reverse('project_detail', kwargs={'pk': project.pk}))
 
@@ -137,12 +169,13 @@ def test_agent_create_redirects_anonymous(client: Client, project: Project) -> N
 
 
 @pytest.mark.django_db
-def test_token_verify_roundtrip(client: Client, user: User, project: Project) -> None:  # noqa: ARG001
+@pytest.mark.usefixtures('user')
+def test_token_verify_roundtrip(client: Client, project: Project) -> None:
     agent = Agent.objects.create(
         name='CI Pipeline',
         type='ci',
         project=project,
-        owner=user,
+        owner=User.objects.get(username='testuser'),
     )
     raw = token_srv.create_token_for_agent(agent)
 

@@ -1,17 +1,22 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, Final, cast
 
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView
 
-from auth.models import User  # noqa: TC001
 from records.forms import AgentForm, ProjectForm
 from records.models import Agent, Project
 from records.srv import record, token
+
+if TYPE_CHECKING:
+    from auth.models import User
+
+type _CurrentUser = User
+_PK: Final = 'pk'
 
 
 class IndexView(TemplateView):
@@ -20,7 +25,7 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
-        user = cast('User', self.request.user)  # noqa: WPS226
+        user = cast('_CurrentUser', self.request.user)
         return {'projects': Project.objects.filter(owner=user)}
 
 
@@ -33,7 +38,7 @@ class ProjectCreateView(FormView):
 
     def form_valid(self, form: ProjectForm) -> HttpResponse:
         project = form.save(commit=False)
-        project.owner = cast('User', self.request.user)
+        project.owner = cast('_CurrentUser', self.request.user)
         project.save()
         return super().form_valid(form)
 
@@ -44,8 +49,8 @@ class ProjectView(TemplateView):
     template_name = 'project.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        user = cast('User', self.request.user)
-        project = Project.objects.get(pk=kwargs['pk'], owner=user)  # noqa: WPS226
+        user = cast('_CurrentUser', self.request.user)
+        project = Project.objects.get(pk=kwargs[_PK], owner=user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
@@ -60,8 +65,8 @@ class AgentCreateView(FormView):
     form_class = AgentForm
 
     def get_project(self) -> Project:
-        user = cast('User', self.request.user)
-        return get_object_or_404(Project, pk=self.kwargs['pk'], owner=user)
+        user = cast('_CurrentUser', self.request.user)
+        return get_object_or_404(Project, pk=self.kwargs[_PK], owner=user)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         project = self.get_project()
@@ -75,7 +80,7 @@ class AgentCreateView(FormView):
         project = self.get_project()
         agent = form.save(commit=False)
         agent.project = project
-        agent.owner = cast('User', self.request.user)
+        agent.owner = cast('_CurrentUser', self.request.user)
         agent.save()
         raw_token = token.create_token_for_agent(agent)
         context = self.get_context_data(form=form)
@@ -88,7 +93,7 @@ class AgentCreateView(FormView):
         return self.render_to_response(context)
 
     def get_success_url(self) -> str:
-        return reverse('project_detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse('project_detail', kwargs={_PK: self.kwargs[_PK]})
 
 
 class TestInfoView(TemplateView):
@@ -97,4 +102,4 @@ class TestInfoView(TemplateView):
     template_name = 'test_info.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        return record.record_by_id(kwargs['pk'])
+        return record.record_by_id(kwargs[_PK])
