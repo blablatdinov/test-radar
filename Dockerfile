@@ -26,10 +26,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/.venv /app/.venv
-COPY entrypoint.sh /app/entrypoint.sh
-COPY src /app/src
-COPY pyproject.toml uv.lock /app/
-
-RUN chmod +x /app/entrypoint.sh
-
-ENTRYPOINT ["/app/entrypoint.sh"]
+COPY src /app
