@@ -8,5 +8,6 @@ from auth.views import CustomLoginView, CustomLogoutView, RegisterView
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
+    # TODO #21:30min feature flag for open registration
     path('register/', RegisterView.as_view(), name='register'),
 ]
