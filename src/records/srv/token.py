@@ -46,6 +46,12 @@ def create_token_for_agent(agent: Agent) -> str:
     return raw_token
 
 
+def regenerate_token_for_agent(agent: Agent) -> str:
+    if hasattr(agent, 'token'):
+        agent.token.delete()
+    return create_token_for_agent(agent)
+
+
 def verify_token(raw_token: str) -> ApiToken | None:
     prefix = _extract_prefix(raw_token)
     candidates = ApiToken.objects.select_related('agent').filter(

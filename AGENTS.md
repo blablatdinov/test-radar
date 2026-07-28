@@ -24,7 +24,7 @@
 - Avoid `typing.cast()` — perform explicit validation (e.g. `isinstance` checks, direct attribute access) instead of type casting. This prevents conflicts between ruff TC006 (requires quotes in `cast`) and WPS226 (flags repeated string literals)
 - SPDX license headers at the top of every source file
 - i18n enabled: use `gettext_lazy` (`_`) for all user-facing text
-- When adding new user-facing strings: update `.po` files in `src/locale/ru/LC_MESSAGES/django.po` and `src/locale/en/LC_MESSAGES/django.po`, then run `uv run django-admin compilemessages -l ru -l en` (from `src/`)
+- When adding new user-facing strings: run `uv run django-admin makemessages -l ru -l en --no-location --no-wrap` (from `src/`) to regenerate `.po` files, then fill in translations in `src/locale/ru/LC_MESSAGES/django.po` and `src/locale/en/LC_MESSAGES/django.po`, then run `uv run django-admin compilemessages -l ru -l en` (from `src/`). Always use `makemessages` to generate `.po` entries — manual edits will be overwritten and cause CI failures
 - Forms: hand-rendered with Tailwind, no form libraries (no crispy-forms, etc.)
 - Form views use `FormView` with `form_valid` override; `owner`/user set from `request.user` in view, not in form
 - Templates extend `base.html`, Tailwind CSS v4 via CDN, green theme (`bg-green-500`), manual field rendering (label + input + errors)

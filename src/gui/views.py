@@ -5,9 +5,9 @@ from typing import Any, Final
 
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, View
 
 from records.forms import AgentForm, ProjectForm
 from records.models import Agent, Project
@@ -94,6 +94,25 @@ class AgentCreateView(FormView):
 
     def get_success_url(self) -> str:
         return reverse('project_detail', kwargs={_PK: self.kwargs[_PK]})
+
+
+class AgentTokenRegenerateView(View):
+    """Regenerate the API token for an existing agent."""
+
+    def post(self, request: Any, pk: str, agent_pk: str) -> HttpResponse:
+        if not request.user.is_authenticated:
+            msg = 'User must be authorized.'
+            raise PermissionDenied(msg)
+        project = get_object_or_404(Project, pk=pk, owner=request.user)
+        agent = get_object_or_404(Agent, pk=agent_pk, project=project, owner=request.user)
+        raw_token = token.regenerate_token_for_agent(agent)
+        context = record.filtered_records(project.pk, request)
+        context['project'] = project
+        context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['agent_form'] = AgentForm()
+        context['new_token'] = raw_token
+        context['new_agent_name'] = agent.name
+        return render(request, 'project.html', context)
 
 
 class TestInfoView(TemplateView):
