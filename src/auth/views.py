@@ -16,7 +16,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LogoutView):
-    pass
+    """Custom logout view."""
 
 
 class RegisterView(FormView):
