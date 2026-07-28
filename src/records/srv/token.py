@@ -1,11 +1,15 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaetdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import datetime
+import logging
 import secrets
 
 import bcrypt
 
 from records.models import Agent, ApiToken
+
+logger = logging.getLogger('records.token')
 
 _TOKEN_LENGTH = 32
 _MASK_PREFIX_LENGTH = 6
@@ -43,12 +47,14 @@ def create_token_for_agent(agent: Agent) -> str:
         token_hash=_hash_token(raw_token),
         token_mask=_mask_token(raw_token),
     )
+    logger.info('Token created for agent %r (type=%s)', agent.name, agent.type)
     return raw_token
 
 
 def regenerate_token_for_agent(agent: Agent) -> str:
     if hasattr(agent, 'token'):
         agent.token.delete()
+        logger.info('Old token deleted for agent %r', agent.name)
     return create_token_for_agent(agent)
 
 
@@ -57,7 +63,13 @@ def verify_token(raw_token: str) -> ApiToken | None:
     candidates = ApiToken.objects.select_related('agent').filter(
         token_mask__startswith=prefix,
     )
+    now = datetime.datetime.now(tz=datetime.UTC)
     for candidate in candidates:
+        if candidate.expires_at is not None and candidate.expires_at < now:
+            logger.debug('Skipping expired token %s for agent %r', candidate.token_mask, candidate.agent.name)
+            continue
         if bcrypt.checkpw(raw_token.encode(), candidate.token_hash.encode()):
+            logger.debug('Token %s verified for agent %r', candidate.token_mask, candidate.agent.name)
             return candidate
+    logger.debug('No matching token found for prefix %r', prefix)
     return None
