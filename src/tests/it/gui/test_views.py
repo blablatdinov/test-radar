@@ -26,7 +26,7 @@ def test_index_no_projects(client: Client, user: User) -> None:
     response = client.get(reverse('index_page'))
 
     assert response.status_code == 200
-    assert 'No projects yet.' in response.text or
+    assert 'No projects yet.' in response.text
 
 
 @pytest.mark.django_db
