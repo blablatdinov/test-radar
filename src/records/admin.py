@@ -5,7 +5,7 @@ from typing import Final
 
 from django.contrib import admin
 
-from records.models import Agent, ApiToken, Project, TestRecord
+from records.models import Agent, ApiToken, Project, TestRecord, TestSession
 
 _NAME: Final = 'name'
 _OWNER: Final = 'owner'
@@ -20,6 +20,8 @@ _LAST_USED_AT: Final = 'last_used_at'
 _LABEL: Final = 'label'
 _TIMESTAMP: Final = 'timestamp'
 _SUCCESS: Final = 'success'
+_ID: Final = 'id'
+_STARTED_AT: Final = 'started_at'
 
 
 @admin.register(Project)
@@ -44,3 +46,9 @@ class ApiTokenAdmin(admin.ModelAdmin):
 class TestRecordAdmin(admin.ModelAdmin):
     search_fields = [_LABEL]
     list_display = [_LABEL, _PROJECT, _TIMESTAMP, _SUCCESS]
+
+
+@admin.register(TestSession)
+class TestSessionAdmin(admin.ModelAdmin):
+    search_fields = [_STARTED_AT]
+    list_display = [_ID, _STARTED_AT]

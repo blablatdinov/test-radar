@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 12:36+0300\n"
+"POT-Creation-Date: 2026-07-28 14:34+0000\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -14,7 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgid "Username"
 msgstr "Имя пользователя"
@@ -82,13 +84,9 @@ msgstr "От:"
 msgid "To:"
 msgstr "До:"
 
-#, fuzzy
-#| msgid "Agent"
 msgid "Agent:"
-msgstr "Агент"
+msgstr "Агент:"
 
-#, fuzzy
-#| msgid "Agents"
 msgid "All agents"
 msgstr "Агенты"
 
@@ -98,6 +96,12 @@ msgstr ""
 msgid "e.g. main"
 msgstr ""
 
+msgid "Session:"
+msgstr "Сессия:"
+
+msgid "All sessions"
+msgstr "Все сессии"
+
 msgid "Apply"
 msgstr "Применить"
 
@@ -105,8 +109,11 @@ msgid "Reset"
 msgstr "Сбросить"
 
 #, python-format
-msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
-msgstr "Токен для агента \"%(agent_name)s\" — сохраните его сейчас, он больше не будет показан:"
+msgid ""
+"Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgstr ""
+"Токен для агента \"%(agent_name)s\" — сохраните его сейчас, он больше не "
+"будет показан:"
 
 msgid "Agents"
 msgstr "Агенты"
@@ -126,8 +133,6 @@ msgstr "Локальный"
 msgid "Create agent"
 msgstr "Создать агента"
 
-#, fuzzy
-#| msgid "Token hash"
 msgid "Token"
 msgstr "Хеш токена"
 
@@ -137,8 +142,12 @@ msgstr "Создан"
 msgid "Actions"
 msgstr "Действия"
 
-msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
-msgstr "Вы уверены, что хотите перегенерировать токен? Старый токен перестанет работать немедленно."
+msgid ""
+"Are you sure you want to regenerate the token? The old token will stop "
+"working immediately."
+msgstr ""
+"Вы уверены, что хотите перегенерировать токен? Старый токен перестанет "
+"работать немедленно."
 
 msgid "Regenerate token"
 msgstr "Перегенерировать токен"
@@ -146,10 +155,8 @@ msgstr "Перегенерировать токен"
 msgid "No agents yet."
 msgstr "Агентов пока нет."
 
-#, fuzzy
-#| msgid "Tests"
 msgid "Test"
-msgstr "Тесты"
+msgstr "Тест"
 
 msgid "Create"
 msgstr "Создать"
@@ -208,8 +215,17 @@ msgstr "API токен"
 msgid "API tokens"
 msgstr "API токены"
 
-msgid "Indentifier"
+msgid "Identifier"
 msgstr "Идентификатор"
+
+msgid "Started at"
+msgstr "Начало"
+
+msgid "Test session"
+msgstr "Тестовая сессия"
+
+msgid "Test sessions"
+msgstr "Тестовые сессии"
 
 msgid "Label"
 msgstr "Метка"
