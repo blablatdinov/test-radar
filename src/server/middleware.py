@@ -24,6 +24,8 @@ class AuthRequiredMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_authenticated or self._is_public(request.path):
             return self.get_response(request)
+        if request.path.startswith('/api/') and self._has_token_auth(request):
+            return self.get_response(request)
         if request.path.startswith('/api/'):
             if 'HTTP_AUTHORIZATION' in request.META:
                 return self.get_response(request)
@@ -35,3 +37,6 @@ class AuthRequiredMiddleware:
 
     def _is_public(self, path: str) -> bool:
         return path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES)
+
+    def _has_token_auth(self, request: HttpRequest) -> bool:
+        return bool(request.headers.get('Authorization', '').startswith('Token '))
