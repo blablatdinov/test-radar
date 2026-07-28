@@ -59,6 +59,8 @@ class TestRecord(models.Model):
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
     logs = CompressedTextField(_('Logs'), blank=True)
+    branch = models.CharField(_('Git branch'), max_length=512)
+    commit = models.CharField(_('Git commit'), max_length=40)
 
     class Meta:
         verbose_name = _('Test record')

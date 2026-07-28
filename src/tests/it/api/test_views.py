@@ -25,11 +25,13 @@ def test_success_record_create(client: Client, user: User) -> None:
             'timestamp': timestamp.isoformat(),
             'success': True,
             'logs': '',
+            'branch': 'feature-1',
+            'commit': 'f447b5b',
         },
     )
     json = response.json()
 
-    assert response.status_code == 201
+    assert response.status_code == 201, response.content
     assert json['label'] == 'test_file.py::test_some'
     assert json['timestamp'] == timestamp.isoformat().replace('+00:00', 'Z')
     assert json['success']
@@ -55,11 +57,13 @@ def test_failed_record_create(client: Client, user: User) -> None:
             'timestamp': timestamp.isoformat(),
             'success': False,
             'logs': base64.b64encode(zlib.compress(logs.encode('utf-8'))).decode('utf-8'),
+            'branch': 'feature-1',
+            'commit': 'f447b5b',
         },
     )
     json = response.json()
 
-    assert response.status_code == 201
+    assert response.status_code == 201, response.content
     assert json['label'] == 'test_file.py::test_some'
     assert json['timestamp'] == timestamp.isoformat().replace('+00:00', 'Z')
     assert not json['success']
