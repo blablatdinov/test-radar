@@ -7,7 +7,6 @@ import zlib
 
 import pytest
 from django.test import Client
-from django.urls import reverse
 
 from records.models import Agent, ApiToken, TestRecord
 from records.srv import token as token_srv
@@ -18,7 +17,7 @@ def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> 
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
 
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -51,7 +50,7 @@ def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> 
 @pytest.mark.django_db
 def test_bulk_create_empty_records(client: Client, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={'records': []},
         HTTP_AUTHORIZATION=f'Token {agent_token}',
@@ -64,7 +63,7 @@ def test_bulk_create_empty_records(client: Client, agent_token: str) -> None:
 @pytest.mark.django_db
 def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={},
         HTTP_AUTHORIZATION=f'Token {agent_token}',
@@ -77,7 +76,7 @@ def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> No
 @pytest.mark.django_db
 def test_bulk_create_invalid_token(client: Client) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}]},
         HTTP_AUTHORIZATION='Token ci_invalid_token',
@@ -90,7 +89,7 @@ def test_bulk_create_invalid_token(client: Client) -> None:
 @pytest.mark.django_db
 def test_bulk_create_missing_auth_header(client: Client) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}]},
     )
@@ -103,7 +102,7 @@ def test_bulk_create_expired_token_rejected(client: Client, agent: Agent) -> Non
     raw_token = _create_expired_token(agent)
 
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}]},
         HTTP_AUTHORIZATION=f'Token {raw_token}',
@@ -115,7 +114,7 @@ def test_bulk_create_expired_token_rejected(client: Client, agent: Agent) -> Non
 @pytest.mark.django_db
 def test_bulk_create_record_without_label(client: Client, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -148,7 +147,7 @@ def test_bulk_create_exceeds_limit(client: Client, agent_token: str) -> None:
     ]
 
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={'records': records},
         HTTP_AUTHORIZATION=f'Token {agent_token}',
@@ -164,7 +163,7 @@ def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
 
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -209,7 +208,7 @@ def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token
 @pytest.mark.django_db
 def test_bulk_create_binds_agent_and_project(client: Client, agent: Agent, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -235,7 +234,7 @@ def test_bulk_create_binds_agent_and_project(client: Client, agent: Agent, agent
 @pytest.mark.django_db
 def test_bulk_create_atomic_on_validation_error(client: Client, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -267,7 +266,7 @@ def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
     compressed = base64.b64encode(zlib.compress(logs.encode('utf-8'))).decode()
 
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -292,7 +291,7 @@ def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
 @pytest.mark.django_db
 def test_bulk_create_optional_branch_commit(client: Client, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
@@ -316,7 +315,7 @@ def test_bulk_create_optional_branch_commit(client: Client, agent_token: str) ->
 @pytest.mark.django_db
 def test_bulk_create_single_record(client: Client, agent_token: str) -> None:
     response = client.post(
-        reverse('api_bulk_create_test'),
+        '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'records': [
