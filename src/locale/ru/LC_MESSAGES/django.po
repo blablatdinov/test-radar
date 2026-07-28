@@ -116,3 +116,27 @@ msgstr "Русский"
 
 msgid "English"
 msgstr "Английский"
+
+msgid "Projects"
+msgstr "Проекты"
+
+msgid "Created:"
+msgstr "Создан:"
+
+msgid "No projects yet."
+msgstr "Проектов пока нет."
+
+msgid "Back to projects"
+msgstr "Назад к проектам"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "Owner"
+msgstr "Владелец"
+
+msgid "Created at"
+msgstr "Создан"
+
+msgid "Project"
+msgstr "Проект"

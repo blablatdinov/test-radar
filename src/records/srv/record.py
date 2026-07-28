@@ -9,11 +9,14 @@ from django.http.request import HttpRequest
 from records.models import TestRecord
 
 
-def filtered_records(request: HttpRequest) -> dict[str, Any]:
+def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     if request.GET.get('date'):
-        records = TestRecord.objects.filter(timestamp__date__gte=request.GET['date'])
+        records = TestRecord.objects.filter(
+            project_id=project_id,
+            timestamp__date__gte=request.GET['date'],
+        )
     else:
-        records = TestRecord.objects.all()
+        records = TestRecord.objects.filter(project_id=project_id)
     grouped_records = defaultdict(lambda: defaultdict(list))  # type: ignore
     for record in records:
         date = record.timestamp

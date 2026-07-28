@@ -3,10 +3,16 @@
 
 from django.contrib import admin
 
-from records.models import TestRecord
+from records.models import Project, TestRecord
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+    list_display = ['name', 'owner', 'created_at']
 
 
 @admin.register(TestRecord)
 class TestRecordAdmin(admin.ModelAdmin):
     search_fields = ['label']
-    list_display = ['label', 'timestamp', 'success']
+    list_display = ['label', 'project', 'timestamp', 'success']
