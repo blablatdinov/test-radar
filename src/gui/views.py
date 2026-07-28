@@ -27,7 +27,8 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
         if not self.request.user.is_authenticated:
-            raise PermissionDenied("User must be authorized.")
+            msg = "User must be authorized."
+            raise PermissionDenied(msg)
         return {'projects': Project.objects.filter(owner=self.request.user)}
 
 
@@ -52,7 +53,8 @@ class ProjectView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         if not self.request.user.is_authenticated:
-            raise PermissionDenied("User must be authorized.")
+            msg = "User must be authorized."
+            raise PermissionDenied(msg)
         project = Project.objects.get(pk=kwargs[_PK], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
@@ -68,7 +70,6 @@ class AgentCreateView(FormView):
     form_class = AgentForm
 
     def get_project(self) -> Project:
-        user = cast('_CurrentUser', self.request.user)
         return get_object_or_404(Project, pk=self.kwargs[_PK], owner=self.request.user)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
