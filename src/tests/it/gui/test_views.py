@@ -7,8 +7,6 @@ from django.urls import reverse
 
 from auth.models import User
 from records.models import Project
-
-# TODO #29:30min Split views to class per file
 # flake8: noqa: WPS202
 
 
