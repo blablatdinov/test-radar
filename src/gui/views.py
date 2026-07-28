@@ -9,6 +9,8 @@ from auth.models import User
 from records.models import Project
 from records.srv import record
 
+# TODO #6:30min Add form for creating projects from UI
+
 
 class IndexView(TemplateView):
     """Index page of Test Radar — shows list of user projects."""
