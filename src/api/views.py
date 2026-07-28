@@ -103,6 +103,7 @@ class BulkCreateTestRecordView(APIView):
                 branch=item['branch'],
                 commit=item['commit'],
                 agent=agent,
+                project=agent.project,
             )
             for item in validated
         ]
