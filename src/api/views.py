@@ -1,13 +1,22 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaetdinov <a.ilaletdinov@yandex.ru>
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
 import logging
+from http import HTTPStatus
 
+from django.db import transaction
 from rest_framework.generics import CreateAPIView
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
+from rest_framework.views import APIView
 
+from api.serializers.bulk_record import BulkCreateSerializer
 from api.serializers.record import TestRecordSerializer
-from records.models import ApiToken
+from records.models import Agent, ApiToken, TestRecord
+from records.srv.token import verify_token
+
+_TOKEN_KEYWORD = 'Token'
 
 logger = logging.getLogger('api.views')
 
@@ -29,3 +38,52 @@ class CreateTestRecordView(CreateAPIView):
         else:
             logger.debug('Creating test record via session auth (user=%r)', self.request.user.username)
         serializer.save(agent=agent, project=project)
+
+
+class BulkCreateTestRecordView(APIView):
+    authentication_classes: list = []
+    permission_classes: list = []
+
+    def post(self, request: Request) -> Response:
+        agent = self._authenticate(request)
+        if agent is None:
+            return Response(
+                {'error': 'Invalid token'},
+                status=HTTPStatus.UNAUTHORIZED.value,
+            )
+
+        serializer = BulkCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=HTTPStatus.BAD_REQUEST.value,
+            )
+
+        validated = serializer.validated_data['records']
+        test_records = [
+            TestRecord(
+                label=record_data['label'],
+                timestamp=record_data['timestamp'],
+                success=record_data['success'],
+                logs=record_data['logs'],
+                branch=record_data['branch'],
+                commit=record_data['commit'],
+                agent=agent,
+                project=agent.project,
+            )
+            for record_data in validated
+        ]
+        with transaction.atomic():
+            TestRecord.objects.bulk_create(test_records)
+
+        return Response({'created': len(test_records)}, status=HTTPStatus.OK.value)
+
+    def _authenticate(self, request: Request) -> Agent | None:
+        header = request.META.get('HTTP_AUTHORIZATION', '')
+        if not header.startswith(f'{_TOKEN_KEYWORD} '):
+            return None
+        raw_token = header[len(_TOKEN_KEYWORD) + 1:]
+        api_token = verify_token(raw_token)
+        if api_token is None:
+            return None
+        return api_token.agent
