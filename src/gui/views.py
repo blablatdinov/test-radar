@@ -3,6 +3,7 @@
 
 from typing import TYPE_CHECKING, Any, Final, cast
 
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -25,8 +26,9 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
-        user = cast('_CurrentUser', self.request.user)
-        return {'projects': Project.objects.filter(owner=user)}
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("User must be authorized.")
+        return {'projects': Project.objects.filter(owner=self.request.user)}
 
 
 class ProjectCreateView(FormView):
@@ -38,7 +40,7 @@ class ProjectCreateView(FormView):
 
     def form_valid(self, form: ProjectForm) -> HttpResponse:
         project = form.save(commit=False)
-        project.owner = cast('_CurrentUser', self.request.user)
+        project.owner = self.request.user
         project.save()
         return super().form_valid(form)
 
@@ -49,8 +51,9 @@ class ProjectView(TemplateView):
     template_name = 'project.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        user = cast('_CurrentUser', self.request.user)
-        project = Project.objects.get(pk=kwargs[_PK], owner=user)
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("User must be authorized.")
+        project = Project.objects.get(pk=kwargs[_PK], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
@@ -66,7 +69,7 @@ class AgentCreateView(FormView):
 
     def get_project(self) -> Project:
         user = cast('_CurrentUser', self.request.user)
-        return get_object_or_404(Project, pk=self.kwargs[_PK], owner=user)
+        return get_object_or_404(Project, pk=self.kwargs[_PK], owner=self.request.user)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         project = self.get_project()
@@ -80,7 +83,7 @@ class AgentCreateView(FormView):
         project = self.get_project()
         agent = form.save(commit=False)
         agent.project = project
-        agent.owner = cast('_CurrentUser', self.request.user)
+        agent.owner = self.request.user
         agent.save()
         raw_token = token.create_token_for_agent(agent)
         context = self.get_context_data(form=form)
