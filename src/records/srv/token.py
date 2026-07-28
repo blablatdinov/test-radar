@@ -23,11 +23,10 @@ def _generate_raw_token(agent_type: str) -> str:
     return prefix + secrets.token_urlsafe(_TOKEN_LENGTH)
 
 
-def _mask_token(raw_token: str) -> str:
+def mask_token(raw_token: str) -> str:
     if len(raw_token) <= _MASK_PREFIX_LENGTH:
         return raw_token
-    prefix_part = raw_token[:_MASK_PREFIX_LENGTH]
-    return f'{prefix_part}...'
+    return f'{raw_token[:_MASK_PREFIX_LENGTH]}...{raw_token[-3:]}'
 
 
 def _hash_token(raw_token: str) -> str:
@@ -45,7 +44,7 @@ def create_token_for_agent(agent: Agent) -> str:
     ApiToken.objects.create(
         agent=agent,
         token_hash=_hash_token(raw_token),
-        token_mask=_mask_token(raw_token),
+        token_mask=mask_token(raw_token),
     )
     logger.info('Token created for agent %r (type=%s)', agent.name, agent.type)
     return raw_token
