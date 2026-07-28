@@ -9,6 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False),
+    REGISTRATION_ENABLED=(bool, False),
 )
 environ.Env.read_env(BASE_DIR.parent / '.env')
 
@@ -104,6 +105,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
+
+REGISTRATION_ENABLED = env('REGISTRATION_ENABLED')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index_page'
