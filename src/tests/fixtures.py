@@ -6,7 +6,7 @@ import datetime
 import pytest
 
 from auth.models import User
-from records.models import TestRecord
+from records.models import Project, TestRecord
 
 
 @pytest.fixture
@@ -15,12 +15,19 @@ def user() -> User:
 
 
 @pytest.fixture
-def test_record_pk() -> str:
+def project(user: User) -> Project:
+    # TODO #19:30min Use model_bakery for generate records
+    return Project.objects.create(name='Test project', owner=user)
+
+
+@pytest.fixture
+def test_record_pk(project: Project) -> str:
     record = TestRecord.objects.create(
         label='test_file.py::test_view',
         timestamp=datetime.datetime.now(tz=datetime.UTC),
         success=True,
         logs='',
+        project=project,
     )
 
     return record.pk

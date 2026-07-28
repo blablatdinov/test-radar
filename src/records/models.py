@@ -23,12 +23,37 @@ class CompressedTextField(models.TextField):
         return decompressed.decode('utf-8')
 
 
+class Project(models.Model):
+    name = models.CharField(_('Name'), max_length=255)
+    owner = models.ForeignKey(
+        'authentication.User',
+        on_delete=models.CASCADE,
+        related_name='projects',
+        verbose_name=_('Owner'),
+    )
+    created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Project')
+        verbose_name_plural = _('Projects')
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+
 class TestRecord(models.Model):
     id = models.CharField(
         _('Indentifier'),
         primary_key=True,
         max_length=32,
         default=_hex_token,
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='records',
+        null=True,
+        verbose_name=_('Project'),
     )
     label = models.CharField(_('Label'), max_length=128)
     success = models.BooleanField(_('Success'))
