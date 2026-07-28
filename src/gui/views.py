@@ -19,7 +19,6 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
         user = self.request.user
-        assert isinstance(user, User)
         return {'projects': user.projects.all()}
 
 
@@ -30,7 +29,6 @@ class ProjectView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         user = self.request.user
-        assert isinstance(user, User)
         project = Project.objects.get(pk=kwargs['pk'], owner=user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
