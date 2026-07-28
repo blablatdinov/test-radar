@@ -72,6 +72,7 @@ ignore = [
   "TD003",
   "TD004",
   "UP022",
+  "UP030",
   "UP032"
 ]
 exclude = [
