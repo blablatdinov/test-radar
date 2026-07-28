@@ -155,4 +155,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-ALLOWED_HOSTS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
