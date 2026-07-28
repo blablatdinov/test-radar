@@ -13,7 +13,7 @@ from records.models import Project
 def test_index_shows_projects(client: Client, user: User, project) -> None:  # noqa: ANN001
     client.force_login(user)
 
-    response = client.get(reverse('index_page'))
+    response = client.get('/')
 
     assert response.status_code == 200
     assert 'Test project' in response.text
@@ -25,7 +25,7 @@ def test_index_shows_projects(client: Client, user: User, project) -> None:  # n
 def test_index_no_projects(client: Client, user: User) -> None:
     client.force_login(user)
 
-    response = client.get(reverse('index_page'))
+    response = client.get('/')
 
     assert response.status_code == 200
     assert 'No projects yet.' in response.text
@@ -37,7 +37,7 @@ def test_project_detail_shows_records(
 ) -> None:
     client.force_login(user)
 
-    response = client.get(reverse('project_detail', kwargs={'pk': project.pk}))
+    response = client.get(f'/project/{project.pk}')
 
     assert 'test_file.py::test_view' in response.text
     assert response.status_code == 200
@@ -50,7 +50,7 @@ def test_project_detail_shows_records(
 def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
     client.force_login(user)
 
-    response = client.get(reverse('test_info', kwargs={'pk': test_record_pk}))
+    response = client.get(f'/test/{test_record_pk}')
 
     assert '✅' in response.text
     assert response.status_code == 200
@@ -60,7 +60,7 @@ def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
 
 @pytest.mark.django_db
 def test_index_redirects_anonymous(client: Client) -> None:
-    response = client.get(reverse('index_page'))
+    response = client.get('/')
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
@@ -68,7 +68,7 @@ def test_index_redirects_anonymous(client: Client) -> None:
 
 @pytest.mark.django_db
 def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> None:
-    response = client.get(reverse('test_info', kwargs={'pk': test_record_pk}))
+    response = client.get(f'/test/{test_record_pk}')
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
@@ -78,7 +78,7 @@ def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> N
 def test_project_create_get(client: Client, user: User) -> None:
     client.force_login(user)
 
-    response = client.get(reverse('project_create'))
+    response = client.get('/project/create')
 
     assert response.status_code == 200
     assert 'Create project' in response.text
@@ -90,7 +90,7 @@ def test_project_create_get(client: Client, user: User) -> None:
 def test_project_create_post(client: Client, user: User) -> None:
     client.force_login(user)
 
-    response = client.post(reverse('project_create'), {'name': 'My new project'})
+    response = client.post('/project/create', {'name': 'My new project'})
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('index_page')
@@ -100,7 +100,7 @@ def test_project_create_post(client: Client, user: User) -> None:
 
 @pytest.mark.django_db
 def test_project_create_redirects_anonymous(client: Client) -> None:
-    response = client.get(reverse('project_create'))
+    response = client.get('/project/create')
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')

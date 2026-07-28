@@ -14,7 +14,7 @@ from records.srv import token as token_srv
 def test_project_detail_shows_agents_section(client: Client, user: User, project: Project) -> None:
     client.force_login(user)
 
-    response = client.get(reverse('project_detail', kwargs={'pk': project.pk}))
+    response = client.get(f'/project/{project.pk}')
 
     assert response.status_code == 200
     assert 'Agents' in response.text
@@ -139,7 +139,7 @@ def test_project_detail_lists_existing_agents(client: Client, project: Project) 
     )
     client.force_login(User.objects.get(username='testuser'))
 
-    response = client.get(reverse('project_detail', kwargs={'pk': project.pk}))
+    response = client.get(f'/project/{project.pk}')
 
     assert response.status_code == 200
     assert 'CI Pipeline' in response.text
@@ -162,7 +162,7 @@ def test_agent_create_invalid_data(client: Client, user: User, project: Project)
 
 @pytest.mark.django_db
 def test_agent_create_redirects_anonymous(client: Client, project: Project) -> None:
-    response = client.get(reverse('agent_create', kwargs={'pk': project.pk}))
+    response = client.get(f'/project/{project.pk}/agent/create')
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
@@ -225,10 +225,12 @@ def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> No
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+        f'/project/{project.pk}/agents/{agent.pk}/regenerate-token',
     )
 
     agent.refresh_from_db()
+
+    assert response.status_code == 200
     assert agent.token.token_mask in response.content.decode()
 
 
@@ -245,7 +247,7 @@ def test_regenerate_token_old_token_invalid(client: Client, project: Project) ->
     client.force_login(User.objects.get(username='testuser'))
 
     client.post(
-        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+        f'/project/{project.pk}/agents/{agent.pk}/regenerate-token',
     )
 
     assert token_srv.verify_token(old_raw) is None
@@ -263,7 +265,7 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
     token_srv.create_token_for_agent(agent)
 
     response = client.post(
-        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+        f'project/{project.pk}/agents/{agent.pk}/regenerate-token',
     )
 
     assert response.status_code == 302
@@ -285,7 +287,7 @@ def test_regenerate_token_other_user_forbidden(
     client.force_login(other)
 
     response = client.post(
-        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+        f'project/{project.pk}/agents/{agent.pk}/regenerate-token',
     )
 
     assert response.status_code == 404

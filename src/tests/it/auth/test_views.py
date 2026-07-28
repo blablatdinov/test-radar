@@ -29,7 +29,7 @@ def test_register_page(client: Client) -> None:
 @pytest.mark.django_db
 def test_register(client: Client) -> None:
     response = client.post(
-        reverse('register'),
+        '/register/',
         {
             'username': 'newuser',
             'password1': 'strong-password-123',
