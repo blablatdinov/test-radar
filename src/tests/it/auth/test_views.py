@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import Any
+
 import pytest
 from django.test import Client
 from django.urls import reverse
@@ -38,6 +40,17 @@ def test_register(client: Client) -> None:
     assert response.status_code == 302
     assert response['Location'] == reverse('index_page')
     assert User.objects.filter(username='newuser').exists()
+
+
+@pytest.mark.django_db
+def test_login_page_registration_disabled(client: Client, settings: Any) -> None:
+    settings.REGISTRATION_ENABLED = False
+
+    response = client.get(reverse('login'))
+
+    assert response.status_code == 200
+    assert 'Sign up' not in response.text
+    assert 'Register' not in response.text
 
 
 @pytest.mark.django_db
