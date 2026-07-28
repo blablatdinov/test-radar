@@ -118,6 +118,12 @@ msgstr "Создан"
 msgid "No agents yet."
 msgstr "Агентов пока нет."
 
+msgid "Regenerate token"
+msgstr "Перегенерировать токен"
+
+msgid "Actions"
+msgstr "Действия"
+
 msgid "Create"
 msgstr "Создать"
 

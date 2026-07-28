@@ -185,3 +185,107 @@ def test_token_verify_roundtrip(client: Client, project: Project) -> None:
 
     invalid = token_srv.verify_token('ci_invalid_token_here')
     assert invalid is None
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user')
+def test_regenerate_token_creates_new_token(client: Client, project: Project) -> None:
+    agent = Agent.objects.create(
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=User.objects.get(username='testuser'),
+    )
+    old_raw = token_srv.create_token_for_agent(agent)
+    old_mask = agent.token.token_mask
+    client.force_login(User.objects.get(username='testuser'))
+
+    response = client.post(
+        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+    )
+    new_raw = response.context['new_token']
+
+    assert response.status_code == 200
+    assert new_raw != old_raw
+    assert new_raw.startswith('ci_')
+    agent.refresh_from_db()
+    assert agent.token.token_mask != old_mask
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user')
+def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> None:
+    agent = Agent.objects.create(
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=User.objects.get(username='testuser'),
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(User.objects.get(username='testuser'))
+
+    response = client.post(
+        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+    )
+
+    agent.refresh_from_db()
+    assert agent.token.token_mask in response.content.decode()
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user')
+def test_regenerate_token_old_token_invalid(client: Client, project: Project) -> None:
+    agent = Agent.objects.create(
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=User.objects.get(username='testuser'),
+    )
+    old_raw = token_srv.create_token_for_agent(agent)
+    client.force_login(User.objects.get(username='testuser'))
+
+    client.post(
+        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+    )
+
+    assert token_srv.verify_token(old_raw) is None
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('user')
+def test_regenerate_token_redirects_anonymous(client: Client, project: Project) -> None:
+    agent = Agent.objects.create(
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=User.objects.get(username='testuser'),
+    )
+    token_srv.create_token_for_agent(agent)
+
+    response = client.post(
+        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+    )
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('login')
+
+
+@pytest.mark.django_db
+def test_regenerate_token_other_user_forbidden(
+    client: Client, user: User, project: Project,
+) -> None:
+    other = User.objects.create(username='other', password='x')
+    agent = Agent.objects.create(
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(other)
+
+    response = client.post(
+        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+    )
+
+    assert response.status_code == 404

@@ -118,6 +118,12 @@ msgstr "Created at"
 msgid "No agents yet."
 msgstr "No agents yet."
 
+msgid "Regenerate token"
+msgstr "Regenerate token"
+
+msgid "Actions"
+msgstr "Actions"
+
 msgid "Create"
 msgstr "Create"
 
