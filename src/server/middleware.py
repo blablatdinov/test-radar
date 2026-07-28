@@ -2,15 +2,16 @@
 # SPDX-License-Identifier: MIT
 
 from collections.abc import Callable
+from http import HTTPStatus
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 
-PUBLIC_PATHS = frozenset({
+PUBLIC_PATHS = frozenset((
     '/login/',
     '/logout/',
     '/register/',
-})
+))
 PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
 
 
@@ -26,7 +27,7 @@ class AuthRequiredMiddleware:
         if request.path.startswith('/api/'):
             return JsonResponse(
                 {'detail': 'Authentication credentials were not provided.'},
-                status=401,
+                status=HTTPStatus.UNAUTHORIZED.value,
             )
         return redirect('login')
 
