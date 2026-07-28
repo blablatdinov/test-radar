@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 11:11+0300\n"
+"POT-Creation-Date: 2026-07-28 11:42+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -115,17 +115,17 @@ msgstr "Token hash"
 msgid "Created at"
 msgstr "Created at"
 
-msgid "No agents yet."
-msgstr "No agents yet."
-
-msgid "Regenerate token"
-msgstr "Regenerate token"
-
 msgid "Actions"
 msgstr "Actions"
 
 msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
 msgstr "Are you sure you want to regenerate the token? The old token will stop working immediately."
+
+msgid "Regenerate token"
+msgstr "Regenerate token"
+
+msgid "No agents yet."
+msgstr "No agents yet."
 
 msgid "Create"
 msgstr "Create"
