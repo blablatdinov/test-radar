@@ -15,7 +15,8 @@ dependencies = [
     "gunicorn==26.0.0",
     "httpx==0.28.1",
     "pytest==9.1.1",
-    "django-environ==0.14.0"
+    "django-environ==0.14.0",
+    "bcrypt==4.3.0"
 ]
 
 [tool.setuptools.packages.find]
@@ -81,7 +82,7 @@ external = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"src/tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101"]
+"src/tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101", "S106"]
 
 [tool.ruff.format]
 quote-style = "single"

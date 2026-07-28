@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any, cast
+from typing import Any, Final
 
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView
 
-from auth.models import User  # noqa: TC001
-from records.forms import ProjectForm
-from records.models import Project
-from records.srv import record
+from records.forms import AgentForm, ProjectForm
+from records.models import Agent, Project
+from records.srv import record, token
+
+_PK: Final = 'pk'
 
 
 class IndexView(TemplateView):
@@ -19,8 +22,10 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
-        user = cast('User', self.request.user)
-        return {'projects': Project.objects.filter(owner=user)}
+        if not self.request.user.is_authenticated:
+            msg = "User must be authorized."
+            raise PermissionDenied(msg)
+        return {'projects': Project.objects.filter(owner=self.request.user)}
 
 
 class ProjectCreateView(FormView):
@@ -32,7 +37,7 @@ class ProjectCreateView(FormView):
 
     def form_valid(self, form: ProjectForm) -> HttpResponse:
         project = form.save(commit=False)
-        project.owner = cast('User', self.request.user)
+        project.owner = self.request.user
         project.save()
         return super().form_valid(form)
 
@@ -43,11 +48,52 @@ class ProjectView(TemplateView):
     template_name = 'project.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        user = cast('User', self.request.user)
-        project = Project.objects.get(pk=kwargs['pk'], owner=user)
+        if not self.request.user.is_authenticated:
+            msg = "User must be authorized."
+            raise PermissionDenied(msg)
+        project = Project.objects.get(pk=kwargs[_PK], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
+        context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['agent_form'] = AgentForm()
         return context
+
+
+class AgentCreateView(FormView):
+    """Create an agent and generate an API token for it."""
+
+    template_name = 'project.html'
+    form_class = AgentForm
+
+    def get_project(self) -> Project:
+        return get_object_or_404(Project, pk=self.kwargs[_PK], owner=self.request.user)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        project = self.get_project()
+        context = record.filtered_records(project.pk, self.request)
+        context['project'] = project
+        context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['agent_form'] = kwargs.get('form') or AgentForm()
+        return context
+
+    def form_valid(self, form: AgentForm) -> HttpResponse:
+        project = self.get_project()
+        agent = form.save(commit=False)
+        agent.project = project
+        agent.owner = self.request.user
+        agent.save()
+        raw_token = token.create_token_for_agent(agent)
+        context = self.get_context_data(form=form)
+        context['new_token'] = raw_token
+        context['new_agent_name'] = agent.name
+        return self.render_to_response(context)
+
+    def form_invalid(self, form: AgentForm) -> HttpResponse:
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
+
+    def get_success_url(self) -> str:
+        return reverse('project_detail', kwargs={_PK: self.kwargs[_PK]})
 
 
 class TestInfoView(TemplateView):
@@ -56,4 +102,4 @@ class TestInfoView(TemplateView):
     template_name = 'test_info.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        return record.record_by_id(kwargs['pk'])
+        return record.record_by_id(kwargs[_PK])

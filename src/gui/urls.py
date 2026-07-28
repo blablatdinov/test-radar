@@ -3,11 +3,12 @@
 
 from django.urls import path
 
-from gui.views import IndexView, ProjectCreateView, ProjectView, TestInfoView
+from gui.views import AgentCreateView, IndexView, ProjectCreateView, ProjectView, TestInfoView
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index_page'),
     path('project/create', ProjectCreateView.as_view(), name='project_create'),
     path('project/<pk>', ProjectView.as_view(), name='project_detail'),
+    path('project/<pk>/agents/create', AgentCreateView.as_view(), name='agent_create'),
     path('test/<pk>', TestInfoView.as_view(), name='test_info'),
 ]

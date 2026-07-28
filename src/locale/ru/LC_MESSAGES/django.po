@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 10:10+0300\n"
+"POT-Creation-Date: 2026-07-28 11:11+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -85,8 +85,38 @@ msgstr "Применить"
 msgid "Reset"
 msgstr "Сбросить"
 
+#, python-format
+msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgstr "Токен для агента \"%(agent_name)s\" — сохраните его сейчас, он больше не будет показан:"
+
+msgid "Agents"
+msgstr "Агенты"
+
 msgid "Name"
 msgstr "Название"
+
+msgid "Agent type"
+msgstr "Тип агента"
+
+msgid "CI"
+msgstr "CI"
+
+msgid "Local"
+msgstr "Локальный"
+
+msgid "Create agent"
+msgstr "Создать агента"
+
+#, fuzzy
+#| msgid "Token hash"
+msgid "Token"
+msgstr "Хеш токена"
+
+msgid "Created at"
+msgstr "Создан"
+
+msgid "No agents yet."
+msgstr "Агентов пока нет."
 
 msgid "Create"
 msgstr "Создать"
@@ -115,11 +145,35 @@ msgstr "Логи выполнения"
 msgid "Owner"
 msgstr "Владелец"
 
-msgid "Created at"
-msgstr "Создан"
-
 msgid "Project"
 msgstr "Проект"
+
+msgid "Agent"
+msgstr "Агент"
+
+msgid "Token hash"
+msgstr "Хеш токена"
+
+msgid "Token mask"
+msgstr "Маска токена"
+
+msgid "Scopes"
+msgstr "Области доступа"
+
+msgid "Expires at"
+msgstr "Истекает"
+
+msgid "Last used at"
+msgstr "Последнее использование"
+
+msgid "Last used IP"
+msgstr "Последний IP"
+
+msgid "API token"
+msgstr "API токен"
+
+msgid "API tokens"
+msgstr "API токены"
 
 msgid "Indentifier"
 msgstr "Идентификатор"

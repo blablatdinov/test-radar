@@ -41,6 +41,58 @@ class Project(models.Model):
         return str(self.name)
 
 
+class Agent(models.Model):
+    class AgentType(models.TextChoices):
+        CI = 'ci', _('CI')
+        LOCAL = 'local', _('Local')
+
+    name = models.CharField(_('Name'), max_length=128)
+    type = models.CharField(_('Agent type'), max_length=10, choices=AgentType.choices)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='agents',
+        verbose_name=_('Project'),
+    )
+    owner = models.ForeignKey(
+        'authentication.User',
+        on_delete=models.CASCADE,
+        related_name='agents',
+        verbose_name=_('Owner'),
+    )
+    created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Agent')
+        verbose_name_plural = _('Agents')
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+
+class ApiToken(models.Model):
+    agent = models.OneToOneField(
+        Agent,
+        on_delete=models.CASCADE,
+        related_name='token',
+        verbose_name=_('Agent'),
+    )
+    token_hash = models.CharField(_('Token hash'), max_length=128)
+    token_mask = models.CharField(_('Token mask'), max_length=32)
+    scopes = models.CharField(_('Scopes'), max_length=255, default='write:results')
+    expires_at = models.DateTimeField(_('Expires at'), null=True, blank=True)
+    last_used_at = models.DateTimeField(_('Last used at'), null=True, blank=True)
+    last_used_ip = models.GenericIPAddressField(_('Last used IP'), null=True, blank=True)
+    created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('API token')
+        verbose_name_plural = _('API tokens')
+
+    def __str__(self) -> str:
+        return f'{self.token_mask} ({self.agent})'
+
+
 class TestRecord(models.Model):
     id = models.CharField(
         _('Indentifier'),
@@ -61,6 +113,14 @@ class TestRecord(models.Model):
     logs = CompressedTextField(_('Logs'), blank=True)
     branch = models.CharField(_('Git branch'), max_length=512)
     commit = models.CharField(_('Git commit'), max_length=40)
+    agent = models.ForeignKey(
+        Agent,
+        on_delete=models.SET_NULL,
+        related_name='records',
+        null=True,
+        blank=True,
+        verbose_name=_('Agent'),
+    )
 
     class Meta:
         verbose_name = _('Test record')
