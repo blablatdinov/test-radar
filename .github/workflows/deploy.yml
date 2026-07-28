@@ -1,0 +1,99 @@
+name: Deploy
+
+on:
+  push:
+    tags: "*"
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6.1.0
+        with:
+          python-version: 3.12
+          activate-environment: true
+      - name: Install Dependencies
+        run: uv sync --no-default-groups
+      - name: Lint with ruff
+        run: uv run ruff check src
+
+  build-and-push:
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get tag name
+        id: tag_name
+        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_SHA})"
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: blablatdinov/test-radar:${{ steps.tag_name.outputs.TAG_NAME }}
+
+  apply-nginx-conf:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXsftBFh0RQ0pupvfT8zZp7HEIT8cWD9ziL7glOEtCqVWu8mMqgmYH+GzA7xsWHkAGgQ0BHHQinVMg2sQzDyyHdSVuMvsi04WsgAaOdD0mQa5LwauXpaw/X5nyOKAtiVzzUSi6I8leTS+o4/5nnNz+wxGEZSItESEYYbLWIhE9p30Mt1cSB+F8iUXsAO/I1DqwqXsOUET5ocVOfeRd7/3P7ZT8KGjG6DP8D4aCvxnc1NIAVnW9sfj7hsR84kTWNFFfihMZkmFrDuQfS30mFBlb9sAahHmQfeYfVUexU0ntkiSyE7jsnvfKJIKb3uyfbP1TjJ5EwTt7lDgNdZst3aAkK/JHiEJaIyod1AHt5gG8OFC75+Cy7fbwawPJUuRysxz2O35KFGcbZyN42kdHYZoVLpe5GvcziUSkQLW/KRBrbK7Uw4X6Q6h1QOhUL1ifbqACEIZXeuqkje0c6nL9M5lFeYITn1Ikc3N+c50hAmnX6F4rnifbFUnqiELBk0sn7zM='
+      - name: Apply nginx config
+        run: |
+          scp deploy/test_radar_nginx.conf www@87.249.49.217:/etc/nginx/sites-enabled/
+          ssh www@87.249.49.217 'sudo nginx -t && sudo service nginx reload'
+
+  update-remote-container:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXsftBFh0RQ0pupvfT8zZp7HEIT8cWD9ziL7glOEtCqVWu8mMqgmYH+GzA7xsWHkAGgQ0BHHQinVMg2sQzDyyHdSVuMvsi04WsgAaOdD0mQa5LwauXpaw/X5nyOKAtiVzzUSi6I8leTS+o4/5nnNz+wxGEZSItESEYYbLWIhE9p30Mt1cSB+F8iUXsAO/I1DqwqXsOUET5ocVOfeRd7/3P7ZT8KGjG6DP8D4aCvxnc1NIAVnW9sfj7hsR84kTWNFFfihMZkmFrDuQfS30mFBlb9sAahHmQfeYfVUexU0ntkiSyE7jsnvfKJIKb3uyfbP1TjJ5EwTt7lDgNdZst3aAkK/JHiEJaIyod1AHt5gG8OFC75+Cy7fbwawPJUuRysxz2O35KFGcbZyN42kdHYZoVLpe5GvcziUSkQLW/KRBrbK7Uw4X6Q6h1QOhUL1ifbqACEIZXeuqkje0c6nL9M5lFeYITn1Ikc3N+c50hAmnX6F4rnifbFUnqiELBk0sn7zM='
+      - name: Get tag name
+        id: tag_name
+        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_SHA})"
+      - name: Generate docker-compose.yml
+        run: |
+          cat > docker-compose.yml << 'COMPOSE_EOF'
+          services:
+            test-radar-http:
+              image: blablatdinov/test-radar:TAG_PLACEHOLDER
+              command: .venv/bin/gunicorn server.wsgi:application --chdir src -b 0.0.0.0:8012
+              restart: always
+              ports:
+                - 8012:8012
+              env_file:
+                - .env
+              volumes:
+                - ./db.sqlite3:/app/src/db.sqlite3
+          COMPOSE_EOF
+          sed -i "s/TAG_PLACEHOLDER/${{ steps.tag_name.outputs.TAG_NAME }}/" docker-compose.yml
+          cat docker-compose.yml
+      - name: Deploy with docker-compose on remote server
+        run: |
+          ssh www@87.249.49.217 'echo "Connected!"'
+          scp docker-compose.yml www@87.249.49.217:/home/www/code/test-radar/docker-compose.yml
+          ssh www@87.249.49.217 'cd /home/www/code/test-radar/ && docker-compose up -d'
