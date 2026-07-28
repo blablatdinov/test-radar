@@ -14,15 +14,34 @@ def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
         records = TestRecord.objects.filter(
             project_id=project_id,
             timestamp__date__gte=request.GET['date'],
-        )
+        ).order_by('timestamp')
     else:
-        records = TestRecord.objects.filter(project_id=project_id)
-    grouped_records = defaultdict(lambda: defaultdict(list))  # type: ignore
-    for record in records:
-        date = record.timestamp
-        grouped_records[date.strftime('%d.%m.%Y')][date.strftime('%H:%M')].append(record)  # noqa: WPS221
+        records = TestRecord.objects.filter(project_id=project_id).order_by('timestamp')
 
-    return {'records': {date: dict(times) for date, times in grouped_records.items()}}
+    columns: list[dict[str, str]] = []
+    col_index: dict[tuple[str, str], int] = {}
+    labels: set[str] = set()
+    matrix: dict[str, dict[int, TestRecord]] = defaultdict(dict)
+
+    for record in records:
+        date_str = record.timestamp.strftime('%d.%m.%Y')
+        time_str = record.timestamp.strftime('%H:%M')
+        col_key = (date_str, time_str)
+        if col_key not in col_index:
+            col_index[col_key] = len(columns)
+            columns.append({'date': date_str, 'time': time_str})
+        matrix[record.label][col_index[col_key]] = record
+        labels.add(record.label)
+
+    rows = [
+        {
+            'label': label,
+            'cells': [matrix[label].get(i) for i in range(len(columns))],
+        }
+        for label in sorted(labels)
+    ]
+
+    return {'records': {'columns': columns, 'rows': rows}}
 
 
 def record_by_id(record_id: str) -> dict[str, TestRecord]:
