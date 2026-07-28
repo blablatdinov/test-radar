@@ -6,6 +6,7 @@ from django.test import Client
 from django.urls import reverse
 
 from auth.models import User
+from records.models import Project
 
 
 @pytest.mark.django_db
@@ -68,6 +69,38 @@ def test_index_redirects_anonymous(client: Client) -> None:
 @pytest.mark.django_db
 def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> None:
     response = client.get(reverse('test_info', kwargs={'pk': test_record_pk}))
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('login')
+
+
+@pytest.mark.django_db
+def test_project_create_get(client: Client, user: User) -> None:
+    client.force_login(user)
+
+    response = client.get(reverse('project_create'))
+
+    assert response.status_code == 200
+    assert 'Create project' in response.text
+    assert response.context_data is not None
+    assert response.context_data.get('form') is not None
+
+
+@pytest.mark.django_db
+def test_project_create_post(client: Client, user: User) -> None:
+    client.force_login(user)
+
+    response = client.post(reverse('project_create'), {'name': 'My new project'})
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('index_page')
+    project = Project.objects.get(name='My new project')
+    assert project.owner == user
+
+
+@pytest.mark.django_db
+def test_project_create_redirects_anonymous(client: Client) -> None:
+    response = client.get(reverse('project_create'))
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')

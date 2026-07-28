@@ -7,7 +7,15 @@ SPDX-License-Identifier: MIT
 {% block title %}Test radar{% endblock %}
 {% block content %}
 <div class="max-w-full mx-auto px-3">
-  <h1 class="text-xl font-bold text-gray-800 mb-4">{% trans "Projects" %}</h1>
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-bold text-gray-800">{% trans "Projects" %}</h1>
+    <a
+      href="{% url 'project_create' %}"
+      class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition cursor-pointer text-sm"
+    >
+      {% trans "Create project" %}
+    </a>
+  </div>
   {% if projects %}
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {% for project in projects %}

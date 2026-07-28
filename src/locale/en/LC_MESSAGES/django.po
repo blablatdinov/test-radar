@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 06:13+0000\n"
+"POT-Creation-Date: 2026-07-28 10:10+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -52,14 +52,17 @@ msgstr "Log in"
 msgid "Register"
 msgstr "Register"
 
-msgid "Date filter:"
-msgstr "Date filter:"
+msgid "Projects"
+msgstr "Projects"
 
-msgid "Apply"
-msgstr "Apply"
+msgid "Create project"
+msgstr "Create project"
 
-msgid "Reset"
-msgstr "Reset"
+msgid "Created:"
+msgstr "Created:"
+
+msgid "No projects yet."
+msgstr "No projects yet."
 
 msgid "Login"
 msgstr "Login"
@@ -69,6 +72,24 @@ msgstr "No account?"
 
 msgid "Sign up"
 msgstr "Sign up"
+
+msgid "Back to projects"
+msgstr "Back to projects"
+
+msgid "Date filter:"
+msgstr "Date filter:"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Create"
+msgstr "Create"
 
 msgid "Already have an account?"
 msgstr "Already have an account?"
@@ -91,6 +112,15 @@ msgstr "Failed"
 msgid "Execution logs"
 msgstr "Execution logs"
 
+msgid "Owner"
+msgstr "Owner"
+
+msgid "Created at"
+msgstr "Created at"
+
+msgid "Project"
+msgstr "Project"
+
 msgid "Indentifier"
 msgstr "Indentifier"
 
@@ -103,6 +133,12 @@ msgstr "Timestamp"
 msgid "Logs"
 msgstr "Logs"
 
+msgid "Git branch"
+msgstr "Git branch"
+
+msgid "Git commit"
+msgstr "Git commit"
+
 msgid "Test record"
 msgstr "Test record"
 
@@ -114,27 +150,3 @@ msgstr "Russian"
 
 msgid "English"
 msgstr "English"
-
-msgid "Projects"
-msgstr "Projects"
-
-msgid "Created:"
-msgstr "Created:"
-
-msgid "No projects yet."
-msgstr "No projects yet."
-
-msgid "Back to projects"
-msgstr "Back to projects"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Owner"
-msgstr "Owner"
-
-msgid "Created at"
-msgstr "Created at"
-
-msgid "Project"
-msgstr "Project"

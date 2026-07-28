@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 06:13+0000\n"
+"POT-Creation-Date: 2026-07-28 10:10+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -14,9 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
-"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgid "Username"
 msgstr "Имя пользователя"
@@ -54,14 +52,17 @@ msgstr "Войти"
 msgid "Register"
 msgstr "Регистрация"
 
-msgid "Date filter:"
-msgstr "Фильтр по дате:"
+msgid "Projects"
+msgstr "Проекты"
 
-msgid "Apply"
-msgstr "Применить"
+msgid "Create project"
+msgstr "Создать проект"
 
-msgid "Reset"
-msgstr "Сбросить"
+msgid "Created:"
+msgstr "Создан:"
+
+msgid "No projects yet."
+msgstr "Проектов пока нет."
 
 msgid "Login"
 msgstr "Вход"
@@ -71,6 +72,24 @@ msgstr "Нет аккаунта?"
 
 msgid "Sign up"
 msgstr "Зарегистрироваться"
+
+msgid "Back to projects"
+msgstr "Назад к проектам"
+
+msgid "Date filter:"
+msgstr "Фильтр по дате:"
+
+msgid "Apply"
+msgstr "Применить"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "Create"
+msgstr "Создать"
 
 msgid "Already have an account?"
 msgstr "Уже есть аккаунт?"
@@ -93,6 +112,15 @@ msgstr "Провалено"
 msgid "Execution logs"
 msgstr "Логи выполнения"
 
+msgid "Owner"
+msgstr "Владелец"
+
+msgid "Created at"
+msgstr "Создан"
+
+msgid "Project"
+msgstr "Проект"
+
 msgid "Indentifier"
 msgstr "Идентификатор"
 
@@ -105,6 +133,12 @@ msgstr "Время запуска"
 msgid "Logs"
 msgstr "Логи"
 
+msgid "Git branch"
+msgstr "Git ветка"
+
+msgid "Git commit"
+msgstr "Git коммит"
+
 msgid "Test record"
 msgstr "Запись теста"
 
@@ -116,27 +150,3 @@ msgstr "Русский"
 
 msgid "English"
 msgstr "Английский"
-
-msgid "Projects"
-msgstr "Проекты"
-
-msgid "Created:"
-msgstr "Создан:"
-
-msgid "No projects yet."
-msgstr "Проектов пока нет."
-
-msgid "Back to projects"
-msgstr "Назад к проектам"
-
-msgid "Name"
-msgstr "Название"
-
-msgid "Owner"
-msgstr "Владелец"
-
-msgid "Created at"
-msgstr "Создан"
-
-msgid "Project"
-msgstr "Проект"
