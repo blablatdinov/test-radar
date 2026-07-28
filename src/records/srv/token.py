@@ -26,7 +26,10 @@ def _generate_raw_token(agent_type: str) -> str:
 def mask_token(raw_token: str) -> str:
     if len(raw_token) <= _MASK_PREFIX_LENGTH:
         return raw_token
-    return f'{raw_token[:_MASK_PREFIX_LENGTH]}...{raw_token[-3:]}'
+    return '{0}_{1}'.format(
+        raw_token[:_MASK_PREFIX_LENGTH],
+        raw_token[-3:],
+    )
 
 
 def _hash_token(raw_token: str) -> str:
