@@ -93,6 +93,8 @@ class ApiToken(models.Model):
         return f'{self.token_mask} ({self.agent})'
 
 
+# TODO #X:30min Add testrun_id (uuidv4) field to TestRecord model, accept it in API serializer,
+#  and group columns by testrun_id instead of (date, time) in filtered_records
 class TestRecord(models.Model):
     id = models.CharField(
         _('Indentifier'),

@@ -17,10 +17,10 @@ def test_filtered_records(project, test_record_pk: str) -> None:  # noqa: ANN001
         'date': datetime.datetime.now(tz=datetime.UTC).strftime('%Y-%m-%d'),
     }
 
-    result = filtered_records(project.pk, request)
+    grouped = filtered_records(project.pk, request)
 
-    assert len(result['records']['columns']) == 1
-    assert len(result['records']['rows']) == 1
+    assert len(grouped['records']['columns']) == 1
+    assert len(grouped['records']['rows']) == 1
 
 
 @pytest.mark.django_db
@@ -28,10 +28,10 @@ def test_filtered_records_no_date(project, test_record_pk: str) -> None:  # noqa
     request = Mock(HttpRequest)
     request.GET = {}
 
-    result = filtered_records(project.pk, request)
+    grouped = filtered_records(project.pk, request)
 
-    assert len(result['records']['columns']) == 1
-    assert len(result['records']['rows']) == 1
+    assert len(grouped['records']['columns']) == 1
+    assert len(grouped['records']['rows']) == 1
 
 
 @pytest.mark.django_db
