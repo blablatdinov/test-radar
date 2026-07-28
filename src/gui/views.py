@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import TYPE_CHECKING, Any, Final, cast
+from typing import Any, Final
 
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
@@ -13,10 +13,6 @@ from records.forms import AgentForm, ProjectForm
 from records.models import Agent, Project
 from records.srv import record, token
 
-if TYPE_CHECKING:
-    from auth.models import User
-
-type _CurrentUser = User
 _PK: Final = 'pk'
 
 
