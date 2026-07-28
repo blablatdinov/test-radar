@@ -12,7 +12,7 @@ from auth.models import User
 
 @pytest.mark.django_db
 def test_login_page(client: Client) -> None:
-    response = client.get(reverse('login'))
+    response = client.get('/login/')
 
     assert response.status_code == 200
     assert 'Login' in response.text
@@ -20,7 +20,7 @@ def test_login_page(client: Client) -> None:
 
 @pytest.mark.django_db
 def test_register_page(client: Client) -> None:
-    response = client.get(reverse('register'))
+    response = client.get('/register/')
 
     assert response.status_code == 200
     assert 'Sign up' in response.text
@@ -46,7 +46,7 @@ def test_register(client: Client) -> None:
 def test_login_page_registration_disabled(client: Client, settings: Any) -> None:
     settings.REGISTRATION_ENABLED = False
 
-    response = client.get(reverse('login'))
+    response = client.get('/login/')
 
     assert response.status_code == 200
     assert 'Sign up' not in response.text
@@ -56,7 +56,7 @@ def test_login_page_registration_disabled(client: Client, settings: Any) -> None
 @pytest.mark.django_db
 def test_login(client: Client, user: User) -> None:
     response = client.post(
-        reverse('login'),
+        '/login/',
         {
             'username': user.username,
             'password': 'test-password-123',
@@ -71,7 +71,7 @@ def test_login(client: Client, user: User) -> None:
 def test_logout(client: Client, user: User) -> None:
     client.force_login(user)
 
-    response = client.post(reverse('logout'))
+    response = client.post('/logout/')
 
     assert response.status_code == 302
     assert response['Location'] == reverse('login')
