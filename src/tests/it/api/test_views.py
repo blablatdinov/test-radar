@@ -9,9 +9,12 @@ import pytest
 from django.test import Client
 from django.urls import reverse
 
+from auth.models import User
+
 
 @pytest.mark.django_db
-def test_success_record_create(client: Client) -> None:
+def test_success_record_create(client: Client, user: User) -> None:
+    client.force_login(user)
     timestamp = datetime.datetime.now(tz=datetime.UTC)
 
     response = client.post(
@@ -33,7 +36,8 @@ def test_success_record_create(client: Client) -> None:
 
 
 @pytest.mark.django_db
-def test_failed_record_create(client: Client) -> None:
+def test_failed_record_create(client: Client, user: User) -> None:
+    client.force_login(user)
     timestamp = datetime.datetime.now(tz=datetime.UTC)
     logs = '\n'.join(
         [
@@ -62,3 +66,14 @@ def test_failed_record_create(client: Client) -> None:
     assert zlib.decompress(
         base64.b64decode(json['logs']),
     ).decode('utf-8') == logs
+
+
+@pytest.mark.django_db
+def test_create_unauthorized(client: Client) -> None:
+    response = client.post(
+        reverse('api_create_test'),
+        content_type='application/json',
+        data={},
+    )
+
+    assert response.status_code == 401
