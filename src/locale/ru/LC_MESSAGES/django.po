@@ -76,8 +76,11 @@ msgstr "Зарегистрироваться"
 msgid "Back to projects"
 msgstr "Назад к проектам"
 
-msgid "Date filter:"
-msgstr "Фильтр по дате:"
+msgid "From:"
+msgstr "От:"
+
+msgid "To:"
+msgstr "До:"
 
 msgid "Apply"
 msgstr "Применить"
