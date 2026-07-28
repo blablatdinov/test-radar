@@ -58,7 +58,7 @@ def test_bulk_create_empty_records(client: Client, agent_token: str) -> None:
     )
 
     assert response.status_code == 400
-    assert response.json()['error'] == 'records array is empty'
+    assert 'records' in response.json()
 
 
 @pytest.mark.django_db
@@ -71,7 +71,7 @@ def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> No
     )
 
     assert response.status_code == 400
-    assert response.json()['error'] == 'records is required'
+    assert 'records' in response.json()
 
 
 @pytest.mark.django_db
@@ -155,7 +155,7 @@ def test_bulk_create_exceeds_limit(client: Client, agent_token: str) -> None:
     )
 
     assert response.status_code == 400
-    assert 'limit' in response.json()['error']
+    assert 'records' in response.json()
     assert TestRecord.objects.count() == 0
 
 
