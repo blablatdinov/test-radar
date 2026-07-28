@@ -1,13 +1,19 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-version: '3.9'
-
 services:
   app:
-    build: .
+    container_name: test-radar
+    image: test-radar:dev
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    command: uv run python src/manage.py runserver 0.0.0.0:8000
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
-      - ./src/db.sqlite3:/app/db.sqlite3
-    entrypoint: sh ./entrypoint.sh
+      - ./:/app
+    environment:
+      - SECRET_KEY=secret
+      - DEBUG=true
+      - REGISTRATION_ENABLED=false
