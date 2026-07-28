@@ -37,7 +37,7 @@ def test_index_redirects_anonymous(client: Client) -> None:
     response = client.get(reverse('index_page'))
 
     assert response.status_code == 302
-    assert response.url == reverse('login')
+    assert response.headers['Location'] == reverse('login')
 
 
 @pytest.mark.django_db
@@ -45,4 +45,4 @@ def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> N
     response = client.get(reverse('test_info', kwargs={'pk': test_record_pk}))
 
     assert response.status_code == 302
-    assert response.url == reverse('login')
+    assert response.headers['Location'] == reverse('login')
