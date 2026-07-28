@@ -32,8 +32,10 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError(_('A user with this username already exists.'))
         return username
 
-    def clean(self) -> dict[str, Any]:
+    def clean(self) -> dict[str, Any] | None:
         cleaned_data = super().clean()
+        if cleaned_data is None:
+            return cleaned_data
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:

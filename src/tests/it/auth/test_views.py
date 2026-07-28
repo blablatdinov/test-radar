@@ -37,7 +37,7 @@ def test_register(client: Client) -> None:
     )
 
     assert response.status_code == 302
-    assert response.url == reverse('index_page')
+    assert response['Location'] == reverse('index_page')
     assert User.objects.filter(username='newuser').exists()
 
 
@@ -52,7 +52,7 @@ def test_login(client: Client, user: User) -> None:
     )
 
     assert response.status_code == 302
-    assert response.url == reverse('index_page')
+    assert response['Location'] == reverse('index_page')
 
 
 @pytest.mark.django_db
@@ -62,4 +62,4 @@ def test_logout(client: Client, user: User) -> None:
     response = client.post(reverse('logout'))
 
     assert response.status_code == 302
-    assert response.url == reverse('login')
+    assert response['Location'] == reverse('login')

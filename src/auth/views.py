@@ -16,7 +16,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy('login')
+    pass
 
 
 class RegisterView(FormView):
