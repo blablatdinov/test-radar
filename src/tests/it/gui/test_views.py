@@ -8,6 +8,9 @@ from django.urls import reverse
 from auth.models import User
 from records.models import Project
 
+# TODO #29:30min Split views to class per file
+# flake8: noqa: WPS202
+
 
 @pytest.mark.django_db
 def test_index_shows_projects(client: Client, user: User, project) -> None:  # noqa: ANN001
