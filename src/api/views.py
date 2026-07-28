@@ -2,12 +2,17 @@
 # SPDX-License-Identifier: MIT
 
 from rest_framework.generics import CreateAPIView
+from rest_framework.serializers import BaseSerializer
 
 from api.serializers.record import TestRecordSerializer
+from records.models import ApiToken
 
 
 class CreateTestRecordView(CreateAPIView):
     serializer_class = TestRecordSerializer
-    # permission_classes = [IsAuthenticated]
 
-# TODO #6:30min Save agent info in records.models.Record
+    def perform_create(self, serializer: BaseSerializer) -> None:
+        agent = None
+        if isinstance(self.request.auth, ApiToken):
+            agent = self.request.auth.agent
+        serializer.save(agent=agent)

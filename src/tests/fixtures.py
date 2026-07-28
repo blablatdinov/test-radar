@@ -6,7 +6,8 @@ import datetime
 import pytest
 
 from auth.models import User
-from records.models import Project, TestRecord
+from records.models import Agent, Project, TestRecord
+from records.srv import token as token_srv
 
 
 @pytest.fixture
@@ -18,6 +19,21 @@ def user() -> User:
 def project(user: User) -> Project:
     # TODO #19:30min Use model_bakery for generate records
     return Project.objects.create(name='Test project', owner=user)
+
+
+@pytest.fixture
+def agent(user: User, project: Project) -> Agent:
+    return Agent.objects.create(
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=user,
+    )
+
+
+@pytest.fixture
+def agent_token(agent: Agent) -> str:
+    return token_srv.create_token_for_agent(agent)
 
 
 @pytest.fixture

@@ -8,8 +8,11 @@ import zlib
 import pytest
 from django.test import Client
 from django.urls import reverse
+from django.utils import timezone
 
 from auth.models import User
+from records.models import Agent, ApiToken, TestRecord
+from records.srv import token as token_srv
 
 
 @pytest.mark.django_db
@@ -74,6 +77,98 @@ def test_failed_record_create(client: Client, user: User) -> None:
 
 @pytest.mark.django_db
 def test_create_unauthorized(client: Client) -> None:
+    response = client.post(
+        reverse('api_create_test'),
+        content_type='application/json',
+        data={},
+    )
+
+    assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_agent_token_auth_creates_record(
+    client: Client, agent: Agent, agent_token: str,
+) -> None:
+    timestamp = datetime.datetime.now(tz=datetime.UTC)
+    response = client.post(
+        reverse('api_create_test'),
+        content_type='application/json',
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+        data={
+            'label': 'test_file.py::test_via_agent',
+            'timestamp': timestamp.isoformat(),
+            'success': True,
+            'logs': '',
+            'branch': 'main',
+            'commit': 'abc123',
+        },
+    )
+
+    assert response.status_code == 201, response.content
+    record = TestRecord.objects.get(label='test_file.py::test_via_agent')
+    assert record.agent == agent
+
+
+@pytest.mark.django_db
+def test_agent_token_invalid_returns_unauthorized(client: Client) -> None:
+    response = client.post(
+        reverse('api_create_test'),
+        content_type='application/json',
+        HTTP_AUTHORIZATION='Token ci_invalid_token',
+        data={},
+    )
+
+    assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_agent_token_auth_updates_last_used(
+    client: Client, agent: Agent, agent_token: str,
+) -> None:
+    token_obj = ApiToken.objects.get(agent=agent)
+    assert token_obj.last_used_at is None
+
+    timestamp = datetime.datetime.now(tz=datetime.UTC)
+    client.post(
+        reverse('api_create_test'),
+        content_type='application/json',
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+        data={
+            'label': 'test_file.py::test_last_used',
+            'timestamp': timestamp.isoformat(),
+            'success': True,
+            'logs': '',
+            'branch': 'main',
+            'commit': 'abc123',
+        },
+    )
+
+    token_obj.refresh_from_db()
+    assert token_obj.last_used_at is not None
+    assert timezone.is_aware(token_obj.last_used_at)
+
+
+@pytest.mark.django_db
+def test_expired_token_rejected(client: Client, agent: Agent) -> None:
+    raw_token = token_srv.create_token_for_agent(agent)
+    token_obj = ApiToken.objects.get(agent=agent)
+    now = datetime.datetime.now(tz=datetime.UTC)
+    token_obj.expires_at = now - datetime.timedelta(hours=1)
+    token_obj.save(update_fields=['expires_at'])
+
+    response = client.post(
+        reverse('api_create_test'),
+        content_type='application/json',
+        HTTP_AUTHORIZATION=f'Token {raw_token}',
+        data={},
+    )
+
+    assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_no_credentials_returns_unauthorized(client: Client) -> None:
     response = client.post(
         reverse('api_create_test'),
         content_type='application/json',

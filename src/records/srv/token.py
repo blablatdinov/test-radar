@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import datetime
 import secrets
 
 import bcrypt
@@ -57,7 +58,10 @@ def verify_token(raw_token: str) -> ApiToken | None:
     candidates = ApiToken.objects.select_related('agent').filter(
         token_mask__startswith=prefix,
     )
+    now = datetime.datetime.now(tz=datetime.UTC)
     for candidate in candidates:
+        if candidate.expires_at is not None and candidate.expires_at < now:
+            continue
         if bcrypt.checkpw(raw_token.encode(), candidate.token_hash.encode()):
             return candidate
     return None

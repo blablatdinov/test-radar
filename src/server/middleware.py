@@ -25,6 +25,8 @@ class AuthRequiredMiddleware:
         if request.user.is_authenticated or self._is_public(request.path):
             return self.get_response(request)
         if request.path.startswith('/api/'):
+            if 'HTTP_AUTHORIZATION' in request.META:
+                return self.get_response(request)
             return JsonResponse(
                 {'detail': 'Authentication credentials were not provided.'},
                 status=HTTPStatus.UNAUTHORIZED.value,
