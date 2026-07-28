@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 10:10+0300\n"
+"POT-Creation-Date: 2026-07-28 11:11+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -85,8 +85,38 @@ msgstr "Apply"
 msgid "Reset"
 msgstr "Reset"
 
+#, python-format
+msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgstr "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+
+msgid "Agents"
+msgstr "Agents"
+
 msgid "Name"
 msgstr "Name"
+
+msgid "Agent type"
+msgstr "Agent type"
+
+msgid "CI"
+msgstr "CI"
+
+msgid "Local"
+msgstr "Local"
+
+msgid "Create agent"
+msgstr "Create agent"
+
+#, fuzzy
+#| msgid "Token hash"
+msgid "Token"
+msgstr "Token hash"
+
+msgid "Created at"
+msgstr "Created at"
+
+msgid "No agents yet."
+msgstr "No agents yet."
 
 msgid "Create"
 msgstr "Create"
@@ -115,11 +145,35 @@ msgstr "Execution logs"
 msgid "Owner"
 msgstr "Owner"
 
-msgid "Created at"
-msgstr "Created at"
-
 msgid "Project"
 msgstr "Project"
+
+msgid "Agent"
+msgstr "Agent"
+
+msgid "Token hash"
+msgstr "Token hash"
+
+msgid "Token mask"
+msgstr "Token mask"
+
+msgid "Scopes"
+msgstr "Scopes"
+
+msgid "Expires at"
+msgstr "Expires at"
+
+msgid "Last used at"
+msgstr "Last used at"
+
+msgid "Last used IP"
+msgstr "Last used IP"
+
+msgid "API token"
+msgstr "API token"
+
+msgid "API tokens"
+msgstr "API tokens"
 
 msgid "Indentifier"
 msgstr "Indentifier"
@@ -150,51 +204,3 @@ msgstr "Russian"
 
 msgid "English"
 msgstr "English"
-
-msgid "Agent"
-msgstr "Agent"
-
-msgid "Agents"
-msgstr "Agents"
-
-msgid "Agent type"
-msgstr "Agent type"
-
-msgid "CI"
-msgstr "CI"
-
-msgid "Local"
-msgstr "Local"
-
-msgid "API token"
-msgstr "API token"
-
-msgid "API tokens"
-msgstr "API tokens"
-
-msgid "Token hash"
-msgstr "Token hash"
-
-msgid "Token mask"
-msgstr "Token mask"
-
-msgid "Scopes"
-msgstr "Scopes"
-
-msgid "Expires at"
-msgstr "Expires at"
-
-msgid "Last used at"
-msgstr "Last used at"
-
-msgid "Last used IP"
-msgstr "Last used IP"
-
-msgid "Create agent"
-msgstr "Create agent"
-
-msgid "No agents yet."
-msgstr "No agents yet."
-
-msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
-msgstr "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
