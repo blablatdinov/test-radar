@@ -105,7 +105,12 @@ SPDX-License-Identifier: MIT
             <td class="py-2 pr-4">{{ agent.created_at|date:"d.m.Y H:i" }}</td>
             <td class="py-2 pr-4">
               {% if agent.token %}
-              <form method="post" action="{% url 'agent_token_regenerate' project.pk agent.pk %}" class="inline">
+              <form
+                method="post"
+                action="{% url 'agent_token_regenerate' project.pk agent.pk %}"
+                class="inline"
+                onsubmit="return confirm('{% trans "Are you sure you want to regenerate the token? The old token will stop working immediately." %}')"
+              >
                 {% csrf_token %}
                 <button
                   type="submit"

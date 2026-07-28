@@ -124,6 +124,9 @@ msgstr "Перегенерировать токен"
 msgid "Actions"
 msgstr "Действия"
 
+msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
+msgstr "Вы уверены, что хотите перегенерировать токен? Старый токен перестанет работать немедленно."
+
 msgid "Create"
 msgstr "Создать"
 

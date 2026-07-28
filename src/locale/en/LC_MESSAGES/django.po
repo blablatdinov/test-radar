@@ -124,6 +124,9 @@ msgstr "Regenerate token"
 msgid "Actions"
 msgstr "Actions"
 
+msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
+msgstr "Are you sure you want to regenerate the token? The old token will stop working immediately."
+
 msgid "Create"
 msgstr "Create"
 
