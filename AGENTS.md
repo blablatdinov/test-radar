@@ -20,6 +20,8 @@
 - Migrations excluded from linting
 - No comments in code unless explicitly requested
 - Avoid `noqa` comments — fix the underlying linter issue instead. If a rule is genuinely a false positive or cannot be reasonably fixed, flag it to the user rather than suppressing with `noqa`
+- In tests, use `@pytest.mark.usefixtures('fixture_name')` for fixtures that set up state but are not referenced directly in the test body, instead of unused function arguments
+- Avoid `typing.cast()` — perform explicit validation (e.g. `isinstance` checks, direct attribute access) instead of type casting. This prevents conflicts between ruff TC006 (requires quotes in `cast`) and WPS226 (flags repeated string literals)
 - SPDX license headers at the top of every source file
 - i18n enabled: use `gettext_lazy` (`_`) for all user-facing text
 - When adding new user-facing strings: update `.po` files in `src/locale/ru/LC_MESSAGES/django.po` and `src/locale/en/LC_MESSAGES/django.po`, then run `uv run django-admin compilemessages -l ru -l en` (from `src/`)
