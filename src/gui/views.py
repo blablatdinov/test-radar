@@ -3,13 +3,14 @@
 
 from typing import Any, cast
 
-from django.views.generic import TemplateView
+from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import FormView, TemplateView
 
 from auth.models import User  # noqa: TC001
+from records.forms import ProjectForm
 from records.models import Project
 from records.srv import record
-
-# TODO #6:30min Add form for creating projects from UI
 
 
 class IndexView(TemplateView):
@@ -20,6 +21,20 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
         user = cast('User', self.request.user)
         return {'projects': Project.objects.filter(owner=user)}
+
+
+class ProjectCreateView(FormView):
+    """Form page for creating a new project."""
+
+    template_name = 'project_create.html'
+    form_class = ProjectForm
+    success_url = reverse_lazy('index_page')
+
+    def form_valid(self, form: ProjectForm) -> HttpResponse:
+        project = form.save(commit=False)
+        project.owner = cast('User', self.request.user)
+        project.save()
+        return super().form_valid(form)
 
 
 class ProjectView(TemplateView):

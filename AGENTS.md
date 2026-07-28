@@ -20,3 +20,8 @@
 - Migrations excluded from linting
 - No comments in code unless explicitly requested
 - SPDX license headers at the top of every source file
+- i18n enabled: use `gettext_lazy` (`_`) for all user-facing text
+- Forms: hand-rendered with Tailwind, no form libraries (no crispy-forms, etc.)
+- Form views use `FormView` with `form_valid` override; `owner`/user set from `request.user` in view, not in form
+- Templates extend `base.html`, Tailwind CSS v4 via CDN, green theme (`bg-green-500`), manual field rendering (label + input + errors)
+- `AuthRequiredMiddleware` protects all URLs except `/login/`, `/logout/`, `/register/`, `/admin/`, `/__debug__/`
