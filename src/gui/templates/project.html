@@ -12,12 +12,20 @@ SPDX-License-Identifier: MIT
   </a>
   <h1 class="text-xl font-bold text-gray-800 mb-4">{{ project.name }}</h1>
   <form method="get" class="flex items-center space-x-2">
-    <label for="date" class="text-sm text-gray-700">{% trans "Date filter:" %}</label>
+    <label for="datetime_from" class="text-sm text-gray-700">{% trans "From:" %}</label>
     <input
-      type="date"
-      id="date"
-      name="date"
-      value="{{ request.GET.date }}"
+      type="datetime-local"
+      id="datetime_from"
+      name="datetime_from"
+      value="{{ request.GET.datetime_from }}"
+      class="border border-gray-300 rounded px-2 py-1 text-sm"
+    />
+    <label for="datetime_to" class="text-sm text-gray-700">{% trans "To:" %}</label>
+    <input
+      type="datetime-local"
+      id="datetime_to"
+      name="datetime_to"
+      value="{{ request.GET.datetime_to }}"
       class="border border-gray-300 rounded px-2 py-1 text-sm"
     />
     <button
@@ -26,7 +34,7 @@ SPDX-License-Identifier: MIT
     >
       {% trans "Apply" %}
     </button>
-    {% if request.GET.date %}
+    {% if request.GET.datetime_from or request.GET.datetime_to %}
     <a href="?" class="text-sm text-gray-500 underline hover:text-gray-700">{% trans "Reset" %}</a>
     {% endif %}
   </form>

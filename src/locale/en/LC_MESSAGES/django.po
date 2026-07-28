@@ -76,8 +76,11 @@ msgstr "Sign up"
 msgid "Back to projects"
 msgstr "Back to projects"
 
-msgid "Date filter:"
-msgstr "Date filter:"
+msgid "From:"
+msgstr "From:"
+
+msgid "To:"
+msgstr "To:"
 
 msgid "Apply"
 msgstr "Apply"

@@ -48,14 +48,14 @@ def _build_matrix(records: QuerySet[TestRecord]) -> dict[str, Any]:
 
 
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
-    if request.GET.get('date'):
-        records = TestRecord.objects.filter(
-            project_id=project_id,
-            timestamp__date__gte=request.GET['date'],
-        ).order_by('timestamp')
-    else:
-        records = TestRecord.objects.filter(project_id=project_id).order_by('timestamp')
-
+    filters: dict[str, Any] = {'project_id': project_id}
+    datetime_from = request.GET.get('datetime_from')
+    datetime_to = request.GET.get('datetime_to')
+    if datetime_from:
+        filters['timestamp__gte'] = datetime_from
+    if datetime_to:
+        filters['timestamp__lte'] = datetime_to
+    records = TestRecord.objects.filter(**filters).order_by('timestamp')
     return {'records': _build_matrix(records)}
 
 

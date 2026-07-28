@@ -12,9 +12,11 @@ from records.srv.record import filtered_records, record_by_id
 
 @pytest.mark.django_db
 def test_filtered_records(project, test_record_pk: str) -> None:  # noqa: ANN001
+    now = datetime.datetime.now(tz=datetime.UTC)
     request = Mock(HttpRequest)
     request.GET = {
-        'date': datetime.datetime.now(tz=datetime.UTC).strftime('%Y-%m-%d'),
+        'datetime_from': now.strftime('%Y-%m-%dT%H:%M'),
+        'datetime_to': (now + datetime.timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M'),
     }
 
     grouped = filtered_records(project.pk, request)
