@@ -1,0 +1,118 @@
+# Test Radar Russian translations.
+# Copyright (C) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# This file is distributed under the MIT license.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: test-radar 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-28 06:13+0000\n"
+"PO-Revision-Date: 2026-07-28 09:12+0300\n"
+"Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Confirm password"
+msgstr "Подтверждение пароля"
+
+msgid "A user with this username already exists."
+msgstr "Пользователь с таким именем уже существует."
+
+msgid "Passwords do not match."
+msgstr "Пароли не совпадают."
+
+msgid "Is staff"
+msgstr "Персонал"
+
+msgid "User"
+msgstr "Пользователь"
+
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Tests"
+msgstr "Тесты"
+
+msgid "Log out"
+msgstr "Выйти"
+
+msgid "Log in"
+msgstr "Войти"
+
+msgid "Register"
+msgstr "Регистрация"
+
+msgid "Date filter:"
+msgstr "Фильтр по дате:"
+
+msgid "Apply"
+msgstr "Применить"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Login"
+msgstr "Вход"
+
+msgid "No account?"
+msgstr "Нет аккаунта?"
+
+msgid "Sign up"
+msgstr "Зарегистрироваться"
+
+msgid "Already have an account?"
+msgstr "Уже есть аккаунт?"
+
+msgid "Back"
+msgstr "Назад"
+
+msgid "Started:"
+msgstr "Запущен:"
+
+msgid "Status:"
+msgstr "Статус:"
+
+msgid "Success"
+msgstr "Успешно"
+
+msgid "Failed"
+msgstr "Провалено"
+
+msgid "Execution logs"
+msgstr "Логи выполнения"
+
+msgid "Indentifier"
+msgstr "Идентификатор"
+
+msgid "Label"
+msgstr "Метка"
+
+msgid "Timestamp"
+msgstr "Время запуска"
+
+msgid "Logs"
+msgstr "Логи"
+
+msgid "Test record"
+msgstr "Запись теста"
+
+msgid "Test records"
+msgstr "Записи тестов"
+
+msgid "Russian"
+msgstr "Русский"
+
+msgid "English"
+msgstr "Английский"

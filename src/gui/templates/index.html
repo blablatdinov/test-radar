@@ -3,6 +3,7 @@ SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov
 SPDX-License-Identifier: MIT
 -->
 {% extends 'base.html' %}
+{% load i18n %}
 {% block title %}Test radar{% endblock %}
 {% block content %}
 <!--
@@ -10,7 +11,7 @@ TODO #6:30min Show list of projects for user
 -->
 <div class="max-w-full mx-auto px-3 mb-4">
   <form method="get" class="flex items-center space-x-2">
-    <label for="date" class="text-sm text-gray-700">Фильтр по дате:</label>
+    <label for="date" class="text-sm text-gray-700">{% trans "Date filter:" %}</label>
     <input
       type="date"
       id="date"
@@ -22,10 +23,10 @@ TODO #6:30min Show list of projects for user
       type="submit"
       class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition cursor-pointer"
     >
-      Применить
+      {% trans "Apply" %}
     </button>
     {% if request.GET.date %}
-    <a href="?" class="text-sm text-gray-500 underline hover:text-gray-700">Сбросить</a>
+    <a href="?" class="text-sm text-gray-500 underline hover:text-gray-700">{% trans "Reset" %}</a>
     {% endif %}
   </form>
 </div>

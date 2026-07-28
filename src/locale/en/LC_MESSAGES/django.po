@@ -1,0 +1,116 @@
+# Test Radar English translations.
+# Copyright (C) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# This file is distributed under the MIT license.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: test-radar 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-28 06:13+0000\n"
+"PO-Revision-Date: 2026-07-28 09:12+0300\n"
+"Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Confirm password"
+msgstr "Confirm password"
+
+msgid "A user with this username already exists."
+msgstr "A user with this username already exists."
+
+msgid "Passwords do not match."
+msgstr "Passwords do not match."
+
+msgid "Is staff"
+msgstr "Is staff"
+
+msgid "User"
+msgstr "User"
+
+msgid "Users"
+msgstr "Users"
+
+msgid "Tests"
+msgstr "Tests"
+
+msgid "Log out"
+msgstr "Log out"
+
+msgid "Log in"
+msgstr "Log in"
+
+msgid "Register"
+msgstr "Register"
+
+msgid "Date filter:"
+msgstr "Date filter:"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "No account?"
+msgstr "No account?"
+
+msgid "Sign up"
+msgstr "Sign up"
+
+msgid "Already have an account?"
+msgstr "Already have an account?"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "Started:"
+msgstr "Started:"
+
+msgid "Status:"
+msgstr "Status:"
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Failed"
+msgstr "Failed"
+
+msgid "Execution logs"
+msgstr "Execution logs"
+
+msgid "Indentifier"
+msgstr "Indentifier"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "Timestamp"
+msgstr "Timestamp"
+
+msgid "Logs"
+msgstr "Logs"
+
+msgid "Test record"
+msgstr "Test record"
+
+msgid "Test records"
+msgstr "Test records"
+
+msgid "Russian"
+msgstr "Russian"
+
+msgid "English"
+msgstr "English"

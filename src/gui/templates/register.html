@@ -3,14 +3,15 @@ SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov
 SPDX-License-Identifier: MIT
 -->
 {% extends 'base.html' %}
-{% block title %}Регистрация — Test radar{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Register" %} — Test radar{% endblock %}
 {% block content %}
 <!--
 TODO #6:30min Save and validate email
 -->
 <div class="max-w-md mx-auto px-3">
   <div class="bg-white rounded shadow p-6 space-y-4">
-    <h1 class="text-xl font-semibold text-gray-800">Регистрация</h1>
+    <h1 class="text-xl font-semibold text-gray-800">{% trans "Register" %}</h1>
 
     {% if form.non_field_errors %}
     <div class="text-red-600 text-sm">
@@ -23,7 +24,7 @@ TODO #6:30min Save and validate email
     <form method="post" class="space-y-4">
       {% csrf_token %}
       <div>
-        <label for="id_username" class="block text-sm text-gray-700 mb-1">Имя пользователя</label>
+        <label for="id_username" class="block text-sm text-gray-700 mb-1">{% trans "Username" %}</label>
         <input
           type="text"
           name="username"
@@ -40,7 +41,7 @@ TODO #6:30min Save and validate email
       </div>
 
       <div>
-        <label for="id_password1" class="block text-sm text-gray-700 mb-1">Пароль</label>
+        <label for="id_password1" class="block text-sm text-gray-700 mb-1">{% trans "Password" %}</label>
         <input
           type="password"
           name="password1"
@@ -54,7 +55,7 @@ TODO #6:30min Save and validate email
       </div>
 
       <div>
-        <label for="id_password2" class="block text-sm text-gray-700 mb-1">Подтверждение пароля</label>
+        <label for="id_password2" class="block text-sm text-gray-700 mb-1">{% trans "Confirm password" %}</label>
         <input
           type="password"
           name="password2"
@@ -71,13 +72,13 @@ TODO #6:30min Save and validate email
         type="submit"
         class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition cursor-pointer"
       >
-        Зарегистрироваться
+        {% trans "Sign up" %}
       </button>
     </form>
 
     <p class="text-sm text-gray-600 text-center">
-      Уже есть аккаунт?
-      <a href="{% url 'login' %}" class="text-green-600 hover:text-green-700 underline">Войти</a>
+      {% trans "Already have an account?" %}
+      <a href="{% url 'login' %}" class="text-green-600 hover:text-green-700 underline">{% trans "Log in" %}</a>
     </p>
   </div>
 </div>

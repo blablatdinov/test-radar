@@ -8,7 +8,6 @@ from django.urls import reverse
 from auth.models import User
 
 
-# TODO #6:30min Use i18n for texts
 @pytest.mark.django_db
 def test_login_page(client: Client) -> None:
     response = client.get(reverse('login'))
