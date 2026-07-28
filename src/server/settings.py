@@ -161,3 +161,34 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'api.authentication': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'api.views': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'records.token': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
