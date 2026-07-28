@@ -17,13 +17,15 @@ class CreateTestRecordView(CreateAPIView):
 
     def perform_create(self, serializer: BaseSerializer) -> None:
         agent = None
+        project = None
         if isinstance(self.request.auth, ApiToken):
             agent = self.request.auth.agent
+            project = agent.project
             logger.info(
                 'Creating test record for agent %r (project=%r)',
                 agent.name,
-                agent.project.name,
+                project.name,
             )
         else:
             logger.debug('Creating test record via session auth (user=%r)', self.request.user.username)
-        serializer.save(agent=agent)
+        serializer.save(agent=agent, project=project)

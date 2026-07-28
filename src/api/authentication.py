@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaetdinov <a.ilaletdinov@yandex.ru>
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
 import datetime
@@ -12,6 +12,7 @@ from records.srv.token import verify_token
 
 _TOKEN_PREFIX = 'Token '
 _INVALID_TOKEN_MSG = 'Invalid agent token.'
+_REMOTE_ADDR_KEY = 'REMOTE_ADDR'
 
 logger = logging.getLogger('api.authentication')
 
@@ -26,16 +27,14 @@ class AgentTokenAuthentication(BaseAuthentication):
         if not header.startswith(_TOKEN_PREFIX):
             return None
         raw_token = header[len(_TOKEN_PREFIX):].strip()
+        client_ip = request.META.get(_REMOTE_ADDR_KEY)
         if not raw_token:
-            logger.warning('Empty token in Authorization header from %s', request.META.get('REMOTE_ADDR'))
+            logger.warning('Empty token in Authorization header from %s', client_ip)
             return None
-        logger.debug('Verifying agent token from %s', request.META.get('REMOTE_ADDR'))
+        logger.debug('Verifying agent token from %s', client_ip)
         api_token = verify_token(raw_token)
         if api_token is None:
-            logger.warning(
-                'Invalid agent token rejected from %s',
-                request.META.get('REMOTE_ADDR'),
-            )
+            logger.warning('Invalid agent token rejected from %s', client_ip)
             raise AuthenticationFailed(_INVALID_TOKEN_MSG)
         logger.info(
             'Agent %r authenticated via token %s',
@@ -43,7 +42,7 @@ class AgentTokenAuthentication(BaseAuthentication):
             api_token.token_mask,
         )
         api_token.last_used_at = datetime.datetime.now(tz=datetime.UTC)
-        api_token.last_used_ip = request.META.get('REMOTE_ADDR')
+        api_token.last_used_ip = client_ip
         api_token.save(update_fields=['last_used_at', 'last_used_ip'])
         return (api_token.agent.owner, api_token)
 

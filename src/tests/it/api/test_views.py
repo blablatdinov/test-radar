@@ -108,6 +108,7 @@ def test_agent_token_auth_creates_record(
     assert response.status_code == 201, response.content
     record = TestRecord.objects.get(label='test_file.py::test_via_agent')
     assert record.agent == agent
+    assert record.project == agent.project
 
 
 @pytest.mark.django_db

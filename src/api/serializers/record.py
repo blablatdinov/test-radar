@@ -10,3 +10,4 @@ class TestRecordSerializer(ModelSerializer):
     class Meta:
         model = TestRecord
         fields = '__all__'
+        read_only_fields = ('project', 'agent')
