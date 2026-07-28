@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 12:19+0300\n"
+"POT-Creation-Date: 2026-07-28 12:20+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -16,286 +16,205 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/auth/forms.py:17 src/auth/models.py:26 src/gui/templates/login.html:24
-#: src/gui/templates/register.html:27
 msgid "Username"
 msgstr "Username"
 
-#: src/auth/forms.py:21 src/gui/templates/login.html:40
-#: src/gui/templates/register.html:44
 msgid "Password"
 msgstr "Password"
 
-#: src/auth/forms.py:25 src/gui/templates/register.html:58
 msgid "Confirm password"
 msgstr "Confirm password"
 
-#: src/auth/forms.py:32
 msgid "A user with this username already exists."
 msgstr "A user with this username already exists."
 
-#: src/auth/forms.py:42
 msgid "Passwords do not match."
 msgstr "Passwords do not match."
 
-#: src/auth/models.py:31
 msgid "Is staff"
 msgstr "Is staff"
 
-#: src/auth/models.py:40
 msgid "User"
 msgstr "User"
 
-#: src/auth/models.py:41
 msgid "Users"
 msgstr "Users"
 
-#: src/gui/templates/base.html:17
 msgid "Tests"
 msgstr "Tests"
 
-#: src/gui/templates/base.html:34
 msgid "Log out"
 msgstr "Log out"
 
-#: src/gui/templates/base.html:38 src/gui/templates/login.html:57
-#: src/gui/templates/register.html:81
 msgid "Log in"
 msgstr "Log in"
 
-#: src/gui/templates/base.html:44 src/gui/templates/register.html:7
-#: src/gui/templates/register.html:14
 msgid "Register"
 msgstr "Register"
 
-#: src/gui/templates/index.html:11 src/records/models.py:38
 msgid "Projects"
 msgstr "Projects"
 
-#: src/gui/templates/index.html:16 src/gui/templates/project_create.html:7
-#: src/gui/templates/project_create.html:11
 msgid "Create project"
 msgstr "Create project"
 
-#: src/gui/templates/index.html:28
 msgid "Created:"
 msgstr "Created:"
 
-#: src/gui/templates/index.html:34
 msgid "No projects yet."
 msgstr "No projects yet."
 
-#: src/gui/templates/login.html:7 src/gui/templates/login.html:11
 msgid "Login"
 msgstr "Login"
 
-#: src/gui/templates/login.html:63
 msgid "No account?"
 msgstr "No account?"
 
-#: src/gui/templates/login.html:64 src/gui/templates/register.html:75
 msgid "Sign up"
 msgstr "Sign up"
 
-#: src/gui/templates/project.html:11
 msgid "Back to projects"
 msgstr "Back to projects"
 
-#: src/gui/templates/project.html:15
 msgid "Date filter:"
 msgstr "Date filter:"
 
-#: src/gui/templates/project.html:27
 msgid "Apply"
 msgstr "Apply"
 
-#: src/gui/templates/project.html:30
 msgid "Reset"
 msgstr "Reset"
 
-#: src/gui/templates/project.html:39
 #, python-format
-msgid ""
-"Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
-msgstr ""
-"Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgstr "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
 
-#: src/gui/templates/project.html:48 src/records/models.py:67
 msgid "Agents"
 msgstr "Agents"
 
-#: src/gui/templates/project.html:53 src/gui/templates/project.html:90
-#: src/gui/templates/project_create.html:16 src/records/models.py:27
-#: src/records/models.py:49
 msgid "Name"
 msgstr "Name"
 
-#: src/gui/templates/project.html:67 src/gui/templates/project.html:91
-#: src/records/models.py:50
 msgid "Agent type"
 msgstr "Agent type"
 
-#: src/gui/templates/project.html:73 src/records/models.py:46
 msgid "CI"
 msgstr "CI"
 
-#: src/gui/templates/project.html:74 src/records/models.py:47
 msgid "Local"
 msgstr "Local"
 
-#: src/gui/templates/project.html:81
 msgid "Create agent"
 msgstr "Create agent"
 
-#: src/gui/templates/project.html:92
 #, fuzzy
 #| msgid "Token hash"
 msgid "Token"
 msgstr "Token hash"
 
-#: src/gui/templates/project.html:93 src/records/models.py:34
-#: src/records/models.py:63 src/records/models.py:86
 msgid "Created at"
 msgstr "Created at"
 
-#: src/gui/templates/project.html:94
 msgid "Actions"
 msgstr "Actions"
 
-#: src/gui/templates/project.html:112
-msgid ""
-"Are you sure you want to regenerate the token? The old token will stop "
-"working immediately."
-msgstr ""
-"Are you sure you want to regenerate the token? The old token will stop "
-"working immediately."
+msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
+msgstr "Are you sure you want to regenerate the token? The old token will stop working immediately."
 
-#: src/gui/templates/project.html:119
 msgid "Regenerate token"
 msgstr "Regenerate token"
 
-#: src/gui/templates/project.html:130
 msgid "No agents yet."
 msgstr "No agents yet."
 
-#: src/gui/templates/project.html:140
 #, fuzzy
 #| msgid "Tests"
 msgid "Test"
 msgstr "Tests"
 
-#: src/gui/templates/project_create.html:36
 msgid "Create"
 msgstr "Create"
 
-#: src/gui/templates/register.html:80
 msgid "Already have an account?"
 msgstr "Already have an account?"
 
-#: src/gui/templates/test_info.html:14
 msgid "Back"
 msgstr "Back"
 
-#: src/gui/templates/test_info.html:21
 msgid "Started:"
 msgstr "Started:"
 
-#: src/gui/templates/test_info.html:23
 msgid "Status:"
 msgstr "Status:"
 
-#: src/gui/templates/test_info.html:26 src/records/models.py:113
 msgid "Success"
 msgstr "Success"
 
-#: src/gui/templates/test_info.html:29
 msgid "Failed"
 msgstr "Failed"
 
-#: src/gui/templates/test_info.html:35
 msgid "Execution logs"
 msgstr "Execution logs"
 
-#: src/records/models.py:32 src/records/models.py:61
 msgid "Owner"
 msgstr "Owner"
 
-#: src/records/models.py:37 src/records/models.py:55 src/records/models.py:110
 msgid "Project"
 msgstr "Project"
 
-#: src/records/models.py:66 src/records/models.py:78 src/records/models.py:124
 msgid "Agent"
 msgstr "Agent"
 
-#: src/records/models.py:80
 msgid "Token hash"
 msgstr "Token hash"
 
-#: src/records/models.py:81
 msgid "Token mask"
 msgstr "Token mask"
 
-#: src/records/models.py:82
 msgid "Scopes"
 msgstr "Scopes"
 
-#: src/records/models.py:83
 msgid "Expires at"
 msgstr "Expires at"
 
-#: src/records/models.py:84
 msgid "Last used at"
 msgstr "Last used at"
 
-#: src/records/models.py:85
 msgid "Last used IP"
 msgstr "Last used IP"
 
-#: src/records/models.py:89
 msgid "API token"
 msgstr "API token"
 
-#: src/records/models.py:90
 msgid "API tokens"
 msgstr "API tokens"
 
-#: src/records/models.py:100
 msgid "Indentifier"
 msgstr "Indentifier"
 
-#: src/records/models.py:112
 msgid "Label"
 msgstr "Label"
 
-#: src/records/models.py:114
 msgid "Timestamp"
 msgstr "Timestamp"
 
-#: src/records/models.py:115
 msgid "Logs"
 msgstr "Logs"
 
-#: src/records/models.py:116
 msgid "Git branch"
 msgstr "Git branch"
 
-#: src/records/models.py:117
 msgid "Git commit"
 msgstr "Git commit"
 
-#: src/records/models.py:128
 msgid "Test record"
 msgstr "Test record"
 
-#: src/records/models.py:129
 msgid "Test records"
 msgstr "Test records"
 
-#: src/server/settings.py:126
 msgid "Russian"
 msgstr "Russian"
 
-#: src/server/settings.py:127
 msgid "English"
 msgstr "English"
