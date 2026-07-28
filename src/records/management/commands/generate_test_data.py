@@ -1,12 +1,14 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaetdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
+
+# flake8: noqa: WPS
 
 import argparse
 import base64
 import datetime
 import secrets
 import zlib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from django.core.management.base import BaseCommand
@@ -61,9 +63,8 @@ _TEST_LABELS = (
     'test_services.py::test_record_by_id',
 )
 
-_BRANCHES = (
-    'main',
-    'develop',
+_MAIN_BRANCHES = ('main', 'develop')
+_FEATURE_BRANCHES = (
     'feature/auth-improvements',
     'feature/api-v2',
     'fix/payment-bug',
@@ -74,44 +75,48 @@ _BRANCHES = (
 
 _HEX_CHARS = '0123456789abcdef'
 
-_FAIL_LOGS = '\n'.join((
-    '============================= test session starts =============================',
-    'platform linux -- Python 3.12.0',
-    'rootdir: /home/runner/work/project',
-    'collected 20 items',
-    '',
-    'tests/test_file.py F                                                   [100%]',
-    '',
-    '=================================== FAILURES ===================================',
-    '________________________________ test_function ________________________________',
-    '    def test_function():',
-    '>       assert result == expected',
-    'E       assert 42 == 43',
-    '',
-    'tests/test_file.py:15: AssertionError',
-    '=========================== short test summary info ============================',
-    'FAILED tests/test_file.py::test_function - assert 42 == 43',
-    '============================== 1 failed in 12.30s ==============================',
-))
+_FAIL_LOGS = (
+    '============================= test session starts =============================\n'
+    'platform linux -- Python 3.12.0\n'
+    'rootdir: /home/runner/work/project\n'
+    'collected 20 items\n'
+    '\n'
+    'tests/test_file.py F                                                   [100%]\n'
+    '\n'
+    '=================================== FAILURES ===================================\n'
+    '________________________________ test_function ________________________________\n'
+    '    def test_function():\n'
+    '>       assert result == expected\n'
+    'E       assert 42 == 43\n'
+    '\n'
+    'tests/test_file.py:15: AssertionError\n'
+    '=========================== short test summary info ============================\n'
+    'FAILED tests/test_file.py::test_function - assert 42 == 43\n'
+    '============================== 1 failed in 12.30s =============================='
+)
 
-_SUCCESS_LOGS = '\n'.join((
-    '============================= test session starts =============================',
-    'platform linux -- Python 3.12.0',
-    'rootdir: /home/runner/work/project',
-    'collected 20 items',
-    '',
-    'tests/test_file.py .                                                   [100%]',
-    '',
-    '============================== 1 passed in 8.12s ===============================',
-))
+_SUCCESS_LOGS = (
+    '============================= test session starts =============================\n'
+    'platform linux -- Python 3.12.0\n'
+    'rootdir: /home/runner/work/project\n'
+    'collected 20 items\n'
+    '\n'
+    'tests/test_file.py .                                                   [100%]\n'
+    '\n'
+    '============================== 1 passed in 8.12s ==============================='
+)
 
 _DAYS_BACK = 30
 _COMMIT_LENGTH = 40
 _HOURS_PER_DAY = 23
-_SUCCESS_RATE_PERCENT = 80
+_FEATURE_BRANCH_PROBABILITY_PERCENT = 20
+_FLAKY_PASS_PROBABILITY_PERCENT = 50
+_TEST_ABSENT_PROBABILITY_PERCENT = 10
+_STABLE_FAIL_COUNT = 3
+_FLAKY_COUNT = 3
 _DEFAULT_PROJECTS = 5
 _DEFAULT_AGENTS_PER_PROJECT = 3
-_DEFAULT_RECORDS_PER_PROJECT = 75
+_DEFAULT_RUNS_PER_PROJECT = 30
 _USERNAME = 'hp'
 
 
@@ -130,20 +135,112 @@ def _randint(low: int, high: int) -> int:
 def _build_names(base: tuple[str, ...], count: int, fallback_prefix: str) -> list[str]:
     names = list(base[:count])
     if count > len(base):
-        names.extend(f'{fallback_prefix} #{idx}' for idx in range(len(base), count))
+        start = len(base)
+        names.extend(f'{fallback_prefix} #{idx}' for idx in range(start, count))
     return names
+
+
+def _pick_branch() -> str:
+    if secrets.randbelow(100) < _FEATURE_BRANCH_PROBABILITY_PERCENT:
+        return secrets.choice(_FEATURE_BRANCHES)
+    return secrets.choice(_MAIN_BRANCHES)
+
+
+def _pop_random(items: list[str], count: int) -> list[str]:
+    return [items.pop(secrets.randbelow(len(items))) for _ in range(count)]
+
+
+@dataclass
+class _TestSuite:
+    stable_pass: list[str] = field(default_factory=list)
+    stable_fail: list[str] = field(default_factory=list)
+    flaky: list[str] = field(default_factory=list)
+
+    @classmethod
+    def from_labels(cls) -> '_TestSuite':
+        labels = list(_TEST_LABELS)
+        stable_fail = _pop_random(labels, _STABLE_FAIL_COUNT)
+        flaky = _pop_random(labels, _FLAKY_COUNT)
+        return cls(stable_pass=labels, stable_fail=stable_fail, flaky=flaky)
+
+    def run_labels(self) -> list[str]:
+        all_labels = self.stable_pass + self.stable_fail + self.flaky
+        return [label for label in all_labels if secrets.randbelow(100) >= _TEST_ABSENT_PROBABILITY_PERCENT]
+
+    def is_success(self, label: str) -> bool:
+        if label in self.stable_pass:
+            return True
+        if label in self.stable_fail:
+            return False
+        return secrets.randbelow(100) < _FLAKY_PASS_PROBABILITY_PERCENT
 
 
 @dataclass
 class _GenStats:
     projects: int = 0
     agents: int = 0
-    tokens: int = 0
     records: int = 0
 
     @property
     def total(self) -> int:
-        return self.projects + self.agents + self.tokens + self.records
+        return self.projects + self.agents + self.records
+
+
+@dataclass
+class _RunContext:
+    timestamp: datetime.datetime
+    branch: str
+    commit: str
+    agent: Agent | None
+
+
+def _make_run_context(agents: list[Agent], now: datetime.datetime) -> _RunContext:
+    delta = datetime.timedelta(
+        days=_randint(0, _DAYS_BACK),
+        hours=_randint(0, _HOURS_PER_DAY),
+    )
+    return _RunContext(
+        timestamp=now - delta,
+        branch=_pick_branch(),
+        commit=_random_commit(),
+        agent=secrets.choice(agents) if agents else None,
+    )
+
+
+def _make_single_run(
+    project: Project,
+    agents: list[Agent],
+    suite: _TestSuite,
+    now: datetime.datetime,
+) -> int:
+    ctx = _make_run_context(agents, now)
+    records = 0
+    for label in suite.run_labels():
+        success = suite.is_success(label)
+        logs = _SUCCESS_LOGS if success else _FAIL_LOGS
+        baker.make(
+            TestRecord,
+            project=project,
+            label=label,
+            success=success,
+            timestamp=ctx.timestamp,
+            logs=_compress_logs(logs),
+            branch=ctx.branch,
+            commit=ctx.commit,
+            agent=ctx.agent,
+        )
+        records += 1
+    return records
+
+
+def _create_test_runs(
+    project: Project,
+    agents: list[Agent],
+    run_count: int,
+    suite: _TestSuite,
+) -> int:
+    now = datetime.datetime.now(tz=datetime.UTC)
+    return sum(_make_single_run(project, agents, suite, now) for _ in range(run_count))
 
 
 class Command(BaseCommand):
@@ -158,10 +255,10 @@ class Command(BaseCommand):
             help='Number of agents per project',
         )
         parser.add_argument(
-            '--records',
+            '--runs',
             type=int,
-            default=_DEFAULT_RECORDS_PER_PROJECT,
-            help='Number of test records per project',
+            default=_DEFAULT_RUNS_PER_PROJECT,
+            help='Number of test runs per project',
         )
 
     def handle(self, *_args: Any, **options: Any) -> None:
@@ -170,7 +267,7 @@ class Command(BaseCommand):
             user,
             options['projects'],
             options['agents'],
-            options['records'],
+            options['runs'],
         )
         self._print_stats(stats)
 
@@ -179,7 +276,7 @@ class Command(BaseCommand):
         user: User,
         project_count: int,
         agents_per_project: int,
-        records_per_project: int,
+        runs_per_project: int,
     ) -> _GenStats:
         stats = _GenStats()
         for name in _build_names(_PROJECT_NAMES, project_count, 'Project'):
@@ -187,7 +284,8 @@ class Command(BaseCommand):
             stats.projects += 1
             agents = self._create_agents(project, user, agents_per_project)
             stats.agents += len(agents)
-            stats.records += self._create_records(project, agents, records_per_project)
+            suite = _TestSuite.from_labels()
+            stats.records += _create_test_runs(project, agents, runs_per_project, suite)
         return stats
 
     def _create_agents(self, project: Project, user: User, count: int) -> list[Agent]:
@@ -205,35 +303,14 @@ class Command(BaseCommand):
             create_token_for_agent(agent)
         return agents
 
-    @staticmethod
-    def _create_records(project: Project, agents: list[Agent], count: int) -> int:
-        for _ in range(count):
-            success = secrets.randbelow(100) < _SUCCESS_RATE_PERCENT
-            timestamp = datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(
-                days=_randint(0, _DAYS_BACK),
-                hours=_randint(0, _HOURS_PER_DAY),
-            )
-            logs = _SUCCESS_LOGS if success else _FAIL_LOGS
-            baker.make(
-                TestRecord,
-                project=project,
-                label=secrets.choice(_TEST_LABELS),
-                success=success,
-                timestamp=timestamp,
-                logs=_compress_logs(logs),
-                branch=secrets.choice(_BRANCHES),
-                commit=_random_commit(),
-                agent=secrets.choice(agents) if agents else None,
-            )
-        return count
-
     def _print_stats(self, stats: _GenStats) -> None:
+        total = stats.total + stats.agents
         lines = (
             'Test data generated:',
             f'  Projects: {stats.projects}',
             f'  Agents:   {stats.agents}',
-            f'  Tokens:   {stats.tokens + stats.agents}',
+            f'  Tokens:   {stats.agents}',
             f'  Records:  {stats.records}',
-            f'  Total:    {stats.total + stats.agents} objects',
+            f'  Total:    {total} objects',
         )
         self.stdout.write(self.style.SUCCESS('\n'.join(lines)))
