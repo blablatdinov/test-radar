@@ -28,13 +28,35 @@ SPDX-License-Identifier: MIT
       value="{{ request.GET.datetime_to }}"
       class="border border-gray-300 rounded px-2 py-1 text-sm"
     />
+    <label for="agent_filter" class="text-sm text-gray-700">{% trans "Agent:" %}</label>
+    <select
+      id="agent_filter"
+      name="agent"
+      class="border border-gray-300 rounded px-2 py-1 text-sm"
+    >
+      <option value="">{% trans "All agents" %}</option>
+      {% for agent in agents %}
+      <option value="{{ agent.pk }}" {% if request.GET.agent == agent.pk|stringformat:"s" %}selected{% endif %}>
+        {{ agent.name }}
+      </option>
+      {% endfor %}
+    </select>
+    <label for="branch_filter" class="text-sm text-gray-700">{% trans "Branch:" %}</label>
+    <input
+      type="text"
+      id="branch_filter"
+      name="branch"
+      value="{{ request.GET.branch }}"
+      placeholder="{% trans "e.g. main" %}"
+      class="border border-gray-300 rounded px-2 py-1 text-sm"
+    />
     <button
       type="submit"
       class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition cursor-pointer"
     >
       {% trans "Apply" %}
     </button>
-    {% if request.GET.datetime_from or request.GET.datetime_to %}
+    {% if request.GET.datetime_from or request.GET.datetime_to or request.GET.agent or request.GET.branch %}
     <a href="?" class="text-sm text-gray-500 underline hover:text-gray-700">{% trans "Reset" %}</a>
     {% endif %}
   </form>

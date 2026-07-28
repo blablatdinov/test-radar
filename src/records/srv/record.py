@@ -47,15 +47,26 @@ def _build_matrix(records: QuerySet[TestRecord]) -> dict[str, Any]:
     }
 
 
-def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
+def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
     filters: dict[str, Any] = {'project_id': project_id}
-    datetime_from = request.GET.get('datetime_from')
-    datetime_to = request.GET.get('datetime_to')
-    if datetime_from:
-        filters['timestamp__gte'] = datetime_from
-    if datetime_to:
-        filters['timestamp__lte'] = datetime_to
-    records = TestRecord.objects.filter(**filters).order_by('timestamp')
+    get = request.GET
+    if get.get('datetime_from'):
+        filters['timestamp__gte'] = get['datetime_from']
+    if get.get('datetime_to'):
+        filters['timestamp__lte'] = get['datetime_to']
+    if get.get('agent'):
+        filters['agent_id'] = get['agent']
+    if get.get('branch'):
+        filters['branch__icontains'] = get['branch']
+    return filters
+
+
+def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
+    records = (
+        TestRecord.objects
+        .filter(**_build_filters(project_id, request))
+        .order_by('timestamp')
+    )
     return {'records': _build_matrix(records)}
 
 
