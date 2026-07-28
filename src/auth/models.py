@@ -1,24 +1,20 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import TypeVar
-
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-T = TypeVar('T', bound=AbstractBaseUser)
 
-
-class UserManager[T](BaseUserManager):
-    def create_user(self, username: str, password: str) -> AbstractBaseUser:
+class UserManager(BaseUserManager['User']):
+    def create_user(self, username: str, password: str) -> 'User':
         user = self.model(username=username, is_superuser=False)
         user.password = make_password(password)
         user.save()
         return user
 
-    def create_superuser(self, username: str, password: str) -> AbstractBaseUser:
+    def create_superuser(self, username: str, password: str) -> 'User':
         user = self.model(username=username, is_staff=True, is_superuser=True)
         user.password = make_password(password)
         user.save()

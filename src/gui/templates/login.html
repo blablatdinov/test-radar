@@ -1,0 +1,66 @@
+<!--
+SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+SPDX-License-Identifier: MIT
+-->
+{% extends 'base.html' %}
+{% block title %}Вход — Test radar{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-3">
+  <div class="bg-white rounded shadow p-6 space-y-4">
+    <h1 class="text-xl font-semibold text-gray-800">Вход</h1>
+
+    {% if form.non_field_errors %}
+    <div class="text-red-600 text-sm">
+      {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label for="id_username" class="block text-sm text-gray-700 mb-1">Имя пользователя</label>
+        <input
+          type="text"
+          name="username"
+          id="id_username"
+          value="{{ form.username.value|default:'' }}"
+          autofocus
+          required
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+        {% if form.username.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.username.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_password" class="block text-sm text-gray-700 mb-1">Пароль</label>
+        <input
+          type="password"
+          name="password"
+          id="id_password"
+          required
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+        {% if form.password.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.password.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition cursor-pointer"
+      >
+        Войти
+      </button>
+    </form>
+
+    <p class="text-sm text-gray-600 text-center">
+      Нет аккаунта?
+      <a href="{% url 'register' %}" class="text-green-600 hover:text-green-700 underline">Зарегистрироваться</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
