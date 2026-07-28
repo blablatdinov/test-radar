@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 11:42+0300\n"
+"POT-Creation-Date: 2026-07-28 12:20+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -126,6 +126,11 @@ msgstr "Regenerate token"
 
 msgid "No agents yet."
 msgstr "No agents yet."
+
+#, fuzzy
+#| msgid "Tests"
+msgid "Test"
+msgstr "Tests"
 
 msgid "Create"
 msgstr "Create"
