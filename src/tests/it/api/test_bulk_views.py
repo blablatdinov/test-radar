@@ -8,6 +8,7 @@ import zlib
 
 import pytest
 from django.test import Client
+from django.utils import timezone
 
 from records.models import Agent, ApiToken, TestRecord, TestSession
 from records.srv import token as token_srv
@@ -286,8 +287,6 @@ def test_bulk_create_creates_session(client: Client, agent: Agent, agent_token: 
 
 @pytest.mark.django_db
 def test_bulk_create_reuses_existing_session(client: Client, agent: Agent, agent_token: str) -> None:
-    from django.utils import timezone
-
     session_id = uuid.uuid4()
     TestSession.objects.create(id=session_id, project=agent.project, started_at=timezone.now())
 
