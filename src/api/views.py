@@ -23,7 +23,7 @@ class BulkCreateTestRecordView(APIView):
     authentication_classes: list = []
     permission_classes: list = []
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: Request) -> Response:  # noqa: WPS210
         agent = self._authenticate(request)
         if agent is None:
             return Response(
@@ -39,9 +39,8 @@ class BulkCreateTestRecordView(APIView):
             )
 
         validated_data = serializer.validated_data
-        session_id = validated_data['session_id']
         session, _ = TestSession.objects.get_or_create(
-            id=session_id,
+            id=validated_data['session_id'],
             defaults={'project': agent.project, 'started_at': timezone.now()},
         )
         records_data = validated_data['records']
