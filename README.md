@@ -12,7 +12,7 @@ A Django web application for monitoring and storing test results. It allows crea
 - **Projects** — each user can create their own projects and see only their own.
 - **Agents** — CI or local agents with API tokens for automatic test result submission.
 - **Test records** — store the result (success/failure), logs (zlib-compressed), git branch and commit.
-- **REST API** — `POST /api/v1/test_record/create/` endpoint for submitting results from agents.
+- **REST API** — `POST /api/v1/test_record/bulk_create/` endpoint for submitting results from agents.
 - **Web interface** — project pages, detailed test info, creation forms. Tailwind CSS v4, green theme.
 - **i18n** — Russian and English languages.
 - **Authentication** — custom user model, `AuthRequiredMiddleware` protects all URLs except `/login/`, `/logout/`, `/register/`, `/admin/`.
@@ -87,13 +87,13 @@ src/
 
 ## API
 
-### Create test record
+### Create test records
 
 ```
-POST /api/v1/test_record/create/
+POST /api/v1/test_record/bulk_create/
 ```
 
-Fields: `label`, `success`, `timestamp`, `logs`, `branch`, `commit`.
+Fields: `label`, `success`, `timestamp`, `logs`, `branch`, `commit`, `session_id`.
 
 ## License
 
