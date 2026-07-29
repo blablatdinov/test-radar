@@ -91,10 +91,10 @@ msgid "All agents"
 msgstr "Агенты"
 
 msgid "Branch:"
-msgstr ""
+msgstr "Branch:"
 
 msgid "e.g. main"
-msgstr ""
+msgstr "н-р main"
 
 msgid "Session:"
 msgstr "Сессия:"

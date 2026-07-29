@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from rest_framework.serializers import BooleanField, CharField, DateTimeField, ListField, Serializer
+from rest_framework.serializers import BooleanField, CharField, DateTimeField, ListField, Serializer, UUIDField
 
 _MAX_RECORDS = 500
 _LABEL_MAX_LENGTH = 128
@@ -19,6 +19,7 @@ class BulkRecordSerializer(Serializer):
 
 
 class BulkCreateSerializer(Serializer):
+    session_id = UUIDField()
     records = ListField(
         child=BulkRecordSerializer(),
         min_length=1,

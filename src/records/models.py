@@ -95,7 +95,7 @@ class ApiToken(models.Model):
 
 
 class TestSession(models.Model):
-    id = models.UUIDField(_('Identifier'), primary_key=True, default=uuid.uuid4)
+    id = models.UUIDField(_('Identifier'), primary_key=True)
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,

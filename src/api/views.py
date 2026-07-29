@@ -5,12 +5,13 @@ import logging
 from http import HTTPStatus
 
 from django.db import transaction
+from django.utils import timezone
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers.bulk_record import BulkCreateSerializer
-from records.models import Agent, TestRecord
+from records.models import Agent, TestRecord, TestSession
 from records.srv.token import verify_token
 
 _TOKEN_KEYWORD = 'Token'
@@ -37,7 +38,13 @@ class BulkCreateTestRecordView(APIView):
                 status=HTTPStatus.BAD_REQUEST.value,
             )
 
-        validated = serializer.validated_data['records']
+        validated_data = serializer.validated_data
+        session_id = validated_data['session_id']
+        session, _ = TestSession.objects.get_or_create(
+            id=session_id,
+            defaults={'project': agent.project, 'started_at': timezone.now()},
+        )
+        records_data = validated_data['records']
         test_records = [
             TestRecord(
                 label=record_data['label'],
@@ -48,13 +55,14 @@ class BulkCreateTestRecordView(APIView):
                 commit=record_data['commit'],
                 agent=agent,
                 project=agent.project,
+                session=session,
             )
-            for record_data in validated
+            for record_data in records_data
         ]
         with transaction.atomic():
             TestRecord.objects.bulk_create(test_records)
 
-        return Response({'created': len(test_records)}, status=HTTPStatus.OK.value)
+        return Response({'created': len(test_records)}, status=HTTPStatus.CREATED.value)
 
     def _authenticate(self, request: Request) -> Agent | None:
         header = request.META.get('HTTP_AUTHORIZATION', '')

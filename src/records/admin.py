@@ -50,5 +50,5 @@ class TestRecordAdmin(admin.ModelAdmin):
 
 @admin.register(TestSession)
 class TestSessionAdmin(admin.ModelAdmin):
-    search_fields = [_STARTED_AT]
-    list_display = [_ID, _STARTED_AT]
+    search_fields = [_STARTED_AT, _PROJECT]
+    list_display = [_ID, _PROJECT, _STARTED_AT]

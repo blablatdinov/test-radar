@@ -83,19 +83,19 @@ msgid "To:"
 msgstr "To:"
 
 msgid "Agent:"
-msgstr ""
+msgstr "Agent:"
 
 msgid "All agents"
 msgstr "All agents"
 
 msgid "Branch:"
-msgstr ""
+msgstr "Branch:"
 
 msgid "e.g. main"
-msgstr ""
+msgstr "e.g. main"
 
 msgid "Session:"
-msgstr ""
+msgstr "Session:"
 
 msgid "All sessions"
 msgstr "All sessions"
