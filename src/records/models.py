@@ -3,7 +3,6 @@
 
 import base64
 import secrets
-import uuid
 import zlib
 
 from django.db import models
