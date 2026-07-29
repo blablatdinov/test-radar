@@ -1,0 +1,79 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-License-Identifier: MIT
+---
+version: 3
+
+tasks:
+
+  compose-setup:
+    cmds:
+      - docker compose build app
+      - docker compose pull postgres redis
+
+  compose-run:
+    cmds:
+      - docker compose up -d
+
+  compose-stop:
+    cmds:
+      - docker compose down
+
+  compose-bash:
+    cmds:
+      - docker compose run app bash
+
+  compose-tests:
+    cmds:
+      - docker compose run app task tests
+
+  compose-lint:
+    cmds:
+      - docker compose run app task lint
+
+  tests:
+    deps: [syntax-check,type-check]
+    cmds:
+      - uv run pytest src -m 'not integration' -vv
+
+  test:
+    deps: 
+      - syntax-check
+      - type-check
+    cmds:
+      - cd src
+      - uv run pytest {{.CLI_ARGS}}
+
+  shell:
+    cmds:
+      - uv run python src/manage.py shell_plus
+
+  migrate:
+    cmds:
+      - uv run python src/manage.py makemigrations
+      - uv run python src/manage.py migrate
+
+  fmt:
+    cmds:
+      - uv run ruff check src --fix --fix-only
+
+  lint:
+    cmds:
+      - uv run ruff check src --output-format=concise
+      - uv run flake8 src
+      - uv run mypy src
+
+  translates:
+    cmds:
+      - uv run django-admin makemessages -l ru -l en --no-location --no-wrap
+
+  syntax-check:
+    cmds:
+      - uv run ruff check src --select=F --ignore=F401,F841
+
+  type-check:
+    cmds:
+      - uv run mypy src
+
+  clean:
+    cmds:
+      - git clean -f -d -x -e .env
