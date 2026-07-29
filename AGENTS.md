@@ -27,5 +27,6 @@
 - When adding new user-facing strings: run `uv run django-admin makemessages -l ru -l en --no-location --no-wrap` (from `src/`) to regenerate `.po` files, then fill in translations in `src/locale/ru/LC_MESSAGES/django.po` and `src/locale/en/LC_MESSAGES/django.po`, then run `uv run django-admin compilemessages -l ru -l en` (from `src/`). Always use `makemessages` to generate `.po` entries — manual edits will be overwritten and cause CI failures
 - Forms: hand-rendered with Tailwind, no form libraries (no crispy-forms, etc.)
 - Form views use `FormView` with `form_valid` override; `owner`/user set from `request.user` in view, not in form
+- All imports (stdlib, third-party, local) must be at the top of the file — never inside functions
 - Templates extend `base.html`, Tailwind CSS v4 via CDN, green theme (`bg-green-500`), manual field rendering (label + input + errors)
 - `AuthRequiredMiddleware` protects all URLs except `/login/`, `/logout/`, `/register/`, `/admin/`, `/__debug__/`

@@ -50,6 +50,19 @@ SPDX-License-Identifier: MIT
       placeholder="{% trans "e.g. main" %}"
       class="border border-gray-300 rounded px-2 py-1 text-sm"
     />
+    <label for="session_filter" class="text-sm text-gray-700">{% trans "Session:" %}</label>
+    <select
+      id="session_filter"
+      name="session"
+      class="border border-gray-300 rounded px-2 py-1 text-sm"
+    >
+      <option value="">{% trans "All sessions" %}</option>
+      {% for session in sessions %}
+      <option value="{{ session.pk }}" {% if request.GET.session == session.pk|stringformat:"s" %}selected{% endif %}>
+        {{ session.pk }}
+      </option>
+      {% endfor %}
+    </select>
     <button
       type="submit"
       class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition cursor-pointer"

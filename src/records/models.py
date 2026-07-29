@@ -93,9 +93,28 @@ class ApiToken(models.Model):
         return f'{self.token_mask} ({self.agent})'
 
 
+class TestSession(models.Model):
+    id = models.UUIDField(_('Identifier'), primary_key=True)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='sessions',
+        null=True,
+        verbose_name=_('Project'),
+    )
+    started_at = models.DateTimeField(_('Started at'))
+
+    class Meta:
+        verbose_name = _('Test session')
+        verbose_name_plural = _('Test sessions')
+
+    def __str__(self) -> str:
+        return str(self.id)
+
+
 class TestRecord(models.Model):
     id = models.CharField(
-        _('Indentifier'),
+        _('Identifier'),
         primary_key=True,
         max_length=32,
         default=_hex_token,
@@ -120,6 +139,13 @@ class TestRecord(models.Model):
         null=True,
         blank=True,
         verbose_name=_('Agent'),
+    )
+    session = models.ForeignKey(
+        TestSession,
+        on_delete=models.CASCADE,
+        related_name='records',
+        null=True,
+        verbose_name=_('Test session'),
     )
 
     class Meta:

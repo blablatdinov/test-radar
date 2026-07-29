@@ -10,7 +10,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView, View
 
 from records.forms import AgentForm, ProjectForm
-from records.models import Agent, Project
+from records.models import Agent, Project, TestSession
 from records.srv import record, token
 
 _PK: Final = 'pk'
@@ -55,6 +55,7 @@ class ProjectView(TemplateView):
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['sessions'] = TestSession.objects.filter(project=project)
         context['agent_form'] = AgentForm()
         return context
 
@@ -73,6 +74,7 @@ class AgentCreateView(FormView):
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['sessions'] = TestSession.objects.filter(project=project)
         context['agent_form'] = kwargs.get('form') or AgentForm()
         return context
 
@@ -109,6 +111,7 @@ class AgentTokenRegenerateView(View):
         context = record.filtered_records(project.pk, request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
+        context['sessions'] = TestSession.objects.filter(project=project)
         context['agent_form'] = AgentForm()
         context['new_token'] = raw_token
         context['new_agent_name'] = agent.name

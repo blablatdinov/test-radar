@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 12:36+0300\n"
+"POT-Creation-Date: 2026-07-28 14:34+0000\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -82,21 +82,23 @@ msgstr "From:"
 msgid "To:"
 msgstr "To:"
 
-#, fuzzy
-#| msgid "Agent"
 msgid "Agent:"
-msgstr "Agent"
+msgstr "Agent:"
 
-#, fuzzy
-#| msgid "Agents"
 msgid "All agents"
-msgstr "Agents"
+msgstr "All agents"
 
 msgid "Branch:"
-msgstr ""
+msgstr "Branch:"
 
 msgid "e.g. main"
-msgstr ""
+msgstr "e.g. main"
+
+msgid "Session:"
+msgstr "Session:"
+
+msgid "All sessions"
+msgstr "All sessions"
 
 msgid "Apply"
 msgstr "Apply"
@@ -105,8 +107,10 @@ msgid "Reset"
 msgstr "Reset"
 
 #, python-format
-msgid "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
-msgstr "Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgid ""
+"Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
+msgstr ""
+"Token for agent \"%(agent_name)s\" — save it now, it won't be shown again:"
 
 msgid "Agents"
 msgstr "Agents"
@@ -126,10 +130,8 @@ msgstr "Local"
 msgid "Create agent"
 msgstr "Create agent"
 
-#, fuzzy
-#| msgid "Token hash"
 msgid "Token"
-msgstr "Token hash"
+msgstr "Token"
 
 msgid "Created at"
 msgstr "Created at"
@@ -137,8 +139,12 @@ msgstr "Created at"
 msgid "Actions"
 msgstr "Actions"
 
-msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
-msgstr "Are you sure you want to regenerate the token? The old token will stop working immediately."
+msgid ""
+"Are you sure you want to regenerate the token? The old token will stop "
+"working immediately."
+msgstr ""
+"Are you sure you want to regenerate the token? The old token will stop "
+"working immediately."
 
 msgid "Regenerate token"
 msgstr "Regenerate token"
@@ -146,10 +152,8 @@ msgstr "Regenerate token"
 msgid "No agents yet."
 msgstr "No agents yet."
 
-#, fuzzy
-#| msgid "Tests"
 msgid "Test"
-msgstr "Tests"
+msgstr "Test"
 
 msgid "Create"
 msgstr "Create"
@@ -208,8 +212,17 @@ msgstr "API token"
 msgid "API tokens"
 msgstr "API tokens"
 
-msgid "Indentifier"
-msgstr "Indentifier"
+msgid "Identifier"
+msgstr "Identifier"
+
+msgid "Started at"
+msgstr "Started at"
+
+msgid "Test session"
+msgstr "Test session"
+
+msgid "Test sessions"
+msgstr "Test sessions"
 
 msgid "Label"
 msgstr "Label"
