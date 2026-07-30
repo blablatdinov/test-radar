@@ -15,7 +15,10 @@ RecordMatrix = dict[str, dict[int, TestRecord]]
 
 def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
     return [
-        {'date': key.started_at.strftime('%d.%m.%y'), 'time': key.started_at.strftime('%H:%M')}
+        {
+            'date': key.started_at.strftime('%d.%m.%y'),
+            'time': key.started_at.strftime('%H:%M'),
+        }
         for key in col_index
     ]
 
@@ -31,6 +34,8 @@ def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
 
 
 def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix) -> None:
+    if not record.session:
+        return
     col_key = record.session
     if col_key not in col_index:
         col_index[col_key] = len(col_index)
@@ -67,11 +72,7 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
 
 
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
-    records = (
-        TestRecord.objects
-        .filter(**_build_filters(project_id, request))
-        .order_by('timestamp')
-    )
+    records = TestRecord.objects.filter(**_build_filters(project_id, request)).order_by('timestamp')
     return {'records': _build_matrix(records)}
 
 
