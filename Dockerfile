@@ -28,3 +28,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
 COPY --from=build /app/.venv /app/.venv
 COPY src /app
 RUN mkdir /app/db
+RUN python manage.py compilemessages
