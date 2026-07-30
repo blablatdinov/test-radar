@@ -13,8 +13,8 @@ RUN uv export --no-dev -o requirements.txt
 FROM base AS build
 COPY --from=uv-export /app/requirements.txt /tmp/requirements.txt
 RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
-    python -m venv /app/.venv && \
-    /app/.venv/bin/pip install -r /tmp/requirements.txt
+  python -m venv /app/.venv && \
+  /app/.venv/bin/pip install -r /tmp/requirements.txt
 
 FROM python:3.12-slim AS runtime
 ENV PYTHONUNBUFFERED=1
@@ -23,7 +23,8 @@ ENV PATH="/app/.venv/bin:$PATH"
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
-    rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/.venv /app/.venv
 COPY src /app
+RUN mkdir /app/db
