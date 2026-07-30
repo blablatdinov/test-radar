@@ -126,7 +126,7 @@ class TestRecord(models.Model):
         null=True,
         verbose_name=_('Project'),
     )
-    label = models.CharField(_('Label'), max_length=128)
+    label = models.TextField(_('Label'))
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
     logs = CompressedTextField(_('Logs'), blank=True)

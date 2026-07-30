@@ -4,7 +4,7 @@
 from rest_framework.serializers import BooleanField, CharField, DateTimeField, ListField, Serializer, UUIDField
 
 _MAX_RECORDS = 500
-_LABEL_MAX_LENGTH = 128
+_LABEL_MAX_LENGTH = 5120
 _BRANCH_MAX_LENGTH = 512
 _COMMIT_MAX_LENGTH = 40
 
