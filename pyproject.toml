@@ -6,10 +6,9 @@ name = "test-radar"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4"
 dependencies = [
     "django==6.0.7",
-    "django-stubs==6.0.7",
     "djangorestframework==3.17.1",
     "django-debug-toolbar==7.0.0",
     "gunicorn==26.0.0",
@@ -33,6 +32,8 @@ dev = [
     "pytest-cov==7.1.0",
     "pytest-django==4.12.0",
     "deltaver==1.0.2",
+    "django-stubs==6.0.7",
+    "pytest-randomly>=4.1.0",
 ]
 
 [tool.pytest.ini_options]
@@ -88,7 +89,4 @@ external = [
 
 [tool.ruff.format]
 quote-style = "single"
-
-[tool.poetry.group.dev.dependencies]
-django-stubs = {extras = ["compatible-mypy"], version = "^5.2.0"}
 
