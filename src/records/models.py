@@ -144,7 +144,7 @@ class TestRecord(models.Model):
         TestSession,
         on_delete=models.CASCADE,
         related_name='records',
-        null=True,
+        null=False,
         verbose_name=_('Test session'),
     )
 

@@ -4,6 +4,7 @@
 import datetime
 
 import pytest
+from model_bakery import baker
 
 from auth.models import User
 from records.models import Agent, Project, TestRecord
@@ -23,7 +24,8 @@ def project(user: User) -> Project:
 
 @pytest.fixture
 def agent(user: User, project: Project) -> Agent:
-    return Agent.objects.create(
+    return baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -38,7 +40,8 @@ def agent_token(agent: Agent) -> str:
 
 @pytest.fixture
 def test_record_pk(project: Project) -> str:
-    record = TestRecord.objects.create(
+    record = baker.make(
+        TestRecord,
         label='test_file.py::test_view',
         timestamp=datetime.datetime.now(tz=datetime.UTC),
         success=True,

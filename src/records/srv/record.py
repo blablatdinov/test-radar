@@ -28,7 +28,7 @@ def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
 
 
 def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix) -> None:
-    col_key = (record.timestamp.strftime('%d.%m.%Y'), record.timestamp.strftime('%H:%M'))
+    col_key = record.session_id
     if col_key not in col_index:
         col_index[col_key] = len(col_index)
     matrix[record.label][col_index[col_key]] = record
@@ -39,10 +39,12 @@ def _build_matrix(records: QuerySet[TestRecord]) -> dict[str, Any]:
     matrix: RecordMatrix = defaultdict(dict)
 
     for record in records:
+        print(matrix)
         _index_record(record, col_index, matrix)
 
     return {
-        'columns': _build_columns(col_index),
+        # 'columns': _build_columns(col_index),
+        'columns': [1],
         'rows': _build_rows(matrix, len(col_index)),
     }
 
