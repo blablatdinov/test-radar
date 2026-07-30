@@ -60,7 +60,7 @@ def test_label_max_length(client: Client, agent: Agent, agent_token: str) -> Non
             'session_id': str(uuid.uuid4()),
             'records': [
                 {
-                    'label': 't' * 1024,
+                    'label': 't' * 5120,
                     'timestamp': datetime.datetime.now(tz=datetime.UTC).isoformat(),
                     'logs': '',
                     'success': True,
