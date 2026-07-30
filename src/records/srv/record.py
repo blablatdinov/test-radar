@@ -7,14 +7,17 @@ from typing import Any
 from django.db.models import QuerySet
 from django.http.request import HttpRequest
 
-from records.models import TestRecord
+from records.models import TestRecord, TestSession
 
-ColIndex = dict[tuple[str, str], int]
+ColIndex = dict[TestSession, int]
 RecordMatrix = dict[str, dict[int, TestRecord]]
 
 
 def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
-    return [{'date': key[0], 'time': key[1]} for key in col_index]
+    return [
+        {'date': key.started_at.strftime('%d.%m.%y'), 'time': key.started_at.strftime('%H:%M')}
+        for key in col_index
+    ]
 
 
 def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
@@ -28,7 +31,7 @@ def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
 
 
 def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix) -> None:
-    col_key = (record.timestamp.strftime('%d.%m.%Y'), record.timestamp.strftime('%H:%M'))
+    col_key = record.session
     if col_key not in col_index:
         col_index[col_key] = len(col_index)
     matrix[record.label][col_index[col_key]] = record
