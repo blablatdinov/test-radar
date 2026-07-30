@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2015-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-License-Identifier: MIT
+---
+name: Ensure tests are updated
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  check-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v7
+
+    - name: Filter changes
+      id: filter
+      uses: dorny/paths-filter@v4
+      with:
+        filters: |
+          code:
+            - 'src/**/*.py'
+          tests:
+            - 'src/tests/**/*.py'
+
+    - name: Ensure code changes have corresponding tests
+      if: steps.filter.outputs.code == 'true' && steps.filter.outputs.tests != 'true'
+      run: |
+        echo "Error: Code changes detected, but no test files were modified."
+        exit 1
+      shell: bash
