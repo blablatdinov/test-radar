@@ -5,9 +5,10 @@ import pytest
 from django.test import Client
 from django.urls import reverse
 from model_bakery import baker
+from pytest_django import DjangoAssertNumQueries
 
 from auth.models import User
-from records.models import Project, TestSession, TestRecord
+from records.models import Project, TestRecord, TestSession
 
 
 @pytest.fixture
@@ -124,7 +125,12 @@ def test_project_create_redirects_anonymous(client: Client) -> None:
 @pytest.mark.django_db
 @pytest.mark.skip
 # TODO: #70:30min Optimize gui.views.ProjectView
-def test_project_page_not_n_plus_one(client: Client, filled_project, django_assert_max_num_queries, user) -> None:
+def test_project_page_not_n_plus_one(
+    client: Client,
+    filled_project: Project,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    user: User,
+) -> None:
     client.force_login(user)
     with django_assert_max_num_queries(1):
         response = client.get(f'/project/{filled_project.id}')
