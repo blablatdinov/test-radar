@@ -30,3 +30,4 @@ COPY --from=build /app/.venv /app/.venv
 COPY src /app
 RUN mkdir /app/db
 RUN DATABASE_URL=sqlite:///:memory: python manage.py compilemessages
+RUN DATABASE_URL=sqlite:///:memory: python manage.py collectstatic
