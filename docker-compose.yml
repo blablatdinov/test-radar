@@ -2,6 +2,22 @@
 # SPDX-License-Identifier: MIT
 
 services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: test_radar
+      POSTGRES_USER: test_radar
+      POSTGRES_PASSWORD: test_radar
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_radar"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
   app:
     container_name: test-radar
     image: test-radar:dev
@@ -13,7 +29,14 @@ services:
       - "8000:8000"
     volumes:
       - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       - SECRET_KEY=secret
       - DEBUG=true
       - REGISTRATION_ENABLED=false
+      - DATABASE_URL=postgres://test_radar:test_radar@db:5432/test_radar
+
+volumes:
+  pgdata:

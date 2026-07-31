@@ -15,7 +15,8 @@ dependencies = [
     "httpx==0.28.1",
     "pytest==9.1.1",
     "django-environ==0.14.0",
-    "bcrypt==4.3.0"
+    "bcrypt==4.3.0",
+    "psycopg[binary]>=3.2,<4"
 ]
 
 [tool.setuptools.packages.find]
