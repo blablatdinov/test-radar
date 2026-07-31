@@ -7,6 +7,7 @@ import argparse
 import base64
 import datetime
 import secrets
+import uuid
 import zlib
 from dataclasses import dataclass, field
 from typing import Any
@@ -15,7 +16,7 @@ from django.core.management.base import BaseCommand
 from model_bakery import baker
 
 from auth.models import User
-from records.models import Agent, Project, TestRecord
+from records.models import Agent, Project, TestRecord, TestSession
 from records.srv.token import create_token_for_agent
 
 _PROJECT_NAMES = (
@@ -117,6 +118,7 @@ _FLAKY_COUNT = 3
 _DEFAULT_PROJECTS = 5
 _DEFAULT_AGENTS_PER_PROJECT = 3
 _DEFAULT_RUNS_PER_PROJECT = 30
+# TODO #61:30min remove this constant
 _USERNAME = 'hp'
 
 
@@ -215,6 +217,12 @@ def _make_single_run(
 ) -> int:
     ctx = _make_run_context(agents, now)
     records = 0
+    session = baker.make(
+        TestSession,
+        id=uuid.uuid4(),
+        project=project,
+        started_at=datetime.datetime.now(tz=datetime.UTC),
+    )
     for label in suite.run_labels():
         success = suite.is_success(label)
         logs = _SUCCESS_LOGS if success else _FAIL_LOGS
@@ -228,6 +236,7 @@ def _make_single_run(
             branch=ctx.branch,
             commit=ctx.commit,
             agent=ctx.agent,
+            session=session,
         )
         records += 1
     return records
@@ -262,6 +271,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: Any, **options: Any) -> None:
+        # TODO #61:30min Add an user selection without using the constant _USERNAME
         user = User.objects.get(username=_USERNAME)
         stats = self._generate(
             user,
