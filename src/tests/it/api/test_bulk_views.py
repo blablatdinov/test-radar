@@ -14,8 +14,11 @@ from model_bakery import baker
 from records.models import Agent, ApiToken, TestRecord, TestSession
 from records.srv import token as token_srv
 
+pytestmark = [
+    pytest.mark.django_db,
+]
 
-@pytest.mark.django_db
+
 def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> None:
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
     session_id = uuid.uuid4()
@@ -52,7 +55,6 @@ def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> 
     assert TestRecord.objects.count() == 2
 
 
-@pytest.mark.django_db
 def test_label_max_length(client: Client, agent: Agent, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -76,7 +78,6 @@ def test_label_max_length(client: Client, agent: Agent, agent_token: str) -> Non
     assert response.status_code == 201, response.content
 
 
-@pytest.mark.django_db
 def test_bulk_create_empty_records(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -92,7 +93,6 @@ def test_bulk_create_empty_records(client: Client, agent_token: str) -> None:
     assert 'records' in response.json()
 
 
-@pytest.mark.django_db
 def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -105,7 +105,6 @@ def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> No
     assert 'records' in response.json()
 
 
-@pytest.mark.django_db
 def test_bulk_create_missing_session_id(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -120,7 +119,6 @@ def test_bulk_create_missing_session_id(client: Client, agent_token: str) -> Non
     assert 'session_id' in response.json()
 
 
-@pytest.mark.django_db
 def test_bulk_create_invalid_session_id(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -136,7 +134,6 @@ def test_bulk_create_invalid_session_id(client: Client, agent_token: str) -> Non
     assert 'session_id' in response.json()
 
 
-@pytest.mark.django_db
 def test_bulk_create_invalid_token(client: Client) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -152,7 +149,6 @@ def test_bulk_create_invalid_token(client: Client) -> None:
     assert response.json()['error'] == 'Invalid token'
 
 
-@pytest.mark.django_db
 def test_bulk_create_missing_auth_header(client: Client) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -166,7 +162,6 @@ def test_bulk_create_missing_auth_header(client: Client) -> None:
     assert response.status_code == 401
 
 
-@pytest.mark.django_db
 def test_bulk_create_expired_token_rejected(client: Client, agent: Agent) -> None:
     raw_token = _create_expired_token(agent)
 
@@ -183,7 +178,6 @@ def test_bulk_create_expired_token_rejected(client: Client, agent: Agent) -> Non
     assert response.status_code == 401
 
 
-@pytest.mark.django_db
 def test_bulk_create_record_without_label(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -205,7 +199,6 @@ def test_bulk_create_record_without_label(client: Client, agent_token: str) -> N
     assert TestRecord.objects.count() == 0
 
 
-@pytest.mark.django_db
 def test_bulk_create_exceeds_limit(client: Client, agent_token: str) -> None:
     records = [
         {
@@ -231,7 +224,6 @@ def test_bulk_create_exceeds_limit(client: Client, agent_token: str) -> None:
     assert TestRecord.objects.count() == 0
 
 
-@pytest.mark.django_db
 def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token: str) -> None:
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
     session_id = uuid.uuid4()
@@ -280,7 +272,6 @@ def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token
     assert records[2].branch == ''
 
 
-@pytest.mark.django_db
 def test_bulk_create_creates_session(client: Client, agent: Agent, agent_token: str) -> None:
     session_id = uuid.uuid4()
 
@@ -310,7 +301,6 @@ def test_bulk_create_creates_session(client: Client, agent: Agent, agent_token: 
     assert db_session.started_at is not None
 
 
-@pytest.mark.django_db
 def test_bulk_create_reuses_existing_session(client: Client, agent: Agent, agent_token: str) -> None:
     session_id = uuid.uuid4()
     baker.make(TestSession, id=session_id, project=agent.project, started_at=timezone.now())
@@ -340,7 +330,6 @@ def test_bulk_create_reuses_existing_session(client: Client, agent: Agent, agent
     assert record.session_id == session_id
 
 
-@pytest.mark.django_db
 def test_bulk_create_binds_agent_and_project(client: Client, agent: Agent, agent_token: str) -> None:
     session_id = uuid.uuid4()
 
@@ -369,7 +358,6 @@ def test_bulk_create_binds_agent_and_project(client: Client, agent: Agent, agent
     assert record.agent == agent
 
 
-@pytest.mark.django_db
 def test_bulk_create_atomic_on_validation_error(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -398,7 +386,6 @@ def test_bulk_create_atomic_on_validation_error(client: Client, agent_token: str
     assert TestRecord.objects.count() == 0
 
 
-@pytest.mark.django_db
 def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
     logs = 'AssertionError: assert 1 == 0'
@@ -428,7 +415,6 @@ def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
     assert record.logs == logs
 
 
-@pytest.mark.django_db
 def test_bulk_create_optional_branch_commit(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -453,7 +439,6 @@ def test_bulk_create_optional_branch_commit(client: Client, agent_token: str) ->
     assert record.commit == ''
 
 
-@pytest.mark.django_db
 def test_bulk_create_single_record(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',

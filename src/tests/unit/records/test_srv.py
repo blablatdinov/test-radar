@@ -9,8 +9,11 @@ from django.http import HttpRequest
 
 from records.srv.record import filtered_records, record_by_id
 
+pytestmark = [
+    pytest.mark.django_db,
+]
 
-@pytest.mark.django_db
+
 def test_filtered_records(project, test_record_pk: str) -> None:  # noqa: ANN001
     now = datetime.datetime.now(tz=datetime.UTC)
     request = Mock(HttpRequest)
@@ -25,7 +28,6 @@ def test_filtered_records(project, test_record_pk: str) -> None:  # noqa: ANN001
     assert len(grouped['records']['rows']) == 1
 
 
-@pytest.mark.django_db
 def test_filtered_records_no_date(project, test_record_pk: str) -> None:  # noqa: ANN001
     request = Mock(HttpRequest)
     request.GET = {}
@@ -36,7 +38,6 @@ def test_filtered_records_no_date(project, test_record_pk: str) -> None:  # noqa
     assert len(grouped['records']['rows']) == 1
 
 
-@pytest.mark.django_db
 def test_record_by_id(test_record_pk: str) -> None:
     record = record_by_id(test_record_pk)
 

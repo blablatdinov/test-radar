@@ -9,8 +9,11 @@ from django.urls import reverse
 
 from auth.models import User
 
+pytestmark = [
+    pytest.mark.django_db,
+]
 
-@pytest.mark.django_db
+
 def test_login_page(client: Client) -> None:
     response = client.get('/login/')
 
@@ -18,7 +21,6 @@ def test_login_page(client: Client) -> None:
     assert 'Login' in response.text
 
 
-@pytest.mark.django_db
 def test_register_page(client: Client) -> None:
     response = client.get('/register/')
 
@@ -26,7 +28,6 @@ def test_register_page(client: Client) -> None:
     assert 'Sign up' in response.text
 
 
-@pytest.mark.django_db
 def test_register(client: Client) -> None:
     response = client.post(
         '/register/',
@@ -42,7 +43,6 @@ def test_register(client: Client) -> None:
     assert User.objects.filter(username='newuser').exists()
 
 
-@pytest.mark.django_db
 def test_login_page_registration_disabled(client: Client, settings: Any) -> None:
     settings.REGISTRATION_ENABLED = False
 
@@ -53,7 +53,6 @@ def test_login_page_registration_disabled(client: Client, settings: Any) -> None
     assert 'Register' not in response.text
 
 
-@pytest.mark.django_db
 def test_login(client: Client, user: User) -> None:
     response = client.post(
         '/login/',
@@ -67,7 +66,6 @@ def test_login(client: Client, user: User) -> None:
     assert response['Location'] == reverse('index_page')
 
 
-@pytest.mark.django_db
 def test_logout(client: Client, user: User) -> None:
     client.force_login(user)
 
