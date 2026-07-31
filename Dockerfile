@@ -20,6 +20,7 @@ FROM python:3.12-slim AS runtime
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PATH="/app/.venv/bin:$PATH"
+ENV DJANGO_DB_CONNECTION_CHECK=0
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
@@ -28,4 +29,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
 COPY --from=build /app/.venv /app/.venv
 COPY src /app
 RUN mkdir /app/db
-RUN python manage.py compilemessages
+RUN DATABASE_URL=sqlite:///:memory: python manage.py compilemessages
