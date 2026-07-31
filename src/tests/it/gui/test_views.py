@@ -123,6 +123,7 @@ def test_project_create_redirects_anonymous(client: Client) -> None:
 
 @pytest.mark.django_db
 @pytest.mark.skip
+# TODO: #70:30min Optimize gui.views.ProjectView
 def test_project_page_not_n_plus_one(client: Client, filled_project, django_assert_max_num_queries, user) -> None:
     client.force_login(user)
     with django_assert_max_num_queries(1):
