@@ -45,7 +45,8 @@ jobs:
     - name: Lint with flake8
       run: uv run flake8 src
     - name: Lint with mypy
-      run: uv run mypy src
+      run: |
+        DATABASE_URL=sqlite:///:memory: uv run mypy src
 
   test:
     runs-on: ubuntu-latest
