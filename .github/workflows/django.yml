@@ -86,8 +86,6 @@ jobs:
         DATABASE_URL=sqlite:///:memory: uv run django-admin makemessages -l ru -l en --no-location --no-wrap
         git diff --exit-code --ignore-matching-lines='^"POT-Creation-Date' -- locale/
       working-directory: src
-    - name: Compile translations
-      run: uv run python src/manage.py compilemessages
     - name: Test
       run: uv run pytest src/tests -vv
       env:
