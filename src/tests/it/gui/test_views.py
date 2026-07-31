@@ -13,6 +13,10 @@ from pytest_django import DjangoAssertNumQueries
 from auth.models import User
 from records.models import Project, TestRecord, TestSession
 
+pytestmark = [
+    pytest.mark.django_db,
+]
+
 
 @pytest.fixture
 def filled_project(user: User) -> Project:
@@ -45,7 +49,6 @@ def one_time_created_records(user: User) -> Project:
     return project
 
 
-@pytest.mark.django_db
 def test_index_shows_projects(client: Client, user: User, project) -> None:  # noqa: ANN001
     client.force_login(user)
 
@@ -57,7 +60,6 @@ def test_index_shows_projects(client: Client, user: User, project) -> None:  # n
     assert response.context_data.get('projects') is not None
 
 
-@pytest.mark.django_db
 def test_index_no_projects(client: Client, user: User) -> None:
     client.force_login(user)
 
@@ -67,7 +69,6 @@ def test_index_no_projects(client: Client, user: User) -> None:
     assert 'No projects yet.' in response.text
 
 
-@pytest.mark.django_db
 def test_project_detail_shows_records(
     client: Client, user: User, project, test_record_pk: str,  # noqa: ANN001
 ) -> None:
@@ -82,7 +83,6 @@ def test_project_detail_shows_records(
     assert response.context_data['project'].pk == project.pk
 
 
-@pytest.mark.django_db
 def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
     client.force_login(user)
 
@@ -94,7 +94,6 @@ def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
     assert response.context_data['record'].pk == test_record_pk
 
 
-@pytest.mark.django_db
 def test_index_redirects_anonymous(client: Client) -> None:
     response = client.get('/')
 
@@ -102,7 +101,6 @@ def test_index_redirects_anonymous(client: Client) -> None:
     assert response.headers['Location'] == reverse('login')
 
 
-@pytest.mark.django_db
 def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> None:
     response = client.get(f'/test/{test_record_pk}')
 
@@ -110,7 +108,6 @@ def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> N
     assert response.headers['Location'] == reverse('login')
 
 
-@pytest.mark.django_db
 def test_project_create_get(client: Client, user: User) -> None:
     client.force_login(user)
 
@@ -122,7 +119,6 @@ def test_project_create_get(client: Client, user: User) -> None:
     assert response.context_data.get('form') is not None
 
 
-@pytest.mark.django_db
 def test_project_create_post(client: Client, user: User) -> None:
     client.force_login(user)
 
@@ -134,7 +130,6 @@ def test_project_create_post(client: Client, user: User) -> None:
     assert project.owner == user
 
 
-@pytest.mark.django_db
 def test_project_create_redirects_anonymous(client: Client) -> None:
     response = client.get('/project/create')
 
@@ -142,7 +137,6 @@ def test_project_create_redirects_anonymous(client: Client) -> None:
     assert response.headers['Location'] == reverse('login')
 
 
-@pytest.mark.django_db
 def test_project_page_not_n_plus_one(
     client: Client,
     filled_project: Project,
@@ -156,7 +150,6 @@ def test_project_page_not_n_plus_one(
     assert response.status_code == 200, response.headers
 
 
-@pytest.mark.django_db
 def test_template(
     client: Client,
     one_time_created_records: Project,

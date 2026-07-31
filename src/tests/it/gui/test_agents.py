@@ -4,13 +4,17 @@
 import pytest
 from django.test import Client
 from django.urls import reverse
+from model_bakery import baker
 
 from auth.models import User
 from records.models import Agent, ApiToken, Project
 from records.srv import token as token_srv
 
+pytestmark = [
+    pytest.mark.django_db,
+]
 
-@pytest.mark.django_db
+
 def test_project_detail_shows_agents_section(client: Client, user: User, project: Project) -> None:
     client.force_login(user)
 
@@ -23,7 +27,6 @@ def test_project_detail_shows_agents_section(client: Client, user: User, project
     assert response.context_data.get('agent_form') is not None
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user', 'project')
 def test_agent_create_creates_agent(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -41,7 +44,6 @@ def test_agent_create_creates_agent(client: Client) -> None:
     assert hasattr(agent, 'token')
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user', 'project')
 def test_agent_create_returns_plain_token(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -58,7 +60,6 @@ def test_agent_create_returns_plain_token(client: Client) -> None:
     assert new_token.startswith('ci_')
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user', 'project')
 def test_agent_shows_plain_token_once(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -75,7 +76,6 @@ def test_agent_shows_plain_token_once(client: Client) -> None:
     assert new_token.startswith('dev_')
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user', 'project')
 def test_agent_token_shown_with_warning(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -88,7 +88,6 @@ def test_agent_token_shown_with_warning(client: Client) -> None:
     assert 'save it now' in response.text
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user', 'project')
 def test_project_view_no_token_after_creation(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -104,7 +103,6 @@ def test_project_view_no_token_after_creation(client: Client) -> None:
     assert response2.context_data.get('new_token') is None
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -123,16 +121,17 @@ def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> 
     assert plain_token not in agent.token.token_hash
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_project_detail_lists_existing_agents(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
         owner=User.objects.get(username='testuser'),
     )
-    ApiToken.objects.create(
+    baker.make(
+        ApiToken,
         agent=agent,
         token_hash='$2b$12$somehash',
         token_mask='ci_a8f...',
@@ -147,7 +146,6 @@ def test_project_detail_lists_existing_agents(client: Client, project: Project) 
     assert 'No agents yet.' not in response.text
 
 
-@pytest.mark.django_db
 def test_agent_create_invalid_data(client: Client, user: User, project: Project) -> None:
     client.force_login(user)
 
@@ -160,7 +158,6 @@ def test_agent_create_invalid_data(client: Client, user: User, project: Project)
     assert Agent.objects.count() == 0
 
 
-@pytest.mark.django_db
 def test_agent_create_redirects_anonymous(client: Client, project: Project) -> None:
     response = client.get(f'/project/{project.pk}/agent/create')
 
@@ -168,10 +165,10 @@ def test_agent_create_redirects_anonymous(client: Client, project: Project) -> N
     assert response.headers['Location'] == reverse('login')
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_token_verify_roundtrip(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -187,10 +184,10 @@ def test_token_verify_roundtrip(client: Client, project: Project) -> None:
     assert invalid is None
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_creates_new_token(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -212,10 +209,10 @@ def test_regenerate_token_creates_new_token(client: Client, project: Project) ->
     assert agent.token.token_mask != old_mask
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -234,10 +231,10 @@ def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> No
     assert agent.token.token_mask in response.content.decode()
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_old_token_invalid(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -253,10 +250,10 @@ def test_regenerate_token_old_token_invalid(client: Client, project: Project) ->
     assert token_srv.verify_token(old_raw) is None
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_redirects_anonymous(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -272,12 +269,12 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
     assert response.headers['Location'] == reverse('login')
 
 
-@pytest.mark.django_db
 def test_regenerate_token_other_user_forbidden(
     client: Client, user: User, project: Project,
 ) -> None:
-    other = User.objects.create(username='other', password='x')
-    agent = Agent.objects.create(
+    other = baker.make(User, username='other', password='x')
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
