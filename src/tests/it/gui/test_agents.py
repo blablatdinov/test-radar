@@ -4,6 +4,7 @@
 import pytest
 from django.test import Client
 from django.urls import reverse
+from model_bakery import baker
 
 from auth.models import User
 from records.models import Agent, ApiToken, Project
@@ -126,13 +127,15 @@ def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> 
 @pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_project_detail_lists_existing_agents(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
         owner=User.objects.get(username='testuser'),
     )
-    ApiToken.objects.create(
+    baker.make(
+        ApiToken,
         agent=agent,
         token_hash='$2b$12$somehash',
         token_mask='ci_a8f...',
@@ -171,7 +174,8 @@ def test_agent_create_redirects_anonymous(client: Client, project: Project) -> N
 @pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_token_verify_roundtrip(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -190,7 +194,8 @@ def test_token_verify_roundtrip(client: Client, project: Project) -> None:
 @pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_creates_new_token(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -215,7 +220,8 @@ def test_regenerate_token_creates_new_token(client: Client, project: Project) ->
 @pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -237,7 +243,8 @@ def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> No
 @pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_old_token_invalid(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -256,7 +263,8 @@ def test_regenerate_token_old_token_invalid(client: Client, project: Project) ->
 @pytest.mark.django_db
 @pytest.mark.usefixtures('user')
 def test_regenerate_token_redirects_anonymous(client: Client, project: Project) -> None:
-    agent = Agent.objects.create(
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -276,8 +284,9 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
 def test_regenerate_token_other_user_forbidden(
     client: Client, user: User, project: Project,
 ) -> None:
-    other = User.objects.create(username='other', password='x')
-    agent = Agent.objects.create(
+    other = baker.make(User, username='other', password='x')
+    agent = baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,

@@ -5,6 +5,7 @@ import datetime
 import uuid
 
 import pytest
+from model_bakery import baker
 
 from auth.models import User
 from records.models import Agent, Project, TestRecord, TestSession
@@ -18,13 +19,13 @@ def user() -> User:
 
 @pytest.fixture
 def project(user: User) -> Project:
-    # TODO #19:30min Use model_bakery for generate records
-    return Project.objects.create(name='Test project', owner=user)
+    return baker.make(Project, name='Test project', owner=user)
 
 
 @pytest.fixture
 def agent(user: User, project: Project) -> Agent:
-    return Agent.objects.create(
+    return baker.make(
+        Agent,
         name='CI Pipeline',
         type='ci',
         project=project,
@@ -39,7 +40,8 @@ def agent_token(agent: Agent) -> str:
 
 @pytest.fixture
 def test_session(project: Project) -> TestSession:
-    return TestSession.objects.create(
+    return baker.make(
+        TestSession,
         id=uuid.uuid4(),
         project=project,
         started_at=datetime.datetime.now(tz=datetime.UTC),
@@ -48,7 +50,8 @@ def test_session(project: Project) -> TestSession:
 
 @pytest.fixture
 def test_record_pk(project: Project, test_session: TestSession) -> str:
-    record = TestRecord.objects.create(
+    record = baker.make(
+        TestRecord,
         label='test_file.py::test_view',
         timestamp=datetime.datetime.now(tz=datetime.UTC),
         success=True,
