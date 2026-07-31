@@ -118,8 +118,6 @@ _FLAKY_COUNT = 3
 _DEFAULT_PROJECTS = 5
 _DEFAULT_AGENTS_PER_PROJECT = 3
 _DEFAULT_RUNS_PER_PROJECT = 30
-# TODO #61:30min remove this constant
-_USERNAME = 'hp'
 
 
 def _compress_logs(text: str) -> str:
@@ -271,8 +269,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: Any, **options: Any) -> None:
-        # TODO #61:30min Add an user selection without using the constant _USERNAME
-        user = User.objects.get(username=_USERNAME)
+        username = input("Input an username for the data agent: ")
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            self.stdout.write('User with the provided username does not exist')
+            return
         stats = self._generate(
             user,
             options['projects'],
