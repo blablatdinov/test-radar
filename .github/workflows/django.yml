@@ -83,7 +83,7 @@ jobs:
       run: uv sync --all-groups
     - name: Check translations are up to date
       run: |
-        uv run django-admin makemessages -l ru -l en --no-location --no-wrap
+        DATABASE_URL=sqlite:///:memory: uv run django-admin makemessages -l ru -l en --no-location --no-wrap
         git diff --exit-code --ignore-matching-lines='^"POT-Creation-Date' -- locale/
       working-directory: src
     - name: Compile translations
