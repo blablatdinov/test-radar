@@ -196,3 +196,4 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+ADMIN_SECRET_PATH = env('ADMIN_SECRET_PATH', default='')
