@@ -4,9 +4,24 @@
 import pytest
 from django.test import Client
 from django.urls import reverse
+from model_bakery import baker
 
 from auth.models import User
-from records.models import Project
+from records.models import Project, TestSession, TestRecord
+
+
+@pytest.fixture
+def filled_project(user: User) -> Project:
+    project = baker.make(Project, owner=user)
+    sessions = baker.make(TestSession, project=project, _quantity=15)
+    records = []
+    for session in sessions:
+        records.extend([
+            baker.prepare(TestRecord, session=session, project=project)
+            for _ in range(5)
+        ])
+    TestRecord.objects.bulk_create(records)
+    return project
 
 
 @pytest.mark.django_db
@@ -104,3 +119,13 @@ def test_project_create_redirects_anonymous(client: Client) -> None:
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
+
+
+@pytest.mark.django_db
+@pytest.mark.skip
+def test_project_page_not_n_plus_one(client: Client, filled_project, django_assert_max_num_queries, user) -> None:
+    client.force_login(user)
+    with django_assert_max_num_queries(1):
+        response = client.get(f'/project/{filled_project.id}')
+
+    assert response.status_code == 200, response.headers
