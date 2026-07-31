@@ -6,9 +6,9 @@ import datetime
 import pytest
 from django.test import Client
 from django.urls import reverse
+from lxml import etree
 from model_bakery import baker
 from pytest_django import DjangoAssertNumQueries
-from lxml import etree
 
 from auth.models import User
 from records.models import Project, TestRecord, TestSession
