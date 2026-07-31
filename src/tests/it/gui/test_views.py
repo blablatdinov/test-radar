@@ -1,9 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import datetime
+
 import pytest
 from django.test import Client
 from django.urls import reverse
+from lxml import etree
 from model_bakery import baker
 from pytest_django import DjangoAssertNumQueries
 
@@ -22,6 +25,23 @@ def filled_project(user: User) -> Project:
             for _ in range(5)
         ])
     TestRecord.objects.bulk_create(records)
+    return project
+
+
+@pytest.fixture
+def one_time_created_records(user: User) -> Project:
+    project = baker.make(Project, owner=user)
+    sessions = baker.make(TestSession, project=project, _quantity=2)
+    dt = datetime.datetime(2026, 8, 1, 0, 0, 0, tzinfo=datetime.UTC)
+    TestRecord.objects.bulk_create([
+        baker.prepare(
+            TestRecord,
+            session=session,
+            project=project,
+            timestamp=dt,
+        )
+        for session in sessions
+    ])
     return project
 
 
@@ -134,3 +154,18 @@ def test_project_page_not_n_plus_one(
         response = client.get(f'/project/{filled_project.id}')
 
     assert response.status_code == 200, response.headers
+
+
+@pytest.mark.django_db
+def test_template(
+    client: Client,
+    one_time_created_records: Project,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    user: User,
+) -> None:
+    client.force_login(user)
+    response = client.get(f'/project/{one_time_created_records.id}')
+    tree = etree.fromstring(response.text, etree.HTMLParser())
+
+    assert response.status_code == 200
+    assert len(tree.xpath('//th[@data-column-name]')) == 2
