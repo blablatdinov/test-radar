@@ -42,6 +42,7 @@ dev = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "server.settings"
 pythonpath = ["src"]
+markers = ["n_plus_one(url_name): N+1 query test for the given URL name"]
 # radar_endpoint = 'http://127.0.0.1:8000'
 
 [tool.mypy]
