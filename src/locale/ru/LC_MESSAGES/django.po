@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 15:33+0300\n"
+"POT-Creation-Date: 2026-08-01 15:50+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -15,6 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+msgid "Your email has been confirmed. You can now log in."
+msgstr "Ваш email подтверждён. Теперь вы можете войти."
+
+msgid "The confirmation link is invalid or has expired."
+msgstr "Ссылка подтверждения недействительна или истекла."
 
 msgid "Username"
 msgstr "Имя пользователя"
@@ -64,17 +70,11 @@ msgstr "Токен подтверждения email"
 msgid "Email confirmation tokens"
 msgstr "Токены подтверждения email"
 
-msgid "Please confirm your email address to log in."
-msgstr "Пожалуйста, подтвердите ваш email для входа."
-
 msgid "Confirm your email address"
 msgstr "Подтвердите ваш email"
 
-msgid "Your email has been confirmed. You can now log in."
-msgstr "Ваш email подтверждён. Теперь вы можете войти."
-
-msgid "The confirmation link is invalid or has expired."
-msgstr "Ссылка подтверждения недействительна или истекла."
+msgid "Please confirm your email address to log in."
+msgstr "Пожалуйста, подтвердите ваш email для входа."
 
 msgid "Tests"
 msgstr "Тесты"
