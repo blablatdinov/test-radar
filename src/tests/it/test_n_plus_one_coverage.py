@@ -51,8 +51,6 @@ def test_all_urls_have_n_plus_one_coverage(covered_url_names: set[str]) -> None:
         'agent_create',
         # TODO #85:30min cover "api_bulk_create_test" url with django_assert_max_num_queries
         'api_bulk_create_test',
-        # TODO #85:30min cover "project_create" url with django_assert_max_num_queries
-        'project_create',
         # TODO #85:30min cover "login" url with django_assert_max_num_queries
         'login',
         # TODO #85:30min cover "register" url with django_assert_max_num_queries
