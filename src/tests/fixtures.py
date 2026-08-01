@@ -83,3 +83,20 @@ def filled_session(project: Project) -> TestSession:
         records.append(baker.prepare(TestRecord, session=session, project=project))
     TestRecord.objects.bulk_create(records)
     return session
+
+
+@pytest.fixture
+def filled_test_history(project: Project) -> str:
+    sessions = baker.make(TestSession, project=project, _quantity=15)
+    records: list[TestRecord] = []
+    for session in sessions:
+        records.append(
+            baker.prepare(
+                TestRecord,
+                label='test_file.py::test_view',
+                session=session,
+                project=project,
+            ),
+        )
+    TestRecord.objects.bulk_create(records)
+    return 'test_file.py::test_view'

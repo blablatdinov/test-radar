@@ -10,6 +10,7 @@ from gui.views import (
     ProjectCreateView,
     ProjectView,
     SessionView,
+    TestHistoryView,
     TestInfoView,
 )
 
@@ -25,4 +26,5 @@ urlpatterns = [
     ),
     path('test/<pk>', TestInfoView.as_view(), name='test_info'),
     path('session/<uuid:session_id>', SessionView.as_view(), name='session_detail'),
+    path('project/<uuid:guid>/test-history', TestHistoryView.as_view(), name='test_history'),
 ]
