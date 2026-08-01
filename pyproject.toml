@@ -18,6 +18,8 @@ dependencies = [
     "bcrypt==4.3.0",
     "psycopg[binary]>=3.2,<4",
     "whitenoise[brotli]>=6.12.0",
+    "django-axes>=8.3.1",
+    "django-ratelimit>=4.1.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -37,6 +39,8 @@ dev = [
     "django-stubs==6.0.7",
     "pytest-randomly>=4.1.0",
     "lxml>=6.1.1",
+    "django-ratelimit>=4.1.0",
+    "django-stubs-ext>=6.0.7",
 ]
 
 [tool.pytest.ini_options]
