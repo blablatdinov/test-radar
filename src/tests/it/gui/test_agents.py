@@ -23,7 +23,7 @@ pytestmark = [
 def test_project_detail_shows_agents_section(client: Client, user: User, project: Project) -> None:
     client.force_login(user)
 
-    response = client.get(f'/project/{project.pk}')
+    response = client.get(f'/project/{project.guid}')
 
     assert response.status_code == 200
     assert 'Agents' in response.text
@@ -37,7 +37,7 @@ def test_agent_create_creates_agent(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
@@ -54,7 +54,7 @@ def test_agent_create_returns_plain_token(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
@@ -70,7 +70,7 @@ def test_agent_shows_plain_token_once(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'Dev Laptop', 'type': 'local'},
     )
 
@@ -86,7 +86,7 @@ def test_agent_token_shown_with_warning(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'Dev Laptop', 'type': 'local'},
     )
 
@@ -98,12 +98,12 @@ def test_project_view_no_token_after_creation(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     client.post(
-        reverse('agent_create', kwargs={'pk': Project.objects.get().pk}),
+        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'Dev Laptop', 'type': 'local'},
     )
 
-    project_pk = Project.objects.get().pk
-    response2 = client.get(reverse('project_detail', kwargs={'pk': project_pk}))
+    project_guid = Project.objects.get().guid
+    response2 = client.get(reverse('project_detail', kwargs={'guid': project_guid}))
     assert response2.context_data is not None
     assert response2.context_data.get('new_token') is None
 
@@ -113,7 +113,7 @@ def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> 
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': project.pk}),
+        reverse('agent_create', kwargs={'guid': project.guid}),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
@@ -143,7 +143,7 @@ def test_project_detail_lists_existing_agents(client: Client, project: Project) 
     )
     client.force_login(User.objects.get(username='testuser'))
 
-    response = client.get(f'/project/{project.pk}')
+    response = client.get(f'/project/{project.guid}')
 
     assert response.status_code == 200
     assert 'CI Pipeline' in response.text
@@ -155,7 +155,7 @@ def test_agent_create_invalid_data(client: Client, user: User, project: Project)
     client.force_login(user)
 
     response = client.post(
-        reverse('agent_create', kwargs={'pk': project.pk}),
+        reverse('agent_create', kwargs={'guid': project.guid}),
         {'name': '', 'type': 'ci'},
     )
 
@@ -164,7 +164,7 @@ def test_agent_create_invalid_data(client: Client, user: User, project: Project)
 
 
 def test_agent_create_redirects_anonymous(client: Client, project: Project) -> None:
-    response = client.get(f'/project/{project.pk}/agent/create')
+    response = client.get(f'/project/{project.guid}/agent/create')
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
@@ -203,7 +203,7 @@ def test_regenerate_token_creates_new_token(client: Client, project: Project) ->
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_token_regenerate', kwargs={'pk': project.pk, 'agent_pk': agent.pk}),
+        reverse('agent_token_regenerate', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
     )
     new_raw = response.context['new_token']
 
@@ -227,7 +227,7 @@ def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> No
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        f'/project/{project.pk}/agents/{agent.pk}/regenerate-token',
+        f'/project/{project.guid}/agents/{agent.guid}/regenerate-token',
     )
 
     agent.refresh_from_db()
@@ -249,7 +249,7 @@ def test_regenerate_token_old_token_invalid(client: Client, project: Project) ->
     client.force_login(User.objects.get(username='testuser'))
 
     client.post(
-        f'/project/{project.pk}/agents/{agent.pk}/regenerate-token',
+        f'/project/{project.guid}/agents/{agent.guid}/regenerate-token',
     )
 
     assert token_srv.verify_token(old_raw) is None
@@ -267,7 +267,7 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
     token_srv.create_token_for_agent(agent)
 
     response = client.post(
-        f'project/{project.pk}/agents/{agent.pk}/regenerate-token',
+        f'project/{project.guid}/agents/{agent.guid}/regenerate-token',
     )
 
     assert response.status_code == 302
@@ -291,7 +291,7 @@ def test_regenerate_token_other_user_forbidden(
     client.force_login(other)
 
     response = client.post(
-        f'project/{project.pk}/agents/{agent.pk}/regenerate-token',
+        f'project/{project.guid}/agents/{agent.guid}/regenerate-token',
     )
 
     assert response.status_code == 404
@@ -307,7 +307,7 @@ def test_agent_create_not_n_plus_one(
     client.force_login(user)
     with django_assert_max_num_queries(9):
         response = client.post(
-            reverse('agent_create', kwargs={'pk': filled_project.pk}),
+            reverse('agent_create', kwargs={'guid': filled_project.guid}),
             {'name': 'CI Pipeline', 'type': 'ci'},
         )
 
@@ -334,7 +334,7 @@ def test_agent_token_regenerate_not_n_plus_one(
         response = client.post(
             reverse(
                 'agent_token_regenerate',
-                kwargs={'pk': filled_project.pk, 'agent_pk': agent.pk},
+                kwargs={'guid': filled_project.guid, 'agent_guid': agent.guid},
             ),
         )
 

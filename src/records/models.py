@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import secrets
+import uuid
 from compression import zstd
 
 from django.db import models
@@ -13,6 +14,7 @@ def _hex_token() -> str:
 
 
 class Project(models.Model):
+    guid = models.UUIDField(_('Identifier'), default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(_('Name'), max_length=255)
     owner = models.ForeignKey(
         'authentication.User',
@@ -37,6 +39,7 @@ class Agent(models.Model):
 
     name = models.CharField(_('Name'), max_length=128)
     type = models.CharField(_('Agent type'), max_length=10, choices=AgentType.choices)
+    guid = models.UUIDField(_('Identifier'), default=uuid.uuid4, editable=False, unique=True)
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,

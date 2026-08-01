@@ -90,7 +90,7 @@ SPDX-License-Identifier: MIT
   <div class="bg-white dark:bg-gray-900 rounded shadow p-4 space-y-4">
     <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">{% trans "Agents" %}</h2>
 
-    <form method="post" action="{% url 'agent_create' project.pk %}" class="flex items-end space-x-3">
+    <form method="post" action="{% url 'agent_create' project.guid %}" class="flex items-end space-x-3">
       {% csrf_token %}
       <div>
         <label for="id_agent_name" class="block text-sm text-gray-700 dark:text-white dark:text-gray-300 mb-1">{% trans "Name" %}</label>
@@ -150,7 +150,7 @@ SPDX-License-Identifier: MIT
               {% if agent.token %}
               <form
                 method="post"
-                action="{% url 'agent_token_regenerate' project.pk agent.pk %}"
+                action="{% url 'agent_token_regenerate' project.guid agent.guid %}"
                 class="inline"
                 onsubmit="return confirm('{% trans "Are you sure you want to regenerate the token? The old token will stop working immediately." %}')"
               >
