@@ -47,6 +47,3 @@ class RegisterView(FormView):
         token = create_confirmation_token(user)
         send_confirmation_email(self.request, token)
         return super().form_valid(form)
-
-
-# TODO #6:30min Create view for generate agent tokens
