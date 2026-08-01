@@ -8,7 +8,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from auth.models import User
-from records.models import Agent, ApiToken, Project, TestRecord, TestSession
+from records.models import Agent, ApiToken, Project
 from records.srv import token as token_srv
 
 if TYPE_CHECKING:
@@ -301,19 +301,13 @@ def test_regenerate_token_other_user_forbidden(
 def test_agent_create_not_n_plus_one(
     client: Client,
     django_assert_max_num_queries: DjangoAssertNumQueries,
-    project: Project,
+    filled_project: Project,
     user: User,
 ) -> None:
-    sessions = baker.make(TestSession, project=project, _quantity=15)
-    records: list[TestRecord] = []
-    for session in sessions:
-        for _ in range(5):
-            records.append(baker.prepare(TestRecord, session=session, project=project))
-    TestRecord.objects.bulk_create(records)
     client.force_login(user)
     with django_assert_max_num_queries(9):
         response = client.post(
-            reverse('agent_create', kwargs={'pk': project.pk}),
+            reverse('agent_create', kwargs={'pk': filled_project.pk}),
             {'name': 'CI Pipeline', 'type': 'ci'},
         )
 

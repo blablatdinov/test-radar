@@ -61,3 +61,15 @@ def test_record_pk(project: Project, test_session: TestSession) -> str:
     )
 
     return record.pk
+
+
+@pytest.fixture
+def filled_project(user: User) -> Project:
+    project = baker.make(Project, owner=user)
+    sessions = baker.make(TestSession, project=project, _quantity=15)
+    records: list[TestRecord] = []
+    for session in sessions:
+        for _ in range(5):
+            records.append(baker.prepare(TestRecord, session=session, project=project))
+    TestRecord.objects.bulk_create(records)
+    return project
