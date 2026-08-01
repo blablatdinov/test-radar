@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 _EXCLUDED_NAMESPACES: frozenset[str] = frozenset(('admin', 'djdt'))
 
+_EXCLUDED_URL_NAMES: frozenset[str] = frozenset(('login', 'logout', 'register'))
+
 
 def _resolver_names(pattern: URLResolver, namespace: str) -> set[str]:
     ns = pattern.namespace or namespace
@@ -21,7 +23,7 @@ def _resolver_names(pattern: URLResolver, namespace: str) -> set[str]:
 
 
 def _pattern_name(pattern: URLPattern) -> set[str]:
-    if pattern.name:
+    if pattern.name and pattern.name not in _EXCLUDED_URL_NAMES:
         return {pattern.name}
     return set()
 
@@ -46,13 +48,5 @@ def _collect_url_names() -> set[str]:
 
 def test_all_urls_have_n_plus_one_coverage(covered_url_names: set[str]) -> None:
     all_names = _collect_url_names()
-    temporary_excluded = {
-        # TODO #85:30min cover "login" url with django_assert_max_num_queries
-        'login',
-        # TODO #85:30min cover "register" url with django_assert_max_num_queries
-        'register',
-        # TODO #85:30min cover "logout" url with django_assert_max_num_queries
-        'logout',
-    }
-    uncovered = all_names - temporary_excluded - covered_url_names
+    uncovered = all_names - covered_url_names
     assert not uncovered, f'URLs without N+1 coverage: {sorted(uncovered)}'
