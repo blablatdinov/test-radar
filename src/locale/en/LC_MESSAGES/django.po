@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-31 01:37+0500\n"
+"POT-Creation-Date: 2026-08-01 13:35+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -176,6 +176,9 @@ msgstr "Failed"
 msgid "Execution logs"
 msgstr "Execution logs"
 
+msgid "Identifier"
+msgstr "Identifier"
+
 msgid "Owner"
 msgstr "Owner"
 
@@ -208,9 +211,6 @@ msgstr "API token"
 
 msgid "API tokens"
 msgstr "API tokens"
-
-msgid "Identifier"
-msgstr "Identifier"
 
 msgid "Started at"
 msgstr "Started at"
