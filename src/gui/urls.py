@@ -3,7 +3,15 @@
 
 from django.urls import path
 
-from gui.views import AgentCreateView, AgentTokenRegenerateView, IndexView, ProjectCreateView, ProjectView, TestInfoView
+from gui.views import (
+    AgentCreateView,
+    AgentTokenRegenerateView,
+    IndexView,
+    ProjectCreateView,
+    ProjectView,
+    SessionView,
+    TestInfoView,
+)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index_page'),
@@ -16,4 +24,5 @@ urlpatterns = [
         name='agent_token_regenerate',
     ),
     path('test/<pk>', TestInfoView.as_view(), name='test_info'),
+    path('session/<uuid:session_id>', SessionView.as_view(), name='session_detail'),
 ]

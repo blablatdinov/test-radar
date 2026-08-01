@@ -182,7 +182,9 @@ SPDX-License-Identifier: MIT
         <tr>
           <th class="py-2 pr-4 whitespace-nowrap">{% trans "Test" %}</th>
           {% for col in records.columns %}
-          <th data-column-name class="py-2 px-2 text-center font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ col.date }} {{ col.time }}</th>
+          <th data-column-name class="py-2 px-2 text-center font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+            <a href="{% url 'session_detail' col.pk %}" class="hover:underline">{{ col.date }} {{ col.time }}</a>
+          </th>
           {% endfor %}
         </tr>
       </thead>

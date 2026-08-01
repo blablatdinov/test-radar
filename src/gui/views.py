@@ -9,7 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView, View
 
 from records.forms import AgentForm, ProjectForm
-from records.models import Agent, Project, TestSession
+from records.models import Agent, Project, TestRecord, TestSession
 from records.srv import record, token
 
 if TYPE_CHECKING:
@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 
 _GUID: Final = 'guid'
 _AGENT_GUID: Final = 'agent_guid'
+_SESSION_ID: Final = 'session_id'
+_AUTH_REQUIRED_MSG: Final = 'User must be authorized.'
 
 
 class IndexView(TemplateView):
@@ -28,7 +30,7 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
         if not self.request.user.is_authenticated:
-            msg = 'User must be authorized.'
+            msg = _AUTH_REQUIRED_MSG
             raise PermissionDenied(msg)
         return {'projects': Project.objects.filter(owner=self.request.user)}
 
@@ -54,7 +56,7 @@ class ProjectView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         if not self.request.user.is_authenticated:
-            msg = 'User must be authorized.'
+            msg = _AUTH_REQUIRED_MSG
             raise PermissionDenied(msg)
         project = Project.objects.get(guid=kwargs[_GUID], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
@@ -108,7 +110,7 @@ class AgentTokenRegenerateView(View):
 
     def post(self, request: Any, guid: uuid.UUID, agent_guid: uuid.UUID) -> HttpResponse:
         if not request.user.is_authenticated:
-            msg = 'User must be authorized.'
+            msg = _AUTH_REQUIRED_MSG
             raise PermissionDenied(msg)
         project = get_object_or_404(Project, guid=guid, owner=request.user)
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
@@ -130,3 +132,21 @@ class TestInfoView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         return record.record_by_id(kwargs['pk'])
+
+
+class SessionView(TemplateView):
+    """Page with test records for a specific session."""
+
+    template_name = 'session.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        if not self.request.user.is_authenticated:
+            msg = _AUTH_REQUIRED_MSG
+            raise PermissionDenied(msg)
+        session = get_object_or_404(
+            TestSession,
+            pk=kwargs[_SESSION_ID],
+            project__owner=self.request.user,
+        )
+        records = TestRecord.objects.filter(session=session).select_related('agent').order_by('timestamp')
+        return {'session': session, 'records': records}

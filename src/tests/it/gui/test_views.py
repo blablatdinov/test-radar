@@ -89,6 +89,30 @@ def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
     assert response.context_data['record'].pk == test_record_pk
 
 
+def test_session_detail(
+    client: Client,
+    user: User,
+    test_record_pk: str,
+    test_session: TestSession,
+) -> None:
+    client.force_login(user)
+
+    response = client.get(f'/session/{test_session.pk}')
+
+    assert response.status_code == 200
+    assert 'test_file.py::test_view' in response.text
+    assert response.context_data is not None
+    assert response.context_data['session'].pk == test_session.pk
+    assert response.context_data['records'] is not None
+
+
+def test_session_detail_redirects_anonymous(client: Client, test_session: TestSession) -> None:
+    response = client.get(f'/session/{test_session.pk}')
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('login')
+
+
 def test_index_redirects_anonymous(client: Client) -> None:
     response = client.get('/')
 

@@ -17,6 +17,7 @@ RecordMatrix = dict[str, dict[int, TestRecord]]
 def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
     return [
         {
+            'pk': str(key.pk),
             'date': key.started_at.strftime('%d.%m.%y'),
             'time': key.started_at.strftime('%H:%M'),
         }
