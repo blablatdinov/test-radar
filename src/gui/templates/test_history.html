@@ -1,0 +1,58 @@
+<!--
+SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+SPDX-License-Identifier: MIT
+-->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ label }}{% endblock %}
+{% block content %}
+<div class="max-w-full mx-auto px-3 mb-4">
+  <a href="{% url 'project_detail' project.guid %}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm mb-2 inline-block">
+    ← {% trans "Back to project" %}
+  </a>
+  <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 break-all">{{ label }}</h1>
+</div>
+
+<div class="max-w-full mx-auto px-3">
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left">
+      <thead class="text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+        <tr>
+          <th class="py-2 pr-4">{% trans "Status" %}</th>
+          <th class="py-2 pr-4">{% trans "Timestamp" %}</th>
+          <th class="py-2 pr-4">{% trans "Session" %}</th>
+          <th class="py-2 pr-4">{% trans "Branch" %}</th>
+          <th class="py-2 pr-4">{% trans "Commit" %}</th>
+          <th class="py-2 pr-4">{% trans "Agent" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr class="border-b border-gray-100 dark:border-gray-700">
+          <td class="py-2 pr-4">
+            <a href="{% url 'test_info' r.pk %}">{% if r.success %}✅{% else %}❌{% endif %}</a>
+          </td>
+          <td class="py-2 pr-4 whitespace-nowrap">{{ r.timestamp|date:'d.m.Y H:i' }}</td>
+          <td class="py-2 pr-4 whitespace-nowrap">
+            {% if r.session %}
+            <a href="{% url 'session_detail' r.session.pk %}" class="text-blue-600 dark:text-blue-400 hover:underline">
+              {{ r.session.started_at|date:'d.m.y H:i' }}
+            </a>
+            {% else %}
+            <span class="text-gray-300 dark:text-gray-600">—</span>
+            {% endif %}
+          </td>
+          <td class="py-2 pr-4 whitespace-nowrap">{{ r.branch }}</td>
+          <td class="py-2 pr-4 font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ r.commit|slice:':8' }}</td>
+          <td class="py-2 pr-4 whitespace-nowrap">{{ r.agent.name|default:'—' }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="py-4 text-center text-gray-500 dark:text-gray-400">{% trans "No runs found." %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

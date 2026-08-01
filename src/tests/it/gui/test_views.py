@@ -113,6 +113,30 @@ def test_session_detail_redirects_anonymous(client: Client, test_session: TestSe
     assert response.headers['Location'] == reverse('login')
 
 
+def test_test_history(
+    client: Client,
+    user: User,
+    project: Project,
+    test_record_pk: str,
+) -> None:
+    client.force_login(user)
+
+    response = client.get(f'/project/{project.guid}/test-history?label=test_file.py::test_view')
+
+    assert response.status_code == 200
+    assert 'test_file.py::test_view' in response.text
+    assert response.context_data is not None
+    assert response.context_data['label'] == 'test_file.py::test_view'
+    assert response.context_data['records'] is not None
+
+
+def test_test_history_redirects_anonymous(client: Client, project: Project) -> None:
+    response = client.get(f'/project/{project.guid}/test-history?label=foo')
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('login')
+
+
 def test_index_redirects_anonymous(client: Client) -> None:
     response = client.get('/')
 
@@ -210,6 +234,21 @@ def test_session_detail_not_n_plus_one(
     client.force_login(user)
     with django_assert_max_num_queries(4):
         response = client.get(f'/session/{filled_session.pk}')
+
+    assert response.status_code == 200
+
+
+@pytest.mark.n_plus_one('test_history')
+def test_test_history_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_test_history: str,
+    project: Project,
+    user: User,
+) -> None:
+    client.force_login(user)
+    with django_assert_max_num_queries(4):
+        response = client.get(f'/project/{project.guid}/test-history?label={filled_test_history}')
 
     assert response.status_code == 200
 

@@ -20,7 +20,9 @@ if TYPE_CHECKING:
 _GUID: Final = 'guid'
 _AGENT_GUID: Final = 'agent_guid'
 _SESSION_ID: Final = 'session_id'
+_LABEL: Final = 'label'
 _AUTH_REQUIRED_MSG: Final = 'User must be authorized.'
+_PROJECT_KEY: Final = 'project'
 
 
 class IndexView(TemplateView):
@@ -60,7 +62,7 @@ class ProjectView(TemplateView):
             raise PermissionDenied(msg)
         project = Project.objects.get(guid=kwargs[_GUID], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
-        context['project'] = project
+        context[_PROJECT_KEY] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
         context['sessions'] = TestSession.objects.filter(project=project)
         context['agent_form'] = AgentForm()
@@ -79,7 +81,7 @@ class AgentCreateView(FormView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         project = self.get_project()
         context = record.filtered_records(project.pk, self.request)
-        context['project'] = project
+        context[_PROJECT_KEY] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
         context['sessions'] = TestSession.objects.filter(project=project)
         context['agent_form'] = kwargs.get('form') or AgentForm()
@@ -116,7 +118,7 @@ class AgentTokenRegenerateView(View):
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         raw_token = token.regenerate_token_for_agent(agent)
         context = record.filtered_records(project.pk, request)
-        context['project'] = project
+        context[_PROJECT_KEY] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
         context['sessions'] = TestSession.objects.filter(project=project)
         context['agent_form'] = AgentForm()
@@ -150,3 +152,22 @@ class SessionView(TemplateView):
         )
         records = TestRecord.objects.filter(session=session).select_related('agent').order_by('timestamp')
         return {'session': session, 'records': records}
+
+
+class TestHistoryView(TemplateView):
+    """Page with all runs of a specific test across sessions."""
+
+    template_name = 'test_history.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        if not self.request.user.is_authenticated:
+            msg = _AUTH_REQUIRED_MSG
+            raise PermissionDenied(msg)
+        project = get_object_or_404(Project, guid=kwargs[_GUID], owner=self.request.user)
+        label = self.request.GET.get(_LABEL, '')
+        records = (
+            TestRecord.objects.filter(project=project, label=label)
+            .select_related('session', 'agent')
+            .order_by('-timestamp')
+        )
+        return {'project': project, 'label': label, 'records': records}

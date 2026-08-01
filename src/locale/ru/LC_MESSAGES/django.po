@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 13:53+0300\n"
+"POT-Creation-Date: 2026-08-01 14:04+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -181,6 +181,12 @@ msgstr "Коммит"
 
 msgid "Agent"
 msgstr "Агент"
+
+msgid "Back to project"
+msgstr "Назад к проекту"
+
+msgid "No runs found."
+msgstr "Запуски не найдены."
 
 msgid "Status:"
 msgstr "Статус:"

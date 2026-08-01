@@ -191,7 +191,9 @@ SPDX-License-Identifier: MIT
       <tbody>
         {% for row in records.rows %}
         <tr class="border-b border-gray-100 dark:border-gray-700">
-          <td class="py-2 pr-4 whitespace-nowrap">{{ row.label }}</td>
+          <td class="py-2 pr-4 whitespace-nowrap">
+            <a href="{% url 'test_history' project.guid %}?label={{ row.label|urlencode }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ row.label }}</a>
+          </td>
           {% for cell in row.cells %}
           <td class="py-2 px-2 text-center">
             {% if cell %}
