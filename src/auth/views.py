@@ -6,7 +6,9 @@ from typing import TYPE_CHECKING
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import FormView
+from django_ratelimit.decorators import ratelimit
 
 from auth.forms import RegistrationForm
 
@@ -23,6 +25,7 @@ class CustomLogoutView(LogoutView):
     """Custom logout view."""
 
 
+@method_decorator(ratelimit(key='ip', rate='5/h', block=True), name='dispatch')
 class RegisterView(FormView):
     template_name = 'register.html'
     form_class = RegistrationForm
@@ -30,7 +33,7 @@ class RegisterView(FormView):
 
     def form_valid(self, form: RegistrationForm) -> HttpResponse:
         user = form.save()
-        login(self.request, user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return super().form_valid(form)
 
 
