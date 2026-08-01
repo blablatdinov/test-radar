@@ -35,13 +35,14 @@ def test_register(client: Client) -> None:
         '/register/',
         {
             'username': 'newuser',
+            'email': 'newuser@example.com',
             'password1': 'strong-password-123',
             'password2': 'strong-password-123',
         },
     )
 
     assert response.status_code == 302
-    assert response['Location'] == reverse('index_page')
+    assert response['Location'] == reverse('email_confirmation_sent')
     assert User.objects.filter(username='newuser').exists()
 
 
@@ -55,11 +56,11 @@ def test_login_page_registration_disabled(client: Client, settings: Any) -> None
     assert 'Register' not in response.text
 
 
-def test_login(client: Client, user: User) -> None:
+def test_login(client: Client, verified_user: User) -> None:
     response = client.post(
         '/login/',
         {
-            'username': user.username,
+            'username': verified_user.username,
             'password': 'test-password-123',
         },
     )
@@ -68,8 +69,8 @@ def test_login(client: Client, user: User) -> None:
     assert response['Location'] == reverse('index_page')
 
 
-def test_logout(client: Client, user: User) -> None:
-    client.force_login(user)
+def test_logout(client: Client, verified_user: User) -> None:
+    client.force_login(verified_user)
 
     response = client.post('/logout/')
 

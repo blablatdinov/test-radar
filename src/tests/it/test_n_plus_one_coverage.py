@@ -12,7 +12,14 @@ if TYPE_CHECKING:
 
 _EXCLUDED_NAMESPACES: frozenset[str] = frozenset(('admin', 'djdt'))
 
-_EXCLUDED_URL_NAMES: frozenset[str] = frozenset(('login', 'logout', 'register'))
+_EXCLUDED_URL_NAMES: frozenset[str] = frozenset((
+    'login',
+    'logout',
+    'register',
+    'email_confirmation_sent',
+    'email_confirm',
+    'email_resend',
+))
 
 
 def _resolver_names(pattern: URLResolver, namespace: str) -> set[str]:

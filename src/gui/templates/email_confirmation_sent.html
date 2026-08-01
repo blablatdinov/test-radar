@@ -1,0 +1,22 @@
+<!--
+SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+SPDX-License-Identifier: MIT
+-->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Email sent" %} — Test radar{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-3">
+  <div class="bg-white dark:bg-gray-800 rounded shadow p-6 space-y-4 text-center">
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{% trans "Check your email" %}</h1>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      {% trans "We have sent a confirmation link to your email address. Click the link to activate your account." %}
+    </p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      <a href="{% url 'email_resend' %}" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 underline">
+        {% trans "Resend confirmation email" %}
+      </a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!--
+SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+SPDX-License-Identifier: MIT
+-->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Resend confirmation email" %} — Test radar{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-3">
+  <div class="bg-white dark:bg-gray-800 rounded shadow p-6 space-y-4">
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{% trans "Resend confirmation email" %}</h1>
+
+    {% if form.non_field_errors %}
+    <div class="text-red-600 dark:text-red-400 text-sm">
+      {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label for="id_email" class="block text-sm text-gray-700 dark:text-gray-300 mb-1">{% trans "Email" %}</label>
+        <input
+          type="email"
+          name="email"
+          id="id_email"
+          required
+          autofocus
+          class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:text-gray-100"
+        />
+        {% if form.email.errors %}
+        <p class="text-red-600 dark:text-red-400 text-sm mt-1">{{ form.email.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition cursor-pointer"
+      >
+        {% trans "Send" %}
+      </button>
+    </form>
+
+    <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+      <a href="{% url 'login' %}" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 underline">{% trans "Back to login" %}</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -17,6 +17,9 @@ class RegistrationForm(forms.Form):
         label=_('Username'),
         max_length=_USERNAME_MAX_LENGTH,
     )
+    email = forms.EmailField(
+        label=_('Email'),
+    )
     password1 = forms.CharField(
         label=_('Password'),
         widget=forms.PasswordInput,
@@ -31,6 +34,12 @@ class RegistrationForm(forms.Form):
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError(_('A user with this username already exists.'))
         return username
+
+    def clean_email(self) -> str:
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(_('A user with this email already exists.'))
+        return email
 
     def clean(self) -> dict[str, Any] | None:
         cleaned_data = super().clean()
@@ -47,5 +56,12 @@ class RegistrationForm(forms.Form):
     def save(self) -> User:
         return User.objects.create_user(
             username=self.cleaned_data['username'],
+            email=self.cleaned_data['email'],
             password=self.cleaned_data['password1'],
         )
+
+
+class EmailResendForm(forms.Form):
+    email = forms.EmailField(
+        label=_('Email'),
+    )

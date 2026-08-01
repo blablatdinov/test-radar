@@ -6,9 +6,6 @@ SPDX-License-Identifier: MIT
 {% load i18n %}
 {% block title %}{% trans "Register" %} — Test radar{% endblock %}
 {% block content %}
-<!--
-TODO #6:30min Save and validate email
--->
 <div class="max-w-md mx-auto px-3">
   <div class="bg-white dark:bg-gray-800 rounded shadow p-6 space-y-4">
     <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{% trans "Register" %}</h1>
@@ -37,6 +34,21 @@ TODO #6:30min Save and validate email
         />
         {% if form.username.errors %}
         <p class="text-red-600 dark:text-red-400 text-sm mt-1">{{ form.username.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_email" class="block text-sm text-gray-700 dark:text-gray-300 mb-1">{% trans "Email" %}</label>
+        <input
+          type="email"
+          name="email"
+          id="id_email"
+          value="{{ form.email.value|default:'' }}"
+          required
+          class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:text-gray-100"
+        />
+        {% if form.email.errors %}
+        <p class="text-red-600 dark:text-red-400 text-sm mt-1">{{ form.email.errors.0 }}</p>
         {% endif %}
       </div>
 

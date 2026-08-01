@@ -14,7 +14,27 @@ from records.srv import token as token_srv
 
 @pytest.fixture
 def user() -> User:
-    return User.objects.create_user(username='testuser', password='test-password-123')  # noqa: S106
+    return User.objects.create_user(
+        username='testuser',
+        email='testuser@example.com',
+        password='test-password-123',  # noqa: S106
+    )
+
+
+@pytest.fixture
+def verified_user(user: User) -> User:
+    user.is_email_verified = True
+    user.save(update_fields=['is_email_verified'])
+    return user
+
+
+@pytest.fixture
+def unverified_user() -> User:
+    return User.objects.create_user(
+        username='unverified',
+        email='unverified@example.com',
+        password='test-password-123',  # noqa: S106
+    )
 
 
 @pytest.fixture
