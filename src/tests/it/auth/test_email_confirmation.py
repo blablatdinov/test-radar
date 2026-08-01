@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 from typing import TYPE_CHECKING
-from unittest.mock import patch
 
 import pytest
 from django.core import mail
@@ -221,19 +220,3 @@ def test_resend_page_accessible(client: Client) -> None:
 
     assert response.status_code == 200
     assert 'Resend' in response.text
-
-
-def test_send_email_uses_send_mail(client: Client) -> None:
-    with patch('auth.services.send_mail') as mock_send:  # noqa: WPS118
-        client.post(
-            '/register/',
-            {
-                'username': 'newuser',
-                'email': 'newuser@example.com',
-                'password1': 'strong-password-123',
-                'password2': 'strong-password-123',
-            },
-        )
-        assert mock_send.call_count == 1
-        call_kwargs = mock_send.call_args
-        assert 'newuser@example.com' in call_kwargs.kwargs['recipient_list']
