@@ -92,6 +92,29 @@ def test_bulk_create_not_n_plus_one(
     assert response.json() == {'created': 20}
 
 
+def test_label_max_length(client: Client, agent: Agent, agent_token: str) -> None:
+    response = client.post(
+        '/api/v1/test_record/bulk_create/',
+        content_type='application/json',
+        data={
+            'session_id': str(uuid.uuid4()),
+            'records': [
+                {
+                    'label': 't' * 5120,
+                    'timestamp': datetime.datetime.now(tz=datetime.UTC).isoformat(),
+                    'logs': '',
+                    'success': True,
+                    'branch': 'main',
+                    'commit': 'abc123def456',
+                },
+            ],
+        },
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+    )
+
+    assert response.status_code == 201, response.content
+
+
 def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
