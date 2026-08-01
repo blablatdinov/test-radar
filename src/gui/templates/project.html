@@ -180,7 +180,7 @@ SPDX-License-Identifier: MIT
     <table class="text-sm text-left border-collapse">
       <thead class="text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
         <tr>
-          <th class="py-2 pr-4 whitespace-nowrap">{% trans "Test" %}</th>
+          <th class="py-2 pr-4 max-w-[300px]">{% trans "Test" %}</th>
           {% for col in records.columns %}
           <th data-column-name class="py-2 px-2 text-center font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
             <a href="{% url 'session_detail' col.pk %}" class="hover:underline">{{ col.date }} {{ col.time }}</a>
@@ -191,7 +191,7 @@ SPDX-License-Identifier: MIT
       <tbody>
         {% for row in records.rows %}
         <tr class="border-b border-gray-100 dark:border-gray-700">
-          <td class="py-2 pr-4 whitespace-nowrap">
+          <td class="py-2 pr-4 max-w-[300px] break-words">
             <a href="{% url 'test_history' project.guid %}?label={{ row.label|urlencode }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ row.label }}</a>
           </td>
           {% for cell in row.cells %}
