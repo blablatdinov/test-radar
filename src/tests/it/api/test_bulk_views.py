@@ -5,6 +5,7 @@ import base64
 import datetime
 import uuid
 from compression import zstd
+from typing import TYPE_CHECKING
 
 import pytest
 from django.test import Client
@@ -13,6 +14,9 @@ from model_bakery import baker
 
 from records.models import Agent, ApiToken, TestRecord, TestSession
 from records.srv import token as token_srv
+
+if TYPE_CHECKING:
+    from pytest_django import DjangoAssertNumQueries
 
 pytestmark = [
     pytest.mark.django_db,
@@ -53,6 +57,39 @@ def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> 
     assert response.status_code == 201, response.content
     assert response.json() == {'created': 2}
     assert TestRecord.objects.count() == 2
+
+
+@pytest.mark.n_plus_one('api_bulk_create_test')
+def test_bulk_create_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    agent: Agent,
+    agent_token: str,
+) -> None:
+    timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
+    session_id = uuid.uuid4()
+    records = [
+        {
+            'label': f'tests/test.py::test_{idx}',
+            'timestamp': timestamp,
+            'logs': '',
+            'success': True,
+            'branch': 'main',
+            'commit': 'abc123',
+        }
+        for idx in range(20)
+    ]
+
+    with django_assert_max_num_queries(11):
+        response = client.post(
+            '/api/v1/test_record/bulk_create/',
+            content_type='application/json',
+            data={'session_id': str(session_id), 'records': records},
+            HTTP_AUTHORIZATION=f'Token {agent_token}',
+        )
+
+    assert response.status_code == 201, response.content
+    assert response.json() == {'created': 20}
 
 
 def test_label_max_length(client: Client, agent: Agent, agent_token: str) -> None:
