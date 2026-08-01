@@ -4,6 +4,8 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
+from django.shortcuts import get_object_or_404
+
 from records.models import TestRecord, TestSession
 
 if TYPE_CHECKING:
@@ -77,3 +79,7 @@ def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     records = TestRecord.objects.filter(**_build_filters(project_id, request))
     records = records.select_related('session').order_by('timestamp')
     return {'records': _build_matrix(records)}
+
+
+def record_by_id(record_id: str) -> dict[str, TestRecord]:
+    return {'record': get_object_or_404(TestRecord, pk=record_id)}

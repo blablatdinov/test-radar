@@ -285,3 +285,13 @@ def test_project_not_found(client: Client, user: User) -> None:
     response = client.get(f'/project/{uuid.uuid4()}')
 
     assert response.status_code == 404
+
+
+def test_record_not_found(
+    client: Client,
+    user: User,
+) -> None:
+    client.force_login(user)
+    response = client.get(f'/test/{uuid.uuid4()}')
+
+    assert response.status_code == 404
