@@ -6,7 +6,7 @@ name = "test-radar"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12,<4"
+requires-python = ">=3.14,<4"
 dependencies = [
     "django==6.0.7",
     "djangorestframework==3.17.1",
@@ -18,7 +18,6 @@ dependencies = [
     "bcrypt==4.3.0",
     "psycopg[binary]>=3.2,<4",
     "whitenoise[brotli]>=6.12.0",
-    "zstandard>=0.23.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -79,7 +78,9 @@ ignore = [
   "TD004",
   "UP022",
   "UP030",
-  "UP032"
+  "UP032",
+  "TC002",
+  "TC003",
 ]
 exclude = [
   "manage.py",
@@ -90,7 +91,7 @@ external = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"src/tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101", "S106"]
+"src/tests/**/*.py" = ["ARG001", "FLY002", "PERF401", "PLR2004", "S101", "S106"]
 
 [tool.ruff.format]
 quote-style = "single"

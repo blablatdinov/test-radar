@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pytest
-from django.test import Client
 from django.urls import reverse
 
 from auth.models import User
+
+if TYPE_CHECKING:
+    from django.test import Client
 
 pytestmark = [
     pytest.mark.django_db,

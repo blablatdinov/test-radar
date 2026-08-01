@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 import secrets
+from compression import zstd
 
-import zstandard
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -148,4 +148,4 @@ class TestRecord(models.Model):
     def decompressed_logs(self) -> str:
         if not self.logs:
             return ''
-        return zstandard.ZstdDecompressor().decompress(self.logs).decode('utf-8')
+        return zstd.decompress(self.logs).decode('utf-8')

@@ -1,10 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from collections.abc import Iterable
+
+from typing import TYPE_CHECKING
 
 from django.urls import get_resolver
 from django.urls.resolvers import URLPattern, URLResolver
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 _EXCLUDED_NAMESPACES: frozenset[str] = frozenset(('admin', 'djdt'))
 

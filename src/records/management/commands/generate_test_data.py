@@ -7,10 +7,10 @@ import argparse
 import datetime
 import secrets
 import uuid
+from compression import zstd
 from dataclasses import dataclass, field
 from typing import Any
 
-import zstandard
 from django.core.management.base import BaseCommand
 from model_bakery import baker
 
@@ -120,7 +120,7 @@ _DEFAULT_RUNS_PER_PROJECT = 30
 
 
 def _compress_logs(text: str) -> bytes:
-    return zstandard.ZstdCompressor().compress(text.encode())
+    return zstd.compress(text.encode())
 
 
 def _random_commit() -> str:
@@ -156,7 +156,7 @@ class _TestSuite:
     flaky: list[str] = field(default_factory=list)
 
     @classmethod
-    def from_labels(cls) -> '_TestSuite':
+    def from_labels(cls) -> _TestSuite:
         labels = list(_TEST_LABELS)
         stable_fail = _pop_random(labels, _STABLE_FAIL_COUNT)
         flaky = _pop_random(labels, _FLAKY_COUNT)
@@ -268,7 +268,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: Any, **options: Any) -> None:
-        username = input("Input an username for the data agent: ")
+        username = input('Input an username for the data agent: ')
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:

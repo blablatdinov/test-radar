@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: MIT
 
 from collections import defaultdict
-from typing import Any
-
-from django.db.models import QuerySet
-from django.http.request import HttpRequest
+from typing import TYPE_CHECKING, Any
 
 from records.models import TestRecord, TestSession
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
+    from django.http.request import HttpRequest
 
 ColIndex = dict[TestSession, int]
 RecordMatrix = dict[str, dict[int, TestRecord]]
@@ -72,12 +73,8 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
 
 
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
-    records = (
-        TestRecord.objects
-        .filter(**_build_filters(project_id, request))
-        .select_related('session')
-        .order_by('timestamp')
-    )
+    records = TestRecord.objects.filter(**_build_filters(project_id, request))
+    records = records.select_related('session').order_by('timestamp')
     return {'records': _build_matrix(records)}
 
 

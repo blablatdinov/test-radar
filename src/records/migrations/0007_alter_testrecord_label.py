@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('records', '0006_alter_testrecord_id_testsession_testrecord_session'),
     ]

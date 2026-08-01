@@ -3,12 +3,15 @@
 
 import datetime
 import logging
+from typing import TYPE_CHECKING
 
-from django.http import HttpRequest
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 from records.srv.token import verify_token
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest
 
 _TOKEN_PREFIX = 'Token '
 _INVALID_TOKEN_MSG = 'Invalid agent token.'
@@ -26,7 +29,7 @@ class AgentTokenAuthentication(BaseAuthentication):
         header = request.META.get('HTTP_AUTHORIZATION', '')
         if not header.startswith(_TOKEN_PREFIX):
             return None
-        raw_token = header[len(_TOKEN_PREFIX):].strip()
+        raw_token = header[len(_TOKEN_PREFIX) :].strip()
         client_ip = request.META.get(_REMOTE_ADDR_KEY)
         if not raw_token:
             logger.warning('Empty token in Authorization header from %s', client_ip)

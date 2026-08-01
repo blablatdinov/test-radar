@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('records', '0002_project_and_testrecord_project'),
         ('records', '0002_testrecord_branch_testrecord_commit'),
     ]
 
-    operations = [
-    ]
+    operations = []

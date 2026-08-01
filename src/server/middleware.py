@@ -1,12 +1,17 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from collections.abc import Callable
+
+from typing import TYPE_CHECKING
 
 from django.conf import settings
-from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from django.http import HttpRequest, HttpResponse
 
 PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
 

@@ -9,7 +9,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('records', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -22,7 +21,15 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, verbose_name='Name')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='projects', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
+                (
+                    'owner',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='projects',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Owner',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Project',
@@ -32,6 +39,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='testrecord',
             name='project',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='records', to='records.project', verbose_name='Project'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='records',
+                to='records.project',
+                verbose_name='Project',
+            ),
         ),
     ]
