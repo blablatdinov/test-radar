@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     REGISTRATION_ENABLED=(bool, False),
+    EMAIL_BACKEND=(str, 'anymail.backends.brevo.EmailBackend'),
 )
 environ.Env.read_env(BASE_DIR.parent / '.env')
 
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'anymail',
     'rest_framework',
     'debug_toolbar',
     'axes',
@@ -128,6 +130,12 @@ AXES_RESET_ON_SUCCESS = True
 AXES_RESET_COOL_OFF_ON_FAILURE_DURING_LOCKOUT = True
 
 RATELIMIT_ENABLE = env('RATELIMIT_ENABLE', default=True)
+
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@testradar.local')
+ANYMAIL = {
+    'BREVO_API_KEY': env('BREVO_API_KEY', default=''),
+}
 
 
 # Internationalization

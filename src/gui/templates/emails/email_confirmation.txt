@@ -1,0 +1,7 @@
+{% load i18n %}{% blocktranslate %}Hello!
+
+Confirm your email address by clicking the link below:
+
+{{ confirmation_url }}
+
+If you did not register, you can ignore this email.{% endblocktranslate %}

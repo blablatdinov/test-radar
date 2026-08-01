@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 15:17+0300\n"
+"POT-Creation-Date: 2026-08-01 15:33+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -19,6 +19,9 @@ msgstr ""
 msgid "Username"
 msgstr "Username"
 
+msgid "Email"
+msgstr "Email"
+
 msgid "Password"
 msgstr "Password"
 
@@ -28,17 +31,50 @@ msgstr "Confirm password"
 msgid "A user with this username already exists."
 msgstr "A user with this username already exists."
 
+msgid "A user with this email already exists."
+msgstr "A user with this email already exists."
+
 msgid "Passwords do not match."
 msgstr "Passwords do not match."
 
 msgid "Is staff"
 msgstr "Is staff"
 
+msgid "Email verified"
+msgstr "Email verified"
+
 msgid "User"
 msgstr "User"
 
 msgid "Users"
 msgstr "Users"
+
+msgid "Token"
+msgstr "Token"
+
+msgid "Created at"
+msgstr "Created at"
+
+msgid "Expired at"
+msgstr "Expired at"
+
+msgid "Email confirmation token"
+msgstr "Email confirmation token"
+
+msgid "Email confirmation tokens"
+msgstr "Email confirmation tokens"
+
+msgid "Please confirm your email address to log in."
+msgstr "Please confirm your email address to log in."
+
+msgid "Confirm your email address"
+msgstr "Confirm your email address"
+
+msgid "Your email has been confirmed. You can now log in."
+msgstr "Your email has been confirmed. You can now log in."
+
+msgid "The confirmation link is invalid or has expired."
+msgstr "The confirmation link is invalid or has expired."
 
 msgid "Tests"
 msgstr "Tests"
@@ -54,6 +90,42 @@ msgstr "Log in"
 
 msgid "Register"
 msgstr "Register"
+
+msgid "Email sent"
+msgstr "Email sent"
+
+msgid "Check your email"
+msgstr "Check your email"
+
+msgid "We have sent a confirmation link to your email address. Click the link to activate your account."
+msgstr "We have sent a confirmation link to your email address. Click the link to activate your account."
+
+msgid "Resend confirmation email"
+msgstr "Resend confirmation email"
+
+msgid "Send"
+msgstr "Send"
+
+msgid "Back to login"
+msgstr "Back to login"
+
+#, python-format
+msgid ""
+"Hello!\n"
+"\n"
+"Confirm your email address by clicking the link below:\n"
+"\n"
+"%(confirmation_url)s\n"
+"\n"
+"If you did not register, you can ignore this email."
+msgstr ""
+"Hello!\n"
+"\n"
+"Confirm your email address by clicking the link below:\n"
+"\n"
+"%(confirmation_url)s\n"
+"\n"
+"If you did not register, you can ignore this email."
 
 msgid "Projects"
 msgstr "Projects"
@@ -130,12 +202,6 @@ msgstr "Local"
 
 msgid "Create agent"
 msgstr "Create agent"
-
-msgid "Token"
-msgstr "Token"
-
-msgid "Created at"
-msgstr "Created at"
 
 msgid "Actions"
 msgstr "Actions"

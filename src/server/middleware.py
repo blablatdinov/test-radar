@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponse
 
 PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
+_EMAIL_PUBLIC_PREFIX = '/email/'
 
 
 class AuthRequiredMiddleware:
@@ -31,10 +32,14 @@ class AuthRequiredMiddleware:
         return redirect('login')
 
     def _is_public(self, path: str) -> bool:
-        return path in self._public_paths or path.startswith(PUBLIC_PREFIXES)
+        if path in self._public_paths or path.startswith(PUBLIC_PREFIXES):
+            return True
+        return settings.REGISTRATION_ENABLED and path.startswith(_EMAIL_PUBLIC_PREFIX)
 
     def _build_public_paths(self) -> frozenset[str]:
         paths = [reverse('login'), reverse('logout')]
         if settings.REGISTRATION_ENABLED:
             paths.append(reverse('register'))
+            paths.append(reverse('email_confirmation_sent'))
+            paths.append(reverse('email_resend'))
         return frozenset(paths)
