@@ -7,10 +7,10 @@ import argparse
 import datetime
 import secrets
 import uuid
+from compression import zstd
 from dataclasses import dataclass, field
 from typing import Any
 
-import zstandard
 from django.core.management.base import BaseCommand
 from model_bakery import baker
 
@@ -120,7 +120,7 @@ _DEFAULT_RUNS_PER_PROJECT = 30
 
 
 def _compress_logs(text: str) -> bytes:
-    return zstandard.ZstdCompressor().compress(text.encode())
+    return zstd.compress(text.encode())
 
 
 def _random_commit() -> str:
