@@ -45,6 +45,11 @@ def test_session(project: Project) -> TestSession:
         id=uuid.uuid4(),
         project=project,
         started_at=datetime.datetime.now(tz=datetime.UTC),
+        os='linux',
+        os_version='6.6.0',
+        arch='x64',
+        branch='main',
+        commit_hash='abc123def456',
     )
 
 

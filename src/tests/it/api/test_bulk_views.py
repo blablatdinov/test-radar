@@ -23,6 +23,17 @@ pytestmark = [
 ]
 
 
+def _environment() -> dict[str, str]:
+    return {'os': 'linux', 'os_version': '6.6.0', 'arch': 'x64'}
+
+
+def _context() -> dict[str, str]:
+    return {'branch': 'main', 'commit_hash': 'abc123def456'}
+
+
+_STARTED_AT = '2026-07-28T10:00:00Z'
+
+
 def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> None:
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
     session_id = uuid.uuid4()
@@ -32,22 +43,21 @@ def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> 
         content_type='application/json',
         data={
             'session_id': str(session_id),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test_sample.py::test_pass',
                     'timestamp': timestamp,
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123def456',
                 },
                 {
                     'label': 'tests/test_sample.py::test_fail',
                     'timestamp': timestamp,
                     'logs': base64.b64encode(zstd.compress(b'assert error')).decode(),
                     'success': False,
-                    'branch': 'main',
-                    'commit': 'abc123def456',
                 },
             ],
         },
@@ -74,8 +84,6 @@ def test_bulk_create_not_n_plus_one(
             'timestamp': timestamp,
             'logs': '',
             'success': True,
-            'branch': 'main',
-            'commit': 'abc123',
         }
         for idx in range(20)
     ]
@@ -84,7 +92,13 @@ def test_bulk_create_not_n_plus_one(
         response = client.post(
             '/api/v1/test_record/bulk_create/',
             content_type='application/json',
-            data={'session_id': str(session_id), 'records': records},
+            data={
+                'session_id': str(session_id),
+                'started_at': _STARTED_AT,
+                'environment': _environment(),
+                'context': _context(),
+                'records': records,
+            },
             HTTP_AUTHORIZATION=f'Token {agent_token}',
         )
 
@@ -98,14 +112,15 @@ def test_label_max_length(client: Client, agent: Agent, agent_token: str) -> Non
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 't' * 5120,
                     'timestamp': datetime.datetime.now(tz=datetime.UTC).isoformat(),
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123def456',
                 },
             ],
         },
@@ -121,6 +136,9 @@ def test_bulk_create_empty_records(client: Client, agent_token: str) -> None:
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [],
         },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
@@ -134,7 +152,12 @@ def test_bulk_create_missing_records_key(client: Client, agent_token: str) -> No
     response = client.post(
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
-        data={'session_id': str(uuid.uuid4())},
+        data={
+            'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
+        },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
     )
 
@@ -147,6 +170,9 @@ def test_bulk_create_missing_session_id(client: Client, agent_token: str) -> Non
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}],
         },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
@@ -162,6 +188,8 @@ def test_bulk_create_invalid_session_id(client: Client, agent_token: str) -> Non
         content_type='application/json',
         data={
             'session_id': 'not-a-uuid',
+            'environment': _environment(),
+            'context': _context(),
             'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}],
         },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
@@ -177,6 +205,9 @@ def test_bulk_create_invalid_token(client: Client) -> None:
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}],
         },
         HTTP_AUTHORIZATION='Token ci_invalid_token',
@@ -192,6 +223,9 @@ def test_bulk_create_missing_auth_header(client: Client) -> None:
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}],
         },
     )
@@ -207,6 +241,9 @@ def test_bulk_create_expired_token_rejected(client: Client, agent: Agent) -> Non
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [{'label': 'x', 'timestamp': '2026-01-01T00:00:00Z', 'success': True, 'logs': ''}],
         },
         HTTP_AUTHORIZATION=f'Token {raw_token}',
@@ -221,6 +258,9 @@ def test_bulk_create_record_without_label(client: Client, agent_token: str) -> N
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'timestamp': '2026-07-28T12:00:00Z',
@@ -243,8 +283,6 @@ def test_bulk_create_exceeds_limit(client: Client, agent_token: str) -> None:
             'timestamp': '2026-07-28T12:00:00Z',
             'success': True,
             'logs': '',
-            'branch': 'main',
-            'commit': 'abc123',
         }
         for idx in range(501)
     ]
@@ -252,7 +290,13 @@ def test_bulk_create_exceeds_limit(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
-        data={'session_id': str(uuid.uuid4()), 'records': records},
+        data={
+            'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
+            'records': records,
+        },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
     )
 
@@ -270,30 +314,27 @@ def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token
         content_type='application/json',
         data={
             'session_id': str(session_id),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test_a.py::test_one',
                     'timestamp': timestamp,
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123',
                 },
                 {
                     'label': 'tests/test_b.py::test_two',
                     'timestamp': timestamp,
                     'logs': '',
                     'success': False,
-                    'branch': 'dev',
-                    'commit': 'def456',
                 },
                 {
                     'label': 'tests/test_c.py::test_three',
                     'timestamp': timestamp,
                     'logs': '',
                     'success': True,
-                    'branch': 'ci',
-                    'commit': 'ci-765',
                 },
             ],
         },
@@ -316,14 +357,15 @@ def test_bulk_create_creates_session(client: Client, agent: Agent, agent_token: 
         content_type='application/json',
         data={
             'session_id': str(session_id),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test.py::test_session_creation',
                     'timestamp': '2026-07-28T12:00:00Z',
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123',
                 },
             ],
         },
@@ -334,26 +376,72 @@ def test_bulk_create_creates_session(client: Client, agent: Agent, agent_token: 
     db_session = TestSession.objects.get()
     assert db_session.id == session_id
     assert db_session.project == agent.project
-    assert db_session.started_at is not None
+    expected_started_at = datetime.datetime(2026, 7, 28, 10, 0, tzinfo=datetime.UTC)
+    assert db_session.started_at == expected_started_at
+
+
+def test_bulk_create_session_env_context(
+    client: Client,
+    agent_token: str,
+) -> None:
+    session_id = uuid.uuid4()
+    response = client.post(
+        '/api/v1/test_record/bulk_create/',
+        content_type='application/json',
+        data={
+            'session_id': str(session_id),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
+            'records': [
+                {
+                    'label': 'tests/test.py::test_env_context',
+                    'timestamp': '2026-07-28T12:00:00Z',
+                    'logs': '',
+                    'success': True,
+                },
+            ],
+        },
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+    )
+    session = TestSession.objects.get()
+
+    assert response.status_code == 201
+    assert session.id == session_id
+    expected_started_at = datetime.datetime(2026, 7, 28, 10, 0, tzinfo=datetime.UTC)
+    assert session.started_at == expected_started_at
+    assert (session.os, session.os_version, session.arch) == ('linux', '6.6.0', 'x64')
+    assert (session.branch, session.commit_hash) == ('main', 'abc123def456')
 
 
 def test_bulk_create_reuses_existing_session(client: Client, agent: Agent, agent_token: str) -> None:
     session_id = uuid.uuid4()
-    baker.make(TestSession, id=session_id, project=agent.project, started_at=timezone.now())
+    baker.make(
+        TestSession,
+        id=session_id,
+        project=agent.project,
+        started_at=timezone.now(),
+        os='linux',
+        os_version='6.6.0',
+        arch='x64',
+        branch='main',
+        commit_hash='abc123def456',
+    )
 
     response = client.post(
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'session_id': str(session_id),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test.py::test_reuse',
                     'timestamp': '2026-07-28T12:00:00Z',
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123',
                 },
             ],
         },
@@ -374,14 +462,15 @@ def test_bulk_create_binds_agent_and_project(client: Client, agent: Agent, agent
         content_type='application/json',
         data={
             'session_id': str(session_id),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test.py::test_project_binding',
                     'timestamp': '2026-07-28T12:00:00Z',
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123',
                 },
             ],
         },
@@ -400,6 +489,9 @@ def test_bulk_create_atomic_on_validation_error(client: Client, agent_token: str
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test_a.py::test_one',
@@ -434,14 +526,15 @@ def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test.py::test_fail',
                     'timestamp': timestamp,
                     'logs': compressed,
                     'success': False,
-                    'branch': 'main',
-                    'commit': 'abc123',
                 },
             ],
         },
@@ -459,14 +552,15 @@ def test_bulk_create_single_record(client: Client, agent_token: str) -> None:
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': _context(),
             'records': [
                 {
                     'label': 'tests/test.py::test_single',
                     'timestamp': '2026-07-28T12:00:00Z',
                     'logs': '',
                     'success': True,
-                    'branch': 'main',
-                    'commit': 'abc123',
                 },
             ],
         },
@@ -486,25 +580,75 @@ def _create_expired_token(agent: Agent) -> str:
     return raw_token
 
 
-@pytest.mark.parametrize('field', ['branch', 'commit'])
+@pytest.mark.parametrize('field', ['branch', 'commit_hash'])
 def test_empty_branch_commit(client: Client, agent_token: str, field: str) -> None:
-    record = {
-        'label': 'tests/test.py::test_single',
-        'timestamp': '2026-07-28T12:00:00Z',
-        'logs': '',
-        'success': True,
-        'branch': 'fake',
-        'commit': 'fake',
-    }
-    record[field] = ''
+    context = {'branch': 'main', 'commit_hash': 'abc123'}
+    context[field] = ''
     response = client.post(
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
-            'records': [record],
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'context': context,
+            'records': [
+                {
+                    'label': 'tests/test.py::test_single',
+                    'timestamp': '2026-07-28T12:00:00Z',
+                    'logs': '',
+                    'success': True,
+                },
+            ],
         },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
     )
 
     assert response.status_code == 400
+
+
+def test_bulk_create_missing_environment(client: Client, agent_token: str) -> None:
+    response = client.post(
+        '/api/v1/test_record/bulk_create/',
+        content_type='application/json',
+        data={
+            'session_id': str(uuid.uuid4()),
+            'context': _context(),
+            'records': [
+                {
+                    'label': 'tests/test.py::test_missing_env',
+                    'timestamp': '2026-07-28T12:00:00Z',
+                    'logs': '',
+                    'success': True,
+                },
+            ],
+        },
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+    )
+
+    assert response.status_code == 400
+    assert 'environment' in response.json()
+
+
+def test_bulk_create_missing_context(client: Client, agent_token: str) -> None:
+    response = client.post(
+        '/api/v1/test_record/bulk_create/',
+        content_type='application/json',
+        data={
+            'session_id': str(uuid.uuid4()),
+            'started_at': _STARTED_AT,
+            'environment': _environment(),
+            'records': [
+                {
+                    'label': 'tests/test.py::test_missing_ctx',
+                    'timestamp': '2026-07-28T12:00:00Z',
+                    'logs': '',
+                    'success': True,
+                },
+            ],
+        },
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+    )
+
+    assert response.status_code == 400
+    assert 'context' in response.json()

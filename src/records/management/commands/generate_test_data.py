@@ -191,6 +191,13 @@ class _RunContext:
     branch: str
     commit: str
     agent: Agent | None
+    os: str
+    os_version: str
+    arch: str
+
+
+_OS_CHOICES = ('linux', 'windows', 'macos')
+_ARCH_CHOICES = ('x64', 'arm64')
 
 
 def _make_run_context(agents: list[Agent], now: datetime.datetime) -> _RunContext:
@@ -203,6 +210,9 @@ def _make_run_context(agents: list[Agent], now: datetime.datetime) -> _RunContex
         branch=_pick_branch(),
         commit=_random_commit(),
         agent=secrets.choice(agents) if agents else None,
+        os=secrets.choice(_OS_CHOICES),
+        os_version='10.0.19045',
+        arch=secrets.choice(_ARCH_CHOICES),
     )
 
 
@@ -219,6 +229,11 @@ def _make_single_run(
         id=uuid.uuid4(),
         project=project,
         started_at=datetime.datetime.now(tz=datetime.UTC),
+        os=ctx.os,
+        os_version=ctx.os_version,
+        arch=ctx.arch,
+        branch=ctx.branch,
+        commit_hash=ctx.commit,
     )
     for label in suite.run_labels():
         success = suite.is_success(label)
@@ -230,8 +245,6 @@ def _make_single_run(
             success=success,
             timestamp=ctx.timestamp,
             logs=_compress_logs(logs),
-            branch=ctx.branch,
-            commit=ctx.commit,
             agent=ctx.agent,
             session=session,
         )
