@@ -53,8 +53,6 @@ def test_all_urls_have_n_plus_one_coverage(covered_url_names: set[str]) -> None:
         'register',
         # TODO #85:30min cover "logout" url with django_assert_max_num_queries
         'logout',
-        # TODO #85:30min cover "agent_token_regenerate" url with django_assert_max_num_queries
-        'agent_token_regenerate',
     }
     uncovered = all_names - temporary_excluded - covered_url_names
     assert not uncovered, f'URLs without N+1 coverage: {sorted(uncovered)}'
