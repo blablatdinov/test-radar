@@ -280,7 +280,7 @@ def test_template(
     assert len(tree.xpath('//th[@data-column-name]')) == 2
 
 
-def test_project_not_found(client, user):
+def test_project_not_found(client: Client, user: User) -> None:
     client.force_login(user)
     response = client.get(f'/project/{uuid.uuid4()}')
 
