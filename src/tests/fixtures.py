@@ -73,3 +73,13 @@ def filled_project(user: User) -> Project:
             records.append(baker.prepare(TestRecord, session=session, project=project))
     TestRecord.objects.bulk_create(records)
     return project
+
+
+@pytest.fixture
+def filled_session(project: Project) -> TestSession:
+    session = baker.make(TestSession, project=project)
+    records: list[TestRecord] = []
+    for _ in range(15):
+        records.append(baker.prepare(TestRecord, session=session, project=project))
+    TestRecord.objects.bulk_create(records)
+    return session

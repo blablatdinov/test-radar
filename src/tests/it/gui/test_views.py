@@ -200,6 +200,20 @@ def test_test_info_not_n_plus_one(
     assert response.status_code == 200
 
 
+@pytest.mark.n_plus_one('session_detail')
+def test_session_detail_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_session: TestSession,
+    user: User,
+) -> None:
+    client.force_login(user)
+    with django_assert_max_num_queries(4):
+        response = client.get(f'/session/{filled_session.pk}')
+
+    assert response.status_code == 200
+
+
 @pytest.mark.n_plus_one('project_create')
 def test_project_create_not_n_plus_one(
     client: Client,
