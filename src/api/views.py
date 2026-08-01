@@ -7,7 +7,6 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from django.db import transaction
-from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,8 +15,6 @@ from records.models import ApiToken, TestRecord, TestSession
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
-
-_TOKEN_KEYWORD = 'Token'
 
 logger = logging.getLogger('api.views')
 
@@ -38,9 +35,19 @@ class BulkCreateTestRecordView(APIView):
                 status=HTTPStatus.BAD_REQUEST.value,
             )
         validated_data = serializer.validated_data
+        environment = validated_data['environment']
+        context = validated_data['context']
         session, _ = TestSession.objects.get_or_create(
             id=validated_data['session_id'],
-            defaults={'project': request.auth.agent.project, 'started_at': timezone.now()},
+            defaults={
+                'project': request.auth.agent.project,
+                'started_at': validated_data['started_at'],
+                'os': environment['os'],
+                'os_version': environment['os_version'],
+                'arch': environment['arch'],
+                'branch': context['branch'],
+                'commit_hash': context['commit_hash'],
+            },
         )
         records_data = validated_data['records']
         test_records = [
@@ -49,8 +56,6 @@ class BulkCreateTestRecordView(APIView):
                 timestamp=record_data['timestamp'],
                 success=record_data['success'],
                 logs=base64.b64decode(record_data['logs']) if record_data['logs'] else b'',
-                branch=record_data['branch'],
-                commit=record_data['commit'],
                 agent=request.auth.agent,
                 project=request.auth.agent.project,
                 session=session,

@@ -22,6 +22,11 @@ _TIMESTAMP: Final = 'timestamp'
 _SUCCESS: Final = 'success'
 _ID: Final = 'id'
 _STARTED_AT: Final = 'started_at'
+_OS: Final = 'os'
+_OS_VERSION: Final = 'os_version'
+_ARCH: Final = 'arch'
+_BRANCH: Final = 'branch'
+_COMMIT_HASH: Final = 'commit_hash'
 
 
 @admin.register(Project)
@@ -50,5 +55,5 @@ class TestRecordAdmin(admin.ModelAdmin):
 
 @admin.register(TestSession)
 class TestSessionAdmin(admin.ModelAdmin):
-    search_fields = [_STARTED_AT, _PROJECT]
-    list_display = [_ID, _PROJECT, _STARTED_AT]
+    search_fields = [_STARTED_AT, _PROJECT, _BRANCH, _COMMIT_HASH]
+    list_display = [_ID, _PROJECT, _STARTED_AT, _OS, _ARCH, _BRANCH, _COMMIT_HASH]

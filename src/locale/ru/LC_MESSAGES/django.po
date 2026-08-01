@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 14:04+0300\n"
+"POT-Creation-Date: 2026-08-01 15:17+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -236,6 +236,25 @@ msgstr "API токены"
 msgid "Started at"
 msgstr "Начало"
 
+msgid "OS"
+msgstr ""
+
+#, fuzzy
+#| msgid "Session"
+msgid "OS version"
+msgstr "Сессия"
+
+msgid "Architecture"
+msgstr ""
+
+msgid "Git branch"
+msgstr "Git ветка"
+
+#, fuzzy
+#| msgid "Git commit"
+msgid "Git commit hash"
+msgstr "Git коммит"
+
 msgid "Test session"
 msgstr "Тестовая сессия"
 
@@ -247,12 +266,6 @@ msgstr "Метка"
 
 msgid "Logs"
 msgstr "Логи"
-
-msgid "Git branch"
-msgstr "Git ветка"
-
-msgid "Git commit"
-msgstr "Git коммит"
 
 msgid "Test record"
 msgstr "Запись теста"

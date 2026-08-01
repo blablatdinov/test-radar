@@ -24,5 +24,7 @@ class SessionView(TemplateView):
             pk=kwargs['session_id'],
             project__owner=self.request.user,
         )
-        records = TestRecord.objects.filter(session=session).select_related('agent').order_by('timestamp')
+        records = (
+            TestRecord.objects.filter(session=session).select_related('agent', 'session').order_by('timestamp')
+        )
         return {'session': session, 'records': records}

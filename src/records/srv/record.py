@@ -67,7 +67,7 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
     if get.get('agent'):
         filters['agent_id'] = get['agent']
     if get.get('branch'):
-        filters['branch__icontains'] = get['branch']
+        filters['session__branch__icontains'] = get['branch']
     if get.get('session'):
         filters['session_id'] = get['session']
     return filters

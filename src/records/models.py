@@ -95,6 +95,11 @@ class TestSession(models.Model):
         verbose_name=_('Project'),
     )
     started_at = models.DateTimeField(_('Started at'))
+    os = models.CharField(_('OS'), max_length=50)
+    os_version = models.CharField(_('OS version'), max_length=100)
+    arch = models.CharField(_('Architecture'), max_length=20)
+    branch = models.CharField(_('Git branch'), max_length=512)
+    commit_hash = models.CharField(_('Git commit hash'), max_length=40)
 
     class Meta:
         verbose_name = _('Test session')
@@ -122,8 +127,6 @@ class TestRecord(models.Model):
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
     logs = models.BinaryField(_('Logs'), blank=True)
-    branch = models.CharField(_('Git branch'), max_length=512)
-    commit = models.CharField(_('Git commit'), max_length=40)
     agent = models.ForeignKey(
         Agent,
         on_delete=models.SET_NULL,
