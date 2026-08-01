@@ -449,7 +449,7 @@ def _create_expired_token(agent: Agent) -> str:
 
 @pytest.mark.parametrize('field', ['branch', 'commit'])
 def test_empty_branch_commit(client: Client, agent_token: str, field: str) -> None:
-    r = {
+    record = {
         'label': 'tests/test.py::test_single',
         'timestamp': '2026-07-28T12:00:00Z',
         'logs': '',
@@ -457,13 +457,13 @@ def test_empty_branch_commit(client: Client, agent_token: str, field: str) -> No
         'branch': 'fake',
         'commit': 'fake',
     }
-    r[field] = ''
+    record[field] = ''
     response = client.post(
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
-            'records': [r],
+            'records': [record],
         },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
     )
