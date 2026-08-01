@@ -79,7 +79,9 @@ ignore = [
   "TD004",
   "UP022",
   "UP030",
-  "UP032"
+  "UP032",
+  "TC002",
+  "TC003",
 ]
 exclude = [
   "manage.py",

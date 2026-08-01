@@ -4,7 +4,6 @@
 import base64
 import datetime
 import uuid
-from typing import TYPE_CHECKING
 
 import pytest
 import zstandard
