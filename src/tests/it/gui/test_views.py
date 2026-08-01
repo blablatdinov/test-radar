@@ -137,6 +137,7 @@ def test_project_create_redirects_anonymous(client: Client) -> None:
     assert response.headers['Location'] == reverse('login')
 
 
+@pytest.mark.n_plus_one('project_detail')
 def test_project_page_not_n_plus_one(
     client: Client,
     filled_project: Project,
@@ -153,7 +154,6 @@ def test_project_page_not_n_plus_one(
 def test_template(
     client: Client,
     one_time_created_records: Project,
-    django_assert_max_num_queries: DjangoAssertNumQueries,
     user: User,
 ) -> None:
     client.force_login(user)
