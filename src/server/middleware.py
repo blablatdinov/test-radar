@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 from collections.abc import Callable
-from http import HTTPStatus
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
-from django.urls import NoReverseMatch, reverse
+from django.urls import reverse
 
 PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
 
@@ -29,9 +29,7 @@ class AuthRequiredMiddleware:
         return path in self._public_paths or path.startswith(PUBLIC_PREFIXES)
 
     def _build_public_paths(self) -> frozenset[str]:
-        paths = {reverse('login'), reverse('logout')}
-        try:
-            paths.add(reverse('register'))
-        except NoReverseMatch:
-            pass
+        paths = [reverse('login'), reverse('logout')]
+        if settings.REGISTRATION_ENABLED:
+            paths.append(reverse('register'))
         return frozenset(paths)
