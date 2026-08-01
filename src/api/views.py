@@ -20,8 +20,6 @@ logger = logging.getLogger('api.views')
 
 
 class BulkCreateTestRecordView(APIView):
-    authentication_classes: list = []
-    permission_classes: list = []
 
     def post(self, request: Request) -> Response:  # noqa: WPS210
         agent = self._authenticate(request)
