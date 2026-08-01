@@ -4,6 +4,7 @@
 from typing import Any
 
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from records.forms import AgentForm
@@ -20,7 +21,7 @@ class ProjectView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
-        project = Project.objects.get(guid=kwargs['guid'], owner=self.request.user)
+        project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import datetime
+import uuid
 from typing import TYPE_CHECKING
 
 import pytest
@@ -277,3 +278,10 @@ def test_template(
 
     assert response.status_code == 200
     assert len(tree.xpath('//th[@data-column-name]')) == 2
+
+
+def test_project_not_found(client: Client, user: User) -> None:
+    client.force_login(user)
+    response = client.get(f'/project/{uuid.uuid4()}')
+
+    assert response.status_code == 404
