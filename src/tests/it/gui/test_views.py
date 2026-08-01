@@ -174,6 +174,20 @@ def test_index_page_not_n_plus_one(
     assert len(tree.xpath('//a[@data-project-link]')) == 15, 'Project list empty'
 
 
+@pytest.mark.n_plus_one('test_info')
+def test_test_info_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    test_record_pk: str,
+    user: User,
+) -> None:
+    client.force_login(user)
+    with django_assert_max_num_queries(3):
+        response = client.get(f'/test/{test_record_pk}')
+
+    assert response.status_code == 200
+
+
 def test_template(
     client: Client,
     one_time_created_records: Project,
