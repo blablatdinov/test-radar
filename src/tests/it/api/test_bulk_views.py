@@ -146,7 +146,7 @@ def test_bulk_create_invalid_token(client: Client) -> None:
     )
 
     assert response.status_code == 401
-    assert response.json()['error'] == 'Invalid token'
+    assert response.text == '{"detail":"Invalid agent token."}'
 
 
 def test_bulk_create_missing_auth_header(client: Client) -> None:

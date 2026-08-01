@@ -95,6 +95,69 @@ POST /api/v1/test_record/bulk_create/
 
 Fields: `label`, `success`, `timestamp`, `logs`, `branch`, `commit`, `session_id`.
 
+## Agent Authentication Flow
+
+Agents authenticate via token-based auth, separate from the web UI session auth.
+
+### 1. Agent & Token Creation
+
+A `CI` or `local` agent is created (via admin or web form) and linked to a `Project` and an owner (`User`). A raw API token is generated via `records.srv.token.create_token_for_agent()`:
+
+- Prefix `ci_` or `dev_` + `secrets.token_urlsafe(32)`
+- Stored as a bcrypt hash (`token_hash`) plus a masked preview (`token_mask`, first 6 and last 3 characters) in the `ApiToken` model
+- The raw token is returned once and never persisted in plaintext
+
+### 2. Request
+
+The agent sends requests with an `Authorization` header:
+
+```
+Authorization: Token ci_<raw_token>
+```
+
+### 3. Middleware
+
+`AuthRequiredMiddleware` allows all `/api/` paths to pass through unchecked — DRF handles authentication and 401 responses.
+
+### 4. DRF Authentication
+
+`DEFAULT_AUTHENTICATION_CLASSES` (in order):
+
+1. **`AgentTokenAuthentication`** — reads the `Token` header, calls `verify_token()` which:
+   - Extracts the prefix (`ci_` / `dev_`), filters `ApiToken` candidates by `token_mask__startswith`
+   - Skips expired tokens (`expires_at`)
+   - Checks the raw token against each candidate's bcrypt hash
+   - On success: updates `last_used_at` / `last_used_ip`, returns `(agent.owner, api_token)` — so `request.user` = agent owner, `request.auth` = `ApiToken`
+   - On invalid token: raises `AuthenticationFailed` → DRF returns `401 {"detail": "Invalid agent token."}`
+   - On missing header: returns `None` (falls through to next class)
+2. **`SessionAuthentication`** — for browser sessions
+3. **`BasicAuthentication`** — HTTP Basic auth
+
+### 5. Permission Check
+
+`DEFAULT_PERMISSION_CLASSES = [IsAuthenticated]` — if no class authenticated the request, DRF returns `401`.
+
+### Flow Diagram
+
+```
+Agent (ci/local) ─┐
+                  ├─ ApiToken (bcrypt hash, token_mask)
+                  │
+create_token_for_agent() ──▶ raw token (ci_xxx / dev_xxx)
+                                    │
+                  Authorization: Token ci_xxx
+                                    │
+                  AuthRequiredMiddleware ──▶ /api/ ──▶ pass through
+                                    │
+                  DRF AgentTokenAuthentication
+                      verify_token() ──▶ (owner, ApiToken)
+                                    │
+                  DRF IsAuthenticated ──▶ request.user = owner
+                                          request.auth = ApiToken
+                                    │
+                  View (e.g. BulkCreateTestRecordView)
+```
+
 ## License
 
 MIT
