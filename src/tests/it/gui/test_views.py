@@ -89,6 +89,30 @@ def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
     assert response.context_data['record'].pk == test_record_pk
 
 
+def test_session_detail(
+    client: Client,
+    user: User,
+    test_record_pk: str,
+    test_session: TestSession,
+) -> None:
+    client.force_login(user)
+
+    response = client.get(f'/session/{test_session.pk}')
+
+    assert response.status_code == 200
+    assert 'test_file.py::test_view' in response.text
+    assert response.context_data is not None
+    assert response.context_data['session'].pk == test_session.pk
+    assert response.context_data['records'] is not None
+
+
+def test_session_detail_redirects_anonymous(client: Client, test_session: TestSession) -> None:
+    response = client.get(f'/session/{test_session.pk}')
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('login')
+
+
 def test_index_redirects_anonymous(client: Client) -> None:
     response = client.get('/')
 
@@ -172,6 +196,20 @@ def test_test_info_not_n_plus_one(
     client.force_login(user)
     with django_assert_max_num_queries(3):
         response = client.get(f'/test/{test_record_pk}')
+
+    assert response.status_code == 200
+
+
+@pytest.mark.n_plus_one('session_detail')
+def test_session_detail_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_session: TestSession,
+    user: User,
+) -> None:
+    client.force_login(user)
+    with django_assert_max_num_queries(4):
+        response = client.get(f'/session/{filled_session.pk}')
 
     assert response.status_code == 200
 

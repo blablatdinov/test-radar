@@ -15,7 +15,6 @@ def populate_guids(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('records', '0008_alter_testrecord_logs'),
     ]
