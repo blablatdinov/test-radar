@@ -4,14 +4,10 @@
 from collections.abc import Callable
 from http import HTTPStatus
 
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
+from django.urls import NoReverseMatch, reverse
 
-PUBLIC_PATHS = frozenset((
-    '/login/',
-    '/logout/',
-    '/register/',
-))
 PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
 
 
@@ -20,23 +16,22 @@ class AuthRequiredMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
+        self._public_paths: frozenset[str] = self._build_public_paths()
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_authenticated or self._is_public(request.path):
             return self.get_response(request)
-        if request.path.startswith('/api/') and self._has_token_auth(request):
-            return self.get_response(request)
         if request.path.startswith('/api/'):
-            if 'HTTP_AUTHORIZATION' in request.META:
-                return self.get_response(request)
-            return JsonResponse(
-                {'detail': 'Authentication credentials were not provided.'},
-                status=HTTPStatus.UNAUTHORIZED.value,
-            )
+            return self.get_response(request)
         return redirect('login')
 
     def _is_public(self, path: str) -> bool:
-        return path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES)
+        return path in self._public_paths or path.startswith(PUBLIC_PREFIXES)
 
-    def _has_token_auth(self, request: HttpRequest) -> bool:
-        return bool(request.headers.get('Authorization', '').startswith('Token '))
+    def _build_public_paths(self) -> frozenset[str]:
+        paths = {reverse('login'), reverse('logout')}
+        try:
+            paths.add(reverse('register'))
+        except NoReverseMatch:
+            pass
+        return frozenset(paths)

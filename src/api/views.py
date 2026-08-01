@@ -22,8 +22,7 @@ logger = logging.getLogger('api.views')
 class BulkCreateTestRecordView(APIView):
 
     def post(self, request: Request) -> Response:  # noqa: WPS210
-        agent = self._authenticate(request)
-        if agent is None:
+        if request.auth.agent is None:
             return Response(
                 {'error': 'Invalid token'},
                 status=HTTPStatus.UNAUTHORIZED.value,
@@ -39,7 +38,7 @@ class BulkCreateTestRecordView(APIView):
         validated_data = serializer.validated_data
         session, _ = TestSession.objects.get_or_create(
             id=validated_data['session_id'],
-            defaults={'project': agent.project, 'started_at': timezone.now()},
+            defaults={'project': request.auth.agent.project, 'started_at': timezone.now()},
         )
         records_data = validated_data['records']
         test_records = [
@@ -50,8 +49,8 @@ class BulkCreateTestRecordView(APIView):
                 logs=record_data['logs'],
                 branch=record_data['branch'],
                 commit=record_data['commit'],
-                agent=agent,
-                project=agent.project,
+                agent=request.auth.agent,
+                project=request.auth.agent.project,
                 session=session,
             )
             for record_data in records_data
@@ -60,13 +59,3 @@ class BulkCreateTestRecordView(APIView):
             TestRecord.objects.bulk_create(test_records)
 
         return Response({'created': len(test_records)}, status=HTTPStatus.CREATED.value)
-
-    def _authenticate(self, request: Request) -> Agent | None:
-        header = request.META.get('HTTP_AUTHORIZATION', '')
-        if not header.startswith(f'{_TOKEN_KEYWORD} '):
-            return None
-        raw_token = header[len(_TOKEN_KEYWORD) + 1:]
-        api_token = verify_token(raw_token)
-        if api_token is None:
-            return None
-        return api_token.agent
