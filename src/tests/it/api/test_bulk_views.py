@@ -415,30 +415,6 @@ def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
     assert record.logs == logs
 
 
-def test_bulk_create_optional_branch_commit(client: Client, agent_token: str) -> None:
-    response = client.post(
-        '/api/v1/test_record/bulk_create/',
-        content_type='application/json',
-        data={
-            'session_id': str(uuid.uuid4()),
-            'records': [
-                {
-                    'label': 'tests/test.py::test_no_git',
-                    'timestamp': '2026-07-28T12:00:00Z',
-                    'logs': '',
-                    'success': True,
-                },
-            ],
-        },
-        HTTP_AUTHORIZATION=f'Token {agent_token}',
-    )
-
-    assert response.status_code == 201
-    record = TestRecord.objects.get(label='tests/test.py::test_no_git')
-    assert record.branch == ''
-    assert record.commit == ''
-
-
 def test_bulk_create_single_record(client: Client, agent_token: str) -> None:
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -472,22 +448,23 @@ def _create_expired_token(agent: Agent) -> str:
     return raw_token
 
 
-def test_empty_branch_commit(client: Client, agent_token: str) -> None:
+@pytset.mark.parametrize('field', ['branch', 'commit'])
+def test_empty_branch_commit(client: Client, agent_token: str, field: str) -> None:
+    r = {
+        'label': 'tests/test.py::test_single',
+        'timestamp': '2026-07-28T12:00:00Z',
+        'logs': '',
+        'success': True,
+        'branch': 'fake',
+        'commit': 'fake',
+    }
+    r[field] = ''
     response = client.post(
         '/api/v1/test_record/bulk_create/',
         content_type='application/json',
         data={
             'session_id': str(uuid.uuid4()),
-            'records': [
-                {
-                    'label': 'tests/test.py::test_single',
-                    'timestamp': '2026-07-28T12:00:00Z',
-                    'logs': '',
-                    'success': True,
-                    'branch': '',
-                    'commit': '',
-                },
-            ],
+            'records': [r],
         },
         HTTP_AUTHORIZATION=f'Token {agent_token}',
     )
