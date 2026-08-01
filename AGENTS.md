@@ -9,7 +9,7 @@
 
 ## Conventions
 
-- Python 3.12+, Django 6.0
+- Python 3.14+, Django 6.0
 - Line length: 120
 - Quote style: single quotes
 - Ruff rules: `ALL` with specific ignores (see `pyproject.toml`)

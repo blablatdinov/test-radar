@@ -19,7 +19,7 @@ A Django web application for monitoring and storing test results. It allows crea
 
 ## Tech Stack
 
-- Python 3.12+, Django 6.0
+- Python 3.14+, Django 6.0
 - Django REST Framework
 - SQLite
 - Tailwind CSS v4 (CDN)

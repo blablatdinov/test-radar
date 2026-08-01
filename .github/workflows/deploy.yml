@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@v3
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Setup uv
         uses: astral-sh/setup-uv@v6.1.0
         with:
-          python-version: 3.12
+          python-version: 3.14
           activate-environment: true
       - name: Install Dependencies
         run: uv sync --no-default-groups
@@ -76,14 +76,14 @@ jobs:
         run: |
           ssh-keyscan -H 87.249.49.217 >> ~/.ssh/known_hosts
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@v3
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Setup uv
         uses: astral-sh/setup-uv@v6.1.0
         with:
-          python-version: 3.12
+          python-version: 3.14
           activate-environment: true
       - name: Install Dependencies
         run: uv sync --no-default-groups

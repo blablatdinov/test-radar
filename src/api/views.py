@@ -4,15 +4,18 @@
 import base64
 import logging
 from http import HTTPStatus
+from typing import TYPE_CHECKING
 
 from django.db import transaction
 from django.utils import timezone
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers.bulk_record import BulkCreateSerializer
 from records.models import ApiToken, TestRecord, TestSession
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
 
 _TOKEN_KEYWORD = 'Token'
 
@@ -20,7 +23,6 @@ logger = logging.getLogger('api.views')
 
 
 class BulkCreateTestRecordView(APIView):
-
     def post(self, request: Request) -> Response:  # noqa: WPS210
         if not isinstance(request.auth, ApiToken):
             raise TypeError

@@ -2,16 +2,20 @@
 # SPDX-License-Identifier: MIT
 
 import datetime
+from typing import TYPE_CHECKING
 
 import pytest
-from django.test import Client
 from django.urls import reverse
 from lxml import etree
 from model_bakery import baker
-from pytest_django import DjangoAssertNumQueries
 
-from auth.models import User
 from records.models import Project, TestRecord, TestSession
+
+if TYPE_CHECKING:
+    from django.test import Client
+    from pytest_django import DjangoAssertNumQueries
+
+    from auth.models import User
 
 pytestmark = [
     pytest.mark.django_db,
@@ -22,12 +26,10 @@ pytestmark = [
 def filled_project(user: User) -> Project:
     project = baker.make(Project, owner=user)
     sessions = baker.make(TestSession, project=project, _quantity=15)
-    records = []
+    records: list[TestRecord] = []
     for session in sessions:
-        records.extend([
-            baker.prepare(TestRecord, session=session, project=project)
-            for _ in range(5)
-        ])
+        for _ in range(5):
+            records.append(baker.prepare(TestRecord, session=session, project=project))
     TestRecord.objects.bulk_create(records)
     return project
 
@@ -37,15 +39,17 @@ def one_time_created_records(user: User) -> Project:
     project = baker.make(Project, owner=user)
     sessions = baker.make(TestSession, project=project, _quantity=2)
     dt = datetime.datetime(2026, 8, 1, 0, 0, 0, tzinfo=datetime.UTC)
-    TestRecord.objects.bulk_create([
-        baker.prepare(
-            TestRecord,
-            session=session,
-            project=project,
-            timestamp=dt,
-        )
-        for session in sessions
-    ])
+    TestRecord.objects.bulk_create(
+        [
+            baker.prepare(
+                TestRecord,
+                session=session,
+                project=project,
+                timestamp=dt,
+            )
+            for session in sessions
+        ],
+    )
     return project
 
 
@@ -70,7 +74,10 @@ def test_index_no_projects(client: Client, user: User) -> None:
 
 
 def test_project_detail_shows_records(
-    client: Client, user: User, project, test_record_pk: str,  # noqa: ANN001
+    client: Client,
+    user: User,
+    project: Project,
+    test_record_pk: str,  # noqa: ANN001
 ) -> None:
     client.force_login(user)
 

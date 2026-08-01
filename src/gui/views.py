@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView, View
@@ -12,6 +11,9 @@ from django.views.generic import FormView, TemplateView, View
 from records.forms import AgentForm, ProjectForm
 from records.models import Agent, Project, TestSession
 from records.srv import record, token
+
+if TYPE_CHECKING:
+    from django.http import HttpResponse
 
 _PK: Final = 'pk'
 
@@ -23,7 +25,7 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
         if not self.request.user.is_authenticated:
-            msg = "User must be authorized."
+            msg = 'User must be authorized.'
             raise PermissionDenied(msg)
         return {'projects': Project.objects.filter(owner=self.request.user)}
 
@@ -49,7 +51,7 @@ class ProjectView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         if not self.request.user.is_authenticated:
-            msg = "User must be authorized."
+            msg = 'User must be authorized.'
             raise PermissionDenied(msg)
         project = Project.objects.get(pk=kwargs[_PK], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)

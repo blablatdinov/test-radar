@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('records', '0003_merge_20260728_0702'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -18,10 +17,31 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=128, verbose_name='Name')),
-                ('type', models.CharField(choices=[('ci', 'CI'), ('local', 'Local')], max_length=10, verbose_name='Agent type')),
+                (
+                    'type',
+                    models.CharField(
+                        choices=[('ci', 'CI'), ('local', 'Local')], max_length=10, verbose_name='Agent type'
+                    ),
+                ),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='agents', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='agents', to='records.project', verbose_name='Project')),
+                (
+                    'owner',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='agents',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Owner',
+                    ),
+                ),
+                (
+                    'project',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='agents',
+                        to='records.project',
+                        verbose_name='Project',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Agent',
@@ -31,7 +51,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='testrecord',
             name='agent',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='records', to='records.agent', verbose_name='Agent'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='records',
+                to='records.agent',
+                verbose_name='Agent',
+            ),
         ),
         migrations.CreateModel(
             name='ApiToken',
@@ -44,7 +71,15 @@ class Migration(migrations.Migration):
                 ('last_used_at', models.DateTimeField(blank=True, null=True, verbose_name='Last used at')),
                 ('last_used_ip', models.CharField(blank=True, max_length=45, null=True, verbose_name='Last used IP')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('agent', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='token', to='records.agent', verbose_name='Agent')),
+                (
+                    'agent',
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='token',
+                        to='records.agent',
+                        verbose_name='Agent',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'API token',

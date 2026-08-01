@@ -1,14 +1,18 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import TYPE_CHECKING
+
 import pytest
-from django.test import Client
 from django.urls import reverse
 from model_bakery import baker
 
 from auth.models import User
 from records.models import Agent, ApiToken, Project
 from records.srv import token as token_srv
+
+if TYPE_CHECKING:
+    from django.test import Client
 
 pytestmark = [
     pytest.mark.django_db,
@@ -270,7 +274,9 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
 
 
 def test_regenerate_token_other_user_forbidden(
-    client: Client, user: User, project: Project,
+    client: Client,
+    user: User,
+    project: Project,
 ) -> None:
     other = baker.make(User, username='other', password='x')
     agent = baker.make(

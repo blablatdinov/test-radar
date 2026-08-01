@@ -2,10 +2,14 @@
 # SPDX-License-Identifier: MIT
 
 import secrets
+from typing import TYPE_CHECKING
 
 import zstandard
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+if TYPE_CHECKING:
+    from django.db.backends.base.base import BaseDatabaseWrapper
 
 
 def _hex_token() -> str:

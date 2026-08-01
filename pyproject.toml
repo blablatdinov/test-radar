@@ -6,7 +6,7 @@ name = "test-radar"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12,<4"
+requires-python = ">=3.14,<4"
 dependencies = [
     "django==6.0.7",
     "djangorestframework==3.17.1",
@@ -90,7 +90,7 @@ external = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"src/tests/**/*.py" = ["ARG001", "FLY002", "PLR2004", "S101", "S106"]
+"src/tests/**/*.py" = ["ARG001", "FLY002", "PERF401", "PLR2004", "S101", "S106"]
 
 [tool.ruff.format]
 quote-style = "single"

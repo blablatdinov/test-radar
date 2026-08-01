@@ -1,13 +1,17 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import TYPE_CHECKING
+
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from auth.forms import RegistrationForm
+
+if TYPE_CHECKING:
+    from django.http import HttpResponse
 
 
 class CustomLoginView(LoginView):

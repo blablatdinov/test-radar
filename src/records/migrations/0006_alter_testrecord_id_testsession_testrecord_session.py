@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('records', '0005_fix_last_used_ip_field'),
     ]
@@ -15,14 +14,29 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='testrecord',
             name='id',
-            field=models.CharField(default=records.models._hex_token, max_length=32, primary_key=True, serialize=False, verbose_name='Identifier'),
+            field=models.CharField(
+                default=records.models._hex_token,
+                max_length=32,
+                primary_key=True,
+                serialize=False,
+                verbose_name='Identifier',
+            ),
         ),
         migrations.CreateModel(
             name='TestSession',
             fields=[
                 ('id', models.UUIDField(primary_key=True, serialize=False, verbose_name='Identifier')),
                 ('started_at', models.DateTimeField(verbose_name='Started at')),
-                ('project', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='sessions', to='records.project', verbose_name='Project')),
+                (
+                    'project',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='sessions',
+                        to='records.project',
+                        verbose_name='Project',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Test session',
@@ -32,6 +46,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='testrecord',
             name='session',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='records', to='records.testsession', verbose_name='Test session'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='records',
+                to='records.testsession',
+                verbose_name='Test session',
+            ),
         ),
     ]
