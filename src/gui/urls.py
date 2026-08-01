@@ -8,10 +8,10 @@ from gui.views import AgentCreateView, AgentTokenRegenerateView, IndexView, Proj
 urlpatterns = [
     path('', IndexView.as_view(), name='index_page'),
     path('project/create', ProjectCreateView.as_view(), name='project_create'),
-    path('project/<pk>', ProjectView.as_view(), name='project_detail'),
-    path('project/<pk>/agents/create', AgentCreateView.as_view(), name='agent_create'),
+    path('project/<uuid:guid>', ProjectView.as_view(), name='project_detail'),
+    path('project/<uuid:guid>/agents/create', AgentCreateView.as_view(), name='agent_create'),
     path(
-        'project/<pk>/agents/<agent_pk>/regenerate-token',
+        'project/<uuid:guid>/agents/<uuid:agent_guid>/regenerate-token',
         AgentTokenRegenerateView.as_view(),
         name='agent_token_regenerate',
     ),

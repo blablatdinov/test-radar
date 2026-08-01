@@ -13,9 +13,12 @@ from records.models import Agent, Project, TestSession
 from records.srv import record, token
 
 if TYPE_CHECKING:
+    import uuid
+
     from django.http import HttpResponse
 
-_PK: Final = 'pk'
+_GUID: Final = 'guid'
+_AGENT_GUID: Final = 'agent_guid'
 
 
 class IndexView(TemplateView):
@@ -53,7 +56,7 @@ class ProjectView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
-        project = Project.objects.get(pk=kwargs[_PK], owner=self.request.user)
+        project = Project.objects.get(guid=kwargs[_GUID], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = Agent.objects.filter(project=project).select_related('token')
@@ -69,7 +72,7 @@ class AgentCreateView(FormView):
     form_class = AgentForm
 
     def get_project(self) -> Project:
-        return get_object_or_404(Project, pk=self.kwargs[_PK], owner=self.request.user)
+        return get_object_or_404(Project, guid=self.kwargs[_GUID], owner=self.request.user)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         project = self.get_project()
@@ -97,18 +100,18 @@ class AgentCreateView(FormView):
         return self.render_to_response(context)
 
     def get_success_url(self) -> str:
-        return reverse('project_detail', kwargs={_PK: self.kwargs[_PK]})
+        return reverse('project_detail', kwargs={_GUID: self.kwargs[_GUID]})
 
 
 class AgentTokenRegenerateView(View):
     """Regenerate the API token for an existing agent."""
 
-    def post(self, request: Any, pk: str, agent_pk: str) -> HttpResponse:
+    def post(self, request: Any, guid: uuid.UUID, agent_guid: uuid.UUID) -> HttpResponse:
         if not request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
-        project = get_object_or_404(Project, pk=pk, owner=request.user)
-        agent = get_object_or_404(Agent, pk=agent_pk, project=project, owner=request.user)
+        project = get_object_or_404(Project, guid=guid, owner=request.user)
+        agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         raw_token = token.regenerate_token_for_agent(agent)
         context = record.filtered_records(project.pk, request)
         context['project'] = project
@@ -126,4 +129,4 @@ class TestInfoView(TemplateView):
     template_name = 'test_info.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        return record.record_by_id(kwargs[_PK])
+        return record.record_by_id(kwargs['pk'])

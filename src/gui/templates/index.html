@@ -21,7 +21,7 @@ SPDX-License-Identifier: MIT
     {% for project in projects %}
     <a
       data-project-link
-      href="{% url 'project_detail' project.pk %}"
+      href="{% url 'project_detail' project.guid %}"
       class="block bg-white dark:bg-gray-800 p-4 rounded shadow hover:shadow-md transition"
     >
       <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ project.name }}</div>
