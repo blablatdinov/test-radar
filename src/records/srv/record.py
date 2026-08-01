@@ -77,7 +77,3 @@ def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     records = TestRecord.objects.filter(**_build_filters(project_id, request))
     records = records.select_related('session').order_by('timestamp')
     return {'records': _build_matrix(records)}
-
-
-def record_by_id(record_id: str) -> dict[str, TestRecord]:
-    return {'record': TestRecord.objects.get(pk=record_id)}
