@@ -470,3 +470,26 @@ def _create_expired_token(agent: Agent) -> str:
     token_obj.expires_at = datetime.datetime.now(tz=datetime.UTC) - one_hour_ago
     token_obj.save(update_fields=['expires_at'])
     return raw_token
+
+
+def test_empty_branch_commit(client: Client, agent_token: str) -> None:
+    response = client.post(
+        '/api/v1/test_record/bulk_create/',
+        content_type='application/json',
+        data={
+            'session_id': str(uuid.uuid4()),
+            'records': [
+                {
+                    'label': 'tests/test.py::test_single',
+                    'timestamp': '2026-07-28T12:00:00Z',
+                    'logs': '',
+                    'success': True,
+                    'branch': '',
+                    'commit': '',
+                },
+            ],
+        },
+        HTTP_AUTHORIZATION=f'Token {agent_token}',
+    )
+
+    assert response.status_code == 400

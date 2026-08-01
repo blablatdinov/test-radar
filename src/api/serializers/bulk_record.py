@@ -14,8 +14,8 @@ class BulkRecordSerializer(Serializer):
     timestamp = DateTimeField()
     logs = CharField(allow_blank=True)
     success = BooleanField()
-    branch = CharField(max_length=_BRANCH_MAX_LENGTH, allow_blank=True, required=False, default='')
-    commit = CharField(max_length=_COMMIT_MAX_LENGTH, allow_blank=True, required=False, default='')
+    branch = CharField(max_length=_BRANCH_MAX_LENGTH, min_length=1)
+    commit = CharField(max_length=_COMMIT_MAX_LENGTH, min_length=1)
 
 
 class BulkCreateSerializer(Serializer):
