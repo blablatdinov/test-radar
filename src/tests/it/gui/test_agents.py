@@ -312,3 +312,30 @@ def test_agent_create_not_n_plus_one(
         )
 
     assert response.status_code == 200, response.headers
+
+
+@pytest.mark.n_plus_one('agent_token_regenerate')
+def test_agent_token_regenerate_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='CI Pipeline',
+        type='ci',
+        project=filled_project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(user)
+    with django_assert_max_num_queries(10):
+        response = client.post(
+            reverse(
+                'agent_token_regenerate',
+                kwargs={'pk': filled_project.pk, 'agent_pk': agent.pk},
+            ),
+        )
+
+    assert response.status_code == 200, response.headers
