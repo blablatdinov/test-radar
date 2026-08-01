@@ -105,6 +105,7 @@ jobs:
       - name: Get tag name
         id: tag_name
         run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_SHA})"
+      - uses: actions/checkout@v4
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
