@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('label', models.CharField(max_length=128, verbose_name='Label')),
                 ('success', models.BooleanField(verbose_name='Success')),
                 ('timestamp', models.DateTimeField(verbose_name='Timestamp')),
-                ('logs', records.models.CompressedTextField(blank=True, verbose_name='Logs')),
+                ('logs', models.BinaryField(blank=True, verbose_name='Logs')),
             ],
             options={
                 'verbose_name': 'Test record',

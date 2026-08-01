@@ -4,9 +4,9 @@
 import base64
 import datetime
 import uuid
-import zlib
 
 import pytest
+import zstandard
 from django.test import Client
 from django.utils import timezone
 from model_bakery import baker
@@ -40,7 +40,7 @@ def test_bulk_create_success(client: Client, agent: Agent, agent_token: str) -> 
                 {
                     'label': 'tests/test_sample.py::test_fail',
                     'timestamp': timestamp,
-                    'logs': base64.b64encode(zlib.compress(b'assert error')).decode(),
+                    'logs': base64.b64encode(zstandard.ZstdCompressor().compress(b'assert error')).decode(),
                     'success': False,
                     'branch': 'main',
                     'commit': 'abc123def456',
@@ -388,7 +388,9 @@ def test_bulk_create_atomic_on_validation_error(client: Client, agent_token: str
 def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
     timestamp = datetime.datetime.now(tz=datetime.UTC).isoformat()
     logs = 'AssertionError: assert 1 == 0'
-    compressed = base64.b64encode(zlib.compress(logs.encode('utf-8'))).decode()
+    compressed = base64.b64encode(
+        zstandard.ZstdCompressor().compress(logs.encode('utf-8')),
+    ).decode()
 
     response = client.post(
         '/api/v1/test_record/bulk_create/',
@@ -411,7 +413,7 @@ def test_bulk_create_decompress_logs(client: Client, agent_token: str) -> None:
 
     assert response.status_code == 201
     record = TestRecord.objects.get(label='tests/test.py::test_fail')
-    assert record.logs == logs
+    assert record.decompressed_logs == logs
 
 
 def test_bulk_create_single_record(client: Client, agent_token: str) -> None:

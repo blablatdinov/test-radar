@@ -4,14 +4,13 @@
 # flake8: noqa: WPS
 
 import argparse
-import base64
 import datetime
 import secrets
 import uuid
-import zlib
 from dataclasses import dataclass, field
 from typing import Any
 
+import zstandard
 from django.core.management.base import BaseCommand
 from model_bakery import baker
 
@@ -120,8 +119,8 @@ _DEFAULT_AGENTS_PER_PROJECT = 3
 _DEFAULT_RUNS_PER_PROJECT = 30
 
 
-def _compress_logs(text: str) -> str:
-    return base64.b64encode(zlib.compress(text.encode())).decode()
+def _compress_logs(text: str) -> bytes:
+    return zstandard.ZstdCompressor().compress(text.encode())
 
 
 def _random_commit() -> str:

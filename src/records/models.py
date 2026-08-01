@@ -1,26 +1,15 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-import base64
 import secrets
-import zlib
 
+import zstandard
 from django.db import models
-from django.db.backends.base.base import BaseDatabaseWrapper
 from django.utils.translation import gettext_lazy as _
 
 
 def _hex_token() -> str:
     return secrets.token_hex(16)
-
-
-class CompressedTextField(models.TextField):
-    def from_db_value(self, value: str, expression: models.TextField, connection: BaseDatabaseWrapper) -> str:  # noqa: ARG002,ANN001
-        if not value:
-            return value
-        decoded = base64.b64decode(value)
-        decompressed = zlib.decompress(decoded)
-        return decompressed.decode('utf-8')
 
 
 class Project(models.Model):
@@ -129,7 +118,7 @@ class TestRecord(models.Model):
     label = models.TextField(_('Label'))
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
-    logs = CompressedTextField(_('Logs'), blank=True)
+    logs = models.BinaryField(_('Logs'), blank=True)
     branch = models.CharField(_('Git branch'), max_length=512)
     commit = models.CharField(_('Git commit'), max_length=40)
     agent = models.ForeignKey(
@@ -154,3 +143,9 @@ class TestRecord(models.Model):
 
     def __str__(self) -> str:
         return str(self.label)
+
+    @property
+    def decompressed_logs(self) -> str:
+        if not self.logs:
+            return ''
+        return zstandard.ZstdDecompressor().decompress(self.logs).decode('utf-8')

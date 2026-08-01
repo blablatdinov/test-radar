@@ -55,7 +55,7 @@ def test_record_pk(project: Project, test_session: TestSession) -> str:
         label='test_file.py::test_view',
         timestamp=datetime.datetime.now(tz=datetime.UTC),
         success=True,
-        logs='',
+        logs=b'',
         project=project,
         session=test_session,
     )

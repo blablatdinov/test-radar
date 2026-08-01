@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import base64
 import logging
 from http import HTTPStatus
 
@@ -45,7 +46,7 @@ class BulkCreateTestRecordView(APIView):
                 label=record_data['label'],
                 timestamp=record_data['timestamp'],
                 success=record_data['success'],
-                logs=record_data['logs'],
+                logs=base64.b64decode(record_data['logs']) if record_data['logs'] else b'',
                 branch=record_data['branch'],
                 commit=record_data['commit'],
                 agent=request.auth.agent,
