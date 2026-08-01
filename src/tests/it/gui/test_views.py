@@ -158,6 +158,22 @@ def test_project_page_not_n_plus_one(
     assert response.status_code == 200, response.headers
 
 
+@pytest.mark.n_plus_one('index_page')
+def test_index_page_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    user: User,
+) -> None:
+    baker.make(Project, owner=user, _quantity=15)
+    client.force_login(user)
+    with django_assert_max_num_queries(3):
+        response = client.get('/')
+        tree = etree.fromstring(response.text, etree.HTMLParser())
+
+    assert response.status_code == 200, response.headers
+    assert len(tree.xpath('//a[@data-project-link]')) == 15, 'Project list empty'
+
+
 def test_template(
     client: Client,
     one_time_created_records: Project,
