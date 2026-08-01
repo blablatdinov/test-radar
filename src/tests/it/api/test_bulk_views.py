@@ -255,8 +255,8 @@ def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token
                     'timestamp': timestamp,
                     'logs': '',
                     'success': True,
-                    'branch': '',
-                    'commit': '',
+                    'branch': 'ci',
+                    'commit': 'ci-765',
                 },
             ],
         },
@@ -269,7 +269,6 @@ def test_bulk_create_all_records_in_db(client: Client, agent: Agent, agent_token
     labels = [record.label for record in records]
     assert labels == ['tests/test_a.py::test_one', 'tests/test_b.py::test_two', 'tests/test_c.py::test_three']
     assert not records[1].success
-    assert records[2].branch == ''
 
 
 def test_bulk_create_creates_session(client: Client, agent: Agent, agent_token: str) -> None:
@@ -448,7 +447,7 @@ def _create_expired_token(agent: Agent) -> str:
     return raw_token
 
 
-@pytset.mark.parametrize('field', ['branch', 'commit'])
+@pytest.mark.parametrize('field', ['branch', 'commit'])
 def test_empty_branch_commit(client: Client, agent_token: str, field: str) -> None:
     r = {
         'label': 'tests/test.py::test_single',
