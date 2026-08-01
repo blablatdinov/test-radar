@@ -13,6 +13,7 @@ from records.srv import token as token_srv
 
 if TYPE_CHECKING:
     from django.test import Client
+    from pytest_django import DjangoAssertNumQueries
 
 pytestmark = [
     pytest.mark.django_db,
@@ -294,3 +295,20 @@ def test_regenerate_token_other_user_forbidden(
     )
 
     assert response.status_code == 404
+
+
+@pytest.mark.n_plus_one('agent_create')
+def test_agent_create_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_project: Project,
+    user: User,
+) -> None:
+    client.force_login(user)
+    with django_assert_max_num_queries(9):
+        response = client.post(
+            reverse('agent_create', kwargs={'pk': filled_project.pk}),
+            {'name': 'CI Pipeline', 'type': 'ci'},
+        )
+
+    assert response.status_code == 200, response.headers

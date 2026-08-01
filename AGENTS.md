@@ -21,6 +21,7 @@
 - No comments in code unless explicitly requested
 - Avoid `noqa` comments — fix the underlying linter issue instead. If a rule is genuinely a false positive or cannot be reasonably fixed, flag it to the user rather than suppressing with `noqa`
 - In tests, use `@pytest.mark.usefixtures('fixture_name')` for fixtures that set up state but are not referenced directly in the test body, instead of unused function arguments
+- Test data setup (model instances, bulk-created records, etc.) belongs in fixtures (`src/tests/fixtures.py`), not inline in test functions. Reuse existing fixtures before creating new ones.
 - Avoid `typing.cast()` — perform explicit validation (e.g. `isinstance` checks, direct attribute access) instead of type casting. This prevents conflicts between ruff TC006 (requires quotes in `cast`) and WPS226 (flags repeated string literals)
 - SPDX license headers at the top of every source file
 - i18n enabled: use `gettext_lazy` (`_`) for all user-facing text
