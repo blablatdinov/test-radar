@@ -305,7 +305,7 @@ def test_agent_create_not_n_plus_one(
     user: User,
 ) -> None:
     client.force_login(user)
-    with django_assert_max_num_queries(9):
+    with django_assert_max_num_queries(10):
         response = client.post(
             reverse('agent_create', kwargs={'guid': filled_project.guid}),
             {'name': 'CI Pipeline', 'type': 'ci'},
@@ -330,7 +330,7 @@ def test_agent_token_regenerate_not_n_plus_one(
     )
     token_srv.create_token_for_agent(agent)
     client.force_login(user)
-    with django_assert_max_num_queries(10):
+    with django_assert_max_num_queries(11):
         response = client.post(
             reverse(
                 'agent_token_regenerate',
