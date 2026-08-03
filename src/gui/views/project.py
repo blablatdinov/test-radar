@@ -24,7 +24,11 @@ class ProjectView(TemplateView):
         project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
-        context['agents'] = Agent.objects.filter(project=project).select_related('token')
-        context['sessions'] = TestSession.objects.filter(project=project)
+        context['agents'] = (
+            Agent.objects.filter(project=project)
+            .select_related('token')
+            .only('id', 'name', 'type', 'guid', 'created_at', 'token__token_mask')
+        )
+        context['sessions'] = TestSession.objects.filter(project=project).only('id')
         context['agent_form'] = AgentForm()
         return context

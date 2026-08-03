@@ -28,8 +28,12 @@ class AgentCreateView(FormView):
         project = self.get_project()
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
-        context['agents'] = Agent.objects.filter(project=project).select_related('token')
-        context['sessions'] = TestSession.objects.filter(project=project)
+        context['agents'] = (
+            Agent.objects.filter(project=project)
+            .select_related('token')
+            .only('id', 'name', 'type', 'guid', 'created_at', 'token__token_mask')
+        )
+        context['sessions'] = TestSession.objects.filter(project=project).only('id')
         context['agent_form'] = kwargs.get('form') or AgentForm()
         return context
 

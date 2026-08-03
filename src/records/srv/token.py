@@ -62,8 +62,11 @@ def regenerate_token_for_agent(agent: Agent) -> str:
 
 def verify_token(raw_token: str) -> ApiToken | None:
     prefix = _extract_prefix(raw_token)
-    candidates = ApiToken.objects.select_related('agent').filter(
+    candidates = ApiToken.objects.select_related('agent', 'agent__owner').filter(
         token_mask__startswith=prefix,
+    ).only(
+        'token_hash', 'token_mask', 'expires_at', 'last_used_at', 'last_used_ip',
+        'agent', 'agent__name', 'agent__owner',
     )
     now = datetime.datetime.now(tz=datetime.UTC)
     for candidate in candidates:
