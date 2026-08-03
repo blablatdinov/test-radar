@@ -44,46 +44,51 @@ def _make_record(
     )
 
 
+def _make_records(
+    project: Project, label: str, outcomes: list[bool], commit_prefix: str = 'commit',
+) -> None:
+    for iteration, success in enumerate(outcomes):
+        session = _make_session(
+            project, commit_hash=f'{commit_prefix}{iteration}', index=iteration,
+        )
+        _make_record(project, session, label, success=success, index=iteration)
+
+
 def test_stable_pass_not_flaky(project: Project) -> None:
     session = _make_session(project)
     for iteration in range(10):
         _make_record(project, session, 'test_stable_pass', success=True, index=iteration)
-    result = detect_flaky_labels(project.pk)
-    assert 'test_stable_pass' not in result
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_stable_pass' not in flaky_map
 
 
 def test_stable_fail_not_flaky(project: Project) -> None:
     session = _make_session(project)
     for iteration in range(10):
         _make_record(project, session, 'test_stable_fail', success=False, index=iteration)
-    result = detect_flaky_labels(project.pk)
-    assert 'test_stable_fail' not in result
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_stable_fail' not in flaky_map
 
 
 def test_same_commit_inconsistency_is_flaky(project: Project) -> None:
     session = _make_session(project, commit_hash='samecommit')
-    outcomes = [True, False, True, False, True]
-    for iteration, success in enumerate(outcomes):
+    for iteration, success in enumerate([True, False, True, False, True]):
         _make_record(
             project, session, 'test_inconsistent', success=success, index=iteration,
         )
-    result = detect_flaky_labels(project.pk)
-    assert 'test_inconsistent' in result
-    status = result['test_inconsistent']
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_inconsistent' in flaky_map
+    status = flaky_map['test_inconsistent']
     assert status.total_runs == 5
     assert status.failure_ratio == 0.4
 
 
 def test_high_transition_rate_is_flaky(project: Project) -> None:
     outcomes = [True, False, True, False, True, False, True, False, True, False]
-    for iteration, success in enumerate(outcomes):
-        session = _make_session(
-            project, commit_hash=f'commit{iteration}', index=iteration,
-        )
-        _make_record(project, session, 'test_flaky', success=success, index=iteration)
-    result = detect_flaky_labels(project.pk)
-    assert 'test_flaky' in result
-    status = result['test_flaky']
+    _make_records(project, 'test_flaky', outcomes)
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_flaky' in flaky_map
+    status = flaky_map['test_flaky']
     assert status.flake_rate == 1.0
     assert status.failure_ratio == 0.5
 
@@ -93,45 +98,28 @@ def test_insufficient_data_not_flaky(project: Project) -> None:
     _make_record(project, session, 'test_few_runs', success=True, index=0)
     _make_record(project, session, 'test_few_runs', success=False, index=1)
     _make_record(project, session, 'test_few_runs', success=True, index=2)
-    result = detect_flaky_labels(project.pk)
-    assert 'test_few_runs' not in result
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_few_runs' not in flaky_map
 
 
 def test_low_transition_rate_not_flaky(project: Project) -> None:
-    outcomes = [True] * 8 + [False, True]
-    for iteration, success in enumerate(outcomes):
-        session = _make_session(
-            project, commit_hash=f'commit{iteration}', index=iteration,
-        )
-        _make_record(
-            project, session, 'test_low_transition', success=success, index=iteration,
-        )
-    result = detect_flaky_labels(project.pk)
-    assert 'test_low_transition' not in result
+    outcomes = [True, True, True, True, True, True, True, True, False, True]
+    _make_records(project, 'test_low_transition', outcomes)
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_low_transition' not in flaky_map
 
 
 def test_boundary_transition_rate(project: Project) -> None:
-    outcomes = [True, False, True, False, True]
-    for iteration, success in enumerate(outcomes):
-        session = _make_session(
-            project, commit_hash=f'commit{iteration}', index=iteration,
-        )
-        _make_record(project, session, 'test_boundary', success=success, index=iteration)
-    result = detect_flaky_labels(project.pk)
-    assert 'test_boundary' in result
+    _make_records(project, 'test_boundary', [True, False, True, False, True])
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_boundary' in flaky_map
 
 
 def test_boundary_failure_ratio(project: Project) -> None:
-    outcomes = [True] * 9 + [False]
-    for iteration, success in enumerate(outcomes):
-        session = _make_session(
-            project, commit_hash=f'commit{iteration}', index=iteration,
-        )
-        _make_record(
-            project, session, 'test_low_failure', success=success, index=iteration,
-        )
-    result = detect_flaky_labels(project.pk)
-    assert 'test_low_failure' not in result
+    outcomes = [True, True, True, True, True, True, True, True, True, False]
+    _make_records(project, 'test_low_failure', outcomes)
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_low_failure' not in flaky_map
 
 
 def test_multiple_labels(project: Project) -> None:
@@ -139,11 +127,7 @@ def test_multiple_labels(project: Project) -> None:
     for iteration in range(10):
         _make_record(project, stable_session, 'test_stable', success=True, index=iteration)
     flaky_outcomes = [True, False, True, False, True, False, True, False, True, False]
-    for iteration, success in enumerate(flaky_outcomes):
-        session = _make_session(
-            project, commit_hash=f'flaky_commit{iteration}', index=iteration,
-        )
-        _make_record(project, session, 'test_flaky', success=success, index=iteration)
-    result = detect_flaky_labels(project.pk)
-    assert 'test_stable' not in result
-    assert 'test_flaky' in result
+    _make_records(project, 'test_flaky', flaky_outcomes, commit_prefix='flaky_commit')
+    flaky_map = detect_flaky_labels(project.pk)
+    assert 'test_stable' not in flaky_map
+    assert 'test_flaky' in flaky_map
