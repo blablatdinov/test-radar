@@ -29,7 +29,9 @@ def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
     ]
 
 
-def _build_rows(matrix: RecordMatrix, col_count: int, flaky_labels: set[str]) -> list[dict[str, Any]]:
+def _build_rows(
+    matrix: RecordMatrix, col_count: int, flaky_labels: set[str],
+) -> list[dict[str, Any]]:
     return [
         {
             'label': label,
