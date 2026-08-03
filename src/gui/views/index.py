@@ -18,4 +18,5 @@ class IndexView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
-        return {'projects': Project.objects.filter(owner=self.request.user)}
+        projects = Project.objects.filter(owner=self.request.user)
+        return {'projects': projects.only('guid', 'name', 'created_at')}

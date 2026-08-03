@@ -24,6 +24,11 @@ class TestHistoryView(TemplateView):
         records = (
             TestRecord.objects.filter(project=project, label=label)
             .select_related('session', 'agent')
+            .only(
+                'id', 'success', 'timestamp',
+                'session', 'session__started_at', 'session__branch', 'session__commit_hash',
+                'agent', 'agent__name',
+            )
             .order_by('-timestamp')
         )
         return {'project': project, 'label': label, 'records': records}

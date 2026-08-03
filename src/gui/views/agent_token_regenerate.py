@@ -29,8 +29,12 @@ class AgentTokenRegenerateView(View):
         raw_token = token.regenerate_token_for_agent(agent)
         context = record.filtered_records(project.pk, request)
         context['project'] = project
-        context['agents'] = Agent.objects.filter(project=project).select_related('token')
-        context['sessions'] = TestSession.objects.filter(project=project)
+        context['agents'] = (
+            Agent.objects.filter(project=project)
+            .select_related('token')
+            .only('id', 'name', 'type', 'guid', 'created_at', 'token__token_mask')
+        )
+        context['sessions'] = TestSession.objects.filter(project=project).only('id')
         context['agent_form'] = AgentForm()
         context['new_token'] = raw_token
         context['new_agent_name'] = agent.name

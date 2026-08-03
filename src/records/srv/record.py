@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 ColIndex = dict[TestSession, int]
 RecordMatrix = dict[str, dict[int, TestRecord]]
+_SESSION_PARAM = 'session'
 
 
 def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
@@ -70,14 +71,16 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
         filters['agent_id'] = get['agent']
     if get.get('branch'):
         filters['session__branch__icontains'] = get['branch']
-    if get.get('session'):
-        filters['session_id'] = get['session']
+    if get.get(_SESSION_PARAM):
+        filters['session_id'] = get[_SESSION_PARAM]
     return filters
 
 
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     records = TestRecord.objects.filter(**_build_filters(project_id, request))
-    records = records.select_related('session').order_by('timestamp')
+    records = records.select_related('session').only(
+        'id', 'label', 'success', 'session', 'session__started_at',
+    ).order_by('timestamp')
     return {'records': _build_matrix(records)}
 
 

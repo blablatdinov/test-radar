@@ -14,6 +14,8 @@ from records.srv import record, token
 if TYPE_CHECKING:
     from django.http import HttpResponse
 
+_GUID_KWARG = 'guid'
+
 
 class AgentCreateView(FormView):
     """Create an agent and generate an API token for it."""
@@ -22,14 +24,18 @@ class AgentCreateView(FormView):
     form_class = AgentForm
 
     def get_project(self) -> Project:
-        return get_object_or_404(Project, guid=self.kwargs['guid'], owner=self.request.user)
+        return get_object_or_404(Project, guid=self.kwargs[_GUID_KWARG], owner=self.request.user)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         project = self.get_project()
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
-        context['agents'] = Agent.objects.filter(project=project).select_related('token')
-        context['sessions'] = TestSession.objects.filter(project=project)
+        context['agents'] = (
+            Agent.objects.filter(project=project)
+            .select_related('token')
+            .only('id', 'name', 'type', _GUID_KWARG, 'created_at', 'token__token_mask')
+        )
+        context['sessions'] = TestSession.objects.filter(project=project).only('id')
         context['agent_form'] = kwargs.get('form') or AgentForm()
         return context
 
@@ -50,4 +56,4 @@ class AgentCreateView(FormView):
         return self.render_to_response(context)
 
     def get_success_url(self) -> str:
-        return reverse('project_detail', kwargs={'guid': self.kwargs['guid']})
+        return reverse('project_detail', kwargs={_GUID_KWARG: self.kwargs[_GUID_KWARG]})

@@ -25,7 +25,12 @@ class EmailConfirmationSentView(TemplateView):
 class EmailConfirmView(View):
     def get(self, request: HttpRequest, token: uuid.UUID) -> HttpResponse:
         try:
-            confirmation_token = EmailConfirmationToken.objects.select_related('user').get(token=token)
+            confirmation_token = (
+                EmailConfirmationToken.objects
+                .select_related('user')
+                .only('expired_at', 'user', 'user__is_email_verified')
+                .get(token=token)
+            )
         except EmailConfirmationToken.DoesNotExist:
             return self._render_invalid(request)
 
@@ -53,7 +58,7 @@ class EmailResendView(FormView):
     def form_valid(self, form: EmailResendForm) -> HttpResponse:
         email = form.cleaned_data['email']
         try:
-            user = User.objects.get(email=email, is_email_verified=False)
+            user = User.objects.only('id', 'email').get(email=email, is_email_verified=False)
         except User.DoesNotExist:
             return HttpResponseRedirect(self.get_success_url())
         token = services.create_confirmation_token(user)
