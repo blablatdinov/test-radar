@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 ColIndex = dict[TestSession, int]
 RecordMatrix = dict[str, dict[int, TestRecord]]
+_SESSION_PARAM = 'session'
 
 
 def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
@@ -70,8 +71,8 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
         filters['agent_id'] = get['agent']
     if get.get('branch'):
         filters['session__branch__icontains'] = get['branch']
-    if get.get('session'):
-        filters['session_id'] = get['session']
+    if get.get(_SESSION_PARAM):
+        filters['session_id'] = get[_SESSION_PARAM]
     return filters
 
 
