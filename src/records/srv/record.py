@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 from django.shortcuts import get_object_or_404
 
 from records.models import TestRecord, TestSession
+from records.srv.flaky import detect_flaky_labels
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -28,11 +29,12 @@ def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
     ]
 
 
-def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
+def _build_rows(matrix: RecordMatrix, col_count: int, flaky_labels: set[str]) -> list[dict[str, Any]]:
     return [
         {
             'label': label,
             'cells': [matrix[label].get(col_idx) for col_idx in range(col_count)],
+            'is_flaky': label in flaky_labels,
         }
         for label in sorted(matrix)
     ]
@@ -47,7 +49,7 @@ def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix)
     matrix[record.label][col_index[col_key]] = record
 
 
-def _build_matrix(records: QuerySet[TestRecord]) -> dict[str, Any]:
+def _build_matrix(records: QuerySet[TestRecord], flaky_labels: set[str]) -> dict[str, Any]:
     col_index: ColIndex = {}
     matrix: RecordMatrix = defaultdict(dict)
 
@@ -56,7 +58,7 @@ def _build_matrix(records: QuerySet[TestRecord]) -> dict[str, Any]:
 
     return {
         'columns': _build_columns(col_index),
-        'rows': _build_rows(matrix, len(col_index)),
+        'rows': _build_rows(matrix, len(col_index), flaky_labels),
     }
 
 
@@ -77,11 +79,12 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
 
 
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
+    flaky_labels = set(detect_flaky_labels(project_id).keys())
     records = TestRecord.objects.filter(**_build_filters(project_id, request))
     records = records.select_related('session').only(
         'id', 'label', 'success', 'session', 'session__started_at',
     ).order_by('timestamp')
-    return {'records': _build_matrix(records)}
+    return {'records': _build_matrix(records, flaky_labels)}
 
 
 def record_by_id(record_id: str) -> dict[str, TestRecord]:
