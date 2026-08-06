@@ -37,7 +37,7 @@ dev = [
     "pytest-cov==7.1.0",
     "pytest-django==4.12.0",
     "deltaver==1.0.2",
-    "django-stubs==6.0.7",
+    "django-stubs==6.0.8",
     "pytest-randomly>=4.1.0",
     "lxml>=6.1.1",
     "django-ratelimit>=4.1.0",
