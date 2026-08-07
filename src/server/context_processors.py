@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 import os
-
 from typing import TYPE_CHECKING
 
 from django.conf import settings
@@ -15,5 +14,5 @@ def registration_enabled(request: HttpRequest) -> dict[str, bool]:  # noqa: ARG0
     return {'registration_enabled': settings.REGISTRATION_ENABLED}
 
 
-def app_version(request: HttpRequest) -> dict[str, str]:
+def app_version(_: HttpRequest) -> dict[str, str]:
     return {'app_version': os.environ.get('APP_VERSION', 'dev')}
