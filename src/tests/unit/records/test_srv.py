@@ -18,8 +18,8 @@ def test_filtered_records(project, test_record_pk: str) -> None:  # noqa: ANN001
     now = datetime.datetime.now(tz=datetime.UTC)
     request = Mock(HttpRequest)
     request.GET = {
-        'datetime_from': (now - datetime.timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S.%f%z'),
-        'datetime_to': (now + datetime.timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S.%f%z'),
+        'datetime_from': (now - datetime.timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M'),
+        'datetime_to': (now + datetime.timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M'),
     }
 
     grouped = filtered_records(project.pk, request)
