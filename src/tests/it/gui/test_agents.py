@@ -50,12 +50,27 @@ def test_agent_create_creates_agent(client: Client) -> None:
 
 
 @pytest.mark.usefixtures('user', 'project')
+def test_agent_create_redirects_to_project(client: Client) -> None:
+    client.force_login(User.objects.get(username='testuser'))
+    project_guid = Project.objects.get().guid
+
+    response = client.post(
+        reverse('agent_create', kwargs={'guid': project_guid}),
+        {'name': 'CI Pipeline', 'type': 'ci'},
+    )
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == reverse('project_detail', kwargs={'guid': project_guid})
+
+
+@pytest.mark.usefixtures('user', 'project')
 def test_agent_create_returns_plain_token(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
         reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'CI Pipeline', 'type': 'ci'},
+        follow=True,
     )
 
     context = response.context_data
@@ -72,6 +87,7 @@ def test_agent_shows_plain_token_once(client: Client) -> None:
     response = client.post(
         reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'Dev Laptop', 'type': 'local'},
+        follow=True,
     )
 
     assert response.status_code == 200
@@ -97,10 +113,13 @@ def test_agent_token_shown_with_warning(client: Client) -> None:
 def test_project_view_no_token_after_creation(client: Client) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
-    client.post(
+    creation_response = client.post(
         reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'Dev Laptop', 'type': 'local'},
+        follow=True,
     )
+    assert creation_response.context_data
+    assert creation_response.context_data.get('new_token') is not None
 
     project_guid = Project.objects.get().guid
     response2 = client.get(reverse('project_detail', kwargs={'guid': project_guid}))
@@ -115,6 +134,7 @@ def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> 
     response = client.post(
         reverse('agent_create', kwargs={'guid': project.guid}),
         {'name': 'CI Pipeline', 'type': 'ci'},
+        follow=True,
     )
 
     context = response.context_data
@@ -204,6 +224,7 @@ def test_regenerate_token_creates_new_token(client: Client, project: Project) ->
 
     response = client.post(
         reverse('agent_token_regenerate', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        follow=True,
     )
     new_raw = response.context['new_token']
 
@@ -228,6 +249,7 @@ def test_regenerate_token_shows_new_mask(client: Client, project: Project) -> No
 
     response = client.post(
         f'/project/{project.guid}/agents/{agent.guid}/regenerate-token',
+        follow=True,
     )
 
     agent.refresh_from_db()
@@ -311,7 +333,7 @@ def test_agent_create_not_n_plus_one(
             {'name': 'CI Pipeline', 'type': 'ci'},
         )
 
-    assert response.status_code == 200, response.headers
+    assert response.status_code == 322, response.headers
 
 
 @pytest.mark.n_plus_one('agent_token_regenerate')
@@ -338,4 +360,4 @@ def test_agent_token_regenerate_not_n_plus_one(
             ),
         )
 
-    assert response.status_code == 200, response.headers
+    assert response.status_code == 422, response.headers

@@ -3,7 +3,7 @@
 
 from typing import TYPE_CHECKING, Any
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import FormView
 
@@ -46,10 +46,9 @@ class AgentCreateView(FormView):
         agent.owner = self.request.user
         agent.save()
         raw_token = token.create_token_for_agent(agent)
-        context = self.get_context_data(form=form)
-        context['new_token'] = raw_token
-        context['new_agent_name'] = agent.name
-        return self.render_to_response(context)
+        self.request.session['new_token'] = raw_token
+        self.request.session['new_agent_name'] = agent.name
+        return redirect(self.get_success_url())
 
     def form_invalid(self, form: AgentForm) -> HttpResponse:
         context = self.get_context_data(form=form)
