@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import datetime
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
@@ -68,9 +69,9 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
     filters: dict[str, Any] = {'project_id': project_id}
     get = request.GET
     if get.get('datetime_from'):
-        filters['timestamp__gte'] = get['datetime_from']
+        filters['timestamp__gte'] = datetime.datetime.strptime(get['datetime_from'], '%Y-%m-%dT%H:%M:%S.%f%z')
     if get.get('datetime_to'):
-        filters['timestamp__lte'] = get['datetime_to']
+        filters['timestamp__lte'] = datetime.datetime.strptime(get['datetime_to'], '%Y-%m-%dT%H:%M:%S.%f%z')
     if get.get('agent'):
         filters['agent_id'] = get['agent']
     if get.get('branch'):
@@ -83,6 +84,9 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     flaky_labels = set(detect_flaky_labels(project_id).keys())
     records = TestRecord.objects.filter(**_build_filters(project_id, request))
+    print('Filters: ', _build_filters(project_id, request))
+    print('Records: ', TestRecord.objects.filter(project_id=project_id).values_list('timestamp'))
+    # assert False, TestRecord.objects.filter(project_id=project_id).values_list('timestamp')
     records = records.select_related('session').only(
         'id', 'label', 'success', 'session', 'session__started_at',
     ).order_by('timestamp')

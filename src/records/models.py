@@ -86,6 +86,7 @@ class ApiToken(models.Model):
 
 
 class TestSession(models.Model):
+    __test__ = False
     id = models.UUIDField(_('Identifier'), primary_key=True)
     project = models.ForeignKey(
         Project,
@@ -110,6 +111,7 @@ class TestSession(models.Model):
 
 
 class TestRecord(models.Model):
+    __test__ = False
     id = models.CharField(
         _('Identifier'),
         primary_key=True,
