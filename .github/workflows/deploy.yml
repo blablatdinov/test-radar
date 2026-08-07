@@ -110,4 +110,4 @@ jobs:
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
           scp deploy/docker-compose.prod.yml www@87.249.49.217:/home/www/code/test-radar/deploy/docker-compose.prod.yml
-          ssh www@87.249.49.217 'cd /home/www/code/test-radar && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f deploy/docker-compose.prod.yml down && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f deploy/docker-compose.prod.yml up -d'
+          ssh www@87.249.49.217 'cd /home/www/code/test-radar && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f deploy/docker-compose.prod.yml down && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f deploy/docker-compose.prod.yml up -d && docker images | grep test-radar | tail -n +2 | awk '{print \$3}' | xargs -r docker rmi'
