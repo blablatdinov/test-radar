@@ -4,12 +4,11 @@
 from typing import TYPE_CHECKING, Any
 
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View
 
-from records.forms import AgentForm
-from records.models import Agent, Project, TestSession
-from records.srv import record, token
+from records.models import Agent, Project
+from records.srv import token
 
 if TYPE_CHECKING:
     import uuid
@@ -27,15 +26,6 @@ class AgentTokenRegenerateView(View):
         project = get_object_or_404(Project, guid=guid, owner=request.user)
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         raw_token = token.regenerate_token_for_agent(agent)
-        context = record.filtered_records(project.pk, request)
-        context['project'] = project
-        context['agents'] = (
-            Agent.objects.filter(project=project)
-            .select_related('token')
-            .only('id', 'name', 'type', 'guid', 'created_at', 'token__token_mask')
-        )
-        context['sessions'] = TestSession.objects.filter(project=project).only('id')
-        context['agent_form'] = AgentForm()
-        context['new_token'] = raw_token
-        context['new_agent_name'] = agent.name
-        return render(request, 'project.html', context)
+        request.session['new_token'] = raw_token
+        request.session['new_agent_name'] = agent.name
+        return redirect('project_detail', guid=guid)
