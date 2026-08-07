@@ -824,16 +824,17 @@ wheels = [
 
 [[package]]
 name = "pytest-test-radar"
-version = "0.0.1a8"
+version = "0.0.1a9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "python-dotenv" },
+    { name = "tenacity" },
     { name = "zstandard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cc/c0/b5a06c3492590c7dfd82606bfb38412305ed5ccc28da85fa541d0dbad5ff/pytest_test_radar-0.0.1a8.tar.gz", hash = "sha256:9fef399389734e62b5cba9616c1c544c4648967cc725a0990a812e13ebc1f91c", size = 32577, upload-time = "2026-08-02T10:20:35.662Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/6c/a9cfcca1adac70deb13a08a97953f411c454625410520d30b898f786c652/pytest_test_radar-0.0.1a9.tar.gz", hash = "sha256:8205e334d970497f9aca90bb6e781bddc42abcc75cc4724d60679828f3bd753a", size = 33145, upload-time = "2026-08-07T09:04:56.094Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/6b/7908e80315742469f2877b8975dbb93ad41ed0c15aa27df3d7cef186ac24/pytest_test_radar-0.0.1a8-py3-none-any.whl", hash = "sha256:409d5ecd975ff1f01a2d91c425e86ff029216c95331e9e20a12d8acc1eab7de1", size = 7533, upload-time = "2026-08-02T10:20:34.429Z" },
+    { url = "https://files.pythonhosted.org/packages/d5/9f/3da669aa46dc070f29ee8c71cced61237f75df3c15d90246ee7d32ed0f32/pytest_test_radar-0.0.1a9-py3-none-any.whl", hash = "sha256:1cce96df2ab05ca12fd7006c1dba04685faccf2183018fbacc59d30990edd83c", size = 7873, upload-time = "2026-08-07T09:04:57.168Z" },
 ]
 
 [[package]]
@@ -935,6 +936,15 @@ wheels = [
 ]
 
 [[package]]
+name = "tenacity"
+version = "9.1.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/c6/ee486fd809e357697ee8a44d3d69222b344920433d3b6666ccd9b374630c/tenacity-9.1.4.tar.gz", hash = "sha256:adb31d4c263f2bd041081ab33b498309a57c77f9acf2db65aadf0898179cf93a", size = 49413, upload-time = "2026-02-07T10:45:33.841Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/c1/eb8f9debc45d3b7918a32ab756658a0904732f75e555402972246b0b8e71/tenacity-9.1.4-py3-none-any.whl", hash = "sha256:6095a360c919085f28c6527de529e76a06ad89b23659fa881ae0649b867a9d55", size = 28926, upload-time = "2026-02-07T10:45:32.24Z" },
+]
+
+[[package]]
 name = "test-radar"
 version = "0.1.0"
 source = { virtual = "." }
@@ -1002,7 +1012,7 @@ dev = [
     { name = "pytest-cov", specifier = "==7.1.0" },
     { name = "pytest-django", specifier = "==4.13.0" },
     { name = "pytest-randomly", specifier = "==4.1.0" },
-    { name = "pytest-test-radar", specifier = "==0.0.1a8" },
+    { name = "pytest-test-radar", specifier = "==0.0.1a9" },
     { name = "ruff", specifier = "==0.16.1" },
     { name = "wemake-python-styleguide", specifier = "==1.7.1" },
 ]
