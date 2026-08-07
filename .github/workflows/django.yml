@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Set up Python 3.14
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v7
       with:
         python-version: 3.14
     - name: Setup uv
@@ -30,7 +30,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Set up Python 3.14
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v7
       with:
         python-version: 3.14
     - name: Setup uv
@@ -70,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Set up Python 3.14
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v7
       with:
         python-version: 3.14
     - name: Setup uv
@@ -99,7 +99,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Set up Python 3.14
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v7
       with:
         python-version: 3.14
     - name: Setup uv
