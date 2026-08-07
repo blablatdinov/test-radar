@@ -135,7 +135,6 @@ class TestRecord(models.Model):
         max_length=20,
         choices=Status.choices,
     )
-    label = models.TextField(_('Label'))
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
     logs = models.BinaryField(_('Logs'), blank=True)

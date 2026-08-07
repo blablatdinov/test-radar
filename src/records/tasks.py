@@ -4,7 +4,7 @@
 import logging
 from datetime import timedelta
 
-from celery import shared_task
+from celery import Task, shared_task
 from django.utils import timezone
 
 from records.models import TestRecord
@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True, max_retries=3)
-def recalculate_flaky_statuses(self) -> dict[str, int]:
-    """Пересчитывает status для записей, обновленных после последнего прохода."""
+# TODO #151:30min fix high complexity
+def recalculate_flaky_statuses(self: Task) -> dict[str, int]:  # noqa: WPS210, WPS231
     cutoff = timezone.now() - timedelta(hours=24)
 
     stale_labels = (
@@ -36,7 +36,8 @@ def recalculate_flaky_statuses(self) -> dict[str, int]:
     )
 
     for project_id in project_ids:
-        try:
+        # TODO #151:30min fix try body length
+        try:  # noqa: WPS229
             flaky_map = detect_flaky_labels(project_id)
             flaky_labels_set = set(flaky_map.keys())
 

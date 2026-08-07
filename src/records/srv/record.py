@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from records.models import TestRecord, TestSession
-from records.srv.flaky import detect_flaky_labels
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -32,7 +31,7 @@ def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
 
 
 def _build_rows(
-    matrix: RecordMatrix, col_count: int, flaky_labels: set[str],
+    matrix: RecordMatrix, col_count: int,
 ) -> list[dict[str, Any]]:
     return [
         {
