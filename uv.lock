@@ -824,7 +824,7 @@ wheels = [
 
 [[package]]
 name = "pytest-test-radar"
-version = "0.0.1a9"
+version = "0.0.1a10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -832,9 +832,9 @@ dependencies = [
     { name = "tenacity" },
     { name = "zstandard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/6c/a9cfcca1adac70deb13a08a97953f411c454625410520d30b898f786c652/pytest_test_radar-0.0.1a9.tar.gz", hash = "sha256:8205e334d970497f9aca90bb6e781bddc42abcc75cc4724d60679828f3bd753a", size = 33145, upload-time = "2026-08-07T09:04:56.094Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2c/63/2734f1219475abe497592393e24813ab26ed3a25a6548502e2731c630e37/pytest_test_radar-0.0.1a10.tar.gz", hash = "sha256:0565cb1c94179b848b9f3cdf28daf03029bbee8d4c1373218bef68bf35bab0c9", size = 32380, upload-time = "2026-08-07T17:00:37.72Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/9f/3da669aa46dc070f29ee8c71cced61237f75df3c15d90246ee7d32ed0f32/pytest_test_radar-0.0.1a9-py3-none-any.whl", hash = "sha256:1cce96df2ab05ca12fd7006c1dba04685faccf2183018fbacc59d30990edd83c", size = 7873, upload-time = "2026-08-07T09:04:57.168Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/c2/ccef2f003d5b2773b295119765828d5955a212c58c4fe3f18007643121e2/pytest_test_radar-0.0.1a10-py3-none-any.whl", hash = "sha256:77245bc9b96e499b738f1abe574bc4b496fe23f224f2d99efa8877c8062a2f2f", size = 6745, upload-time = "2026-08-07T17:00:38.793Z" },
 ]
 
 [[package]]
@@ -1012,7 +1012,7 @@ dev = [
     { name = "pytest-cov", specifier = "==7.1.0" },
     { name = "pytest-django", specifier = "==4.13.0" },
     { name = "pytest-randomly", specifier = "==4.1.0" },
-    { name = "pytest-test-radar", specifier = "==0.0.1a9" },
+    { name = "pytest-test-radar", specifier = "==0.0.1a10" },
     { name = "ruff", specifier = "==0.16.1" },
     { name = "wemake-python-styleguide", specifier = "==1.7.1" },
 ]
