@@ -87,11 +87,14 @@ jobs:
         DATABASE_URL=sqlite:///:memory: uv run django-admin makemessages -l ru -l en --no-location --no-wrap
         git diff --exit-code --ignore-matching-lines='^"POT-Creation-Date' -- locale/
       working-directory: src
+    - name: Create static dir
+      run: mkdir static
     - name: Test
       run: uv run pytest src/tests -vv
       env:
         DATABASE_URL: postgres://test_radar:test_radar@localhost:5432/test_radar
         RADAR_TOKEN: ${{ secrets.TEST_RADAR_TOKEN }}
+        REGISTRATION_ENABLED=true
 
   deltaver:
     runs-on: ubuntu-latest
