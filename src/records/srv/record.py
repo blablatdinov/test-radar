@@ -38,7 +38,11 @@ def _build_rows(
         {
             'label': label,
             'cells': [matrix[label].get(col_idx) for col_idx in range(col_count)],
-            'is_flaky': label in flaky_labels,
+            'is_flaky': any(
+                cell.status == TestRecord.Status.FLAKY
+                for cell in matrix[label].values()
+                if cell is not None
+            ),
         }
         for label in sorted(matrix)
     ]
@@ -89,12 +93,11 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
 
 
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
-    flaky_labels = set(detect_flaky_labels(project_id).keys())
     records = TestRecord.objects.filter(**_build_filters(project_id, request))
     records = records.select_related('session').only(
-        'id', 'label', 'success', 'session', 'session__started_at',
+        'id', 'label', 'success', 'status', 'session', 'session__started_at',
     ).order_by('timestamp')
-    return {'records': _build_matrix(records, flaky_labels)}
+    return {'records': _build_matrix(records)}
 
 
 def record_by_id(record_id: str) -> dict[str, TestRecord]:
