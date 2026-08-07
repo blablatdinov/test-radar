@@ -339,3 +339,22 @@ def test_agent_token_regenerate_not_n_plus_one(
         )
 
     assert response.status_code == 200, response.headers
+
+
+def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
+    agent = baker.make(
+        Agent,
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=User.objects.get(username='testuser'),
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(User.objects.get(username='testuser'))
+
+    response = client.post(
+        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+    )
+
+    assert response.status_code == 200
+    assert not Agent.objects.filter(pk=agent.pk).exists()
