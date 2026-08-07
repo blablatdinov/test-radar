@@ -91,6 +91,7 @@ jobs:
       run: uv run pytest src/tests -vv
       env:
         DATABASE_URL: postgres://test_radar:test_radar@localhost:5432/test_radar
+        RADAR_TOKEN: ${{ secrets.TEST_RADAR_TOKEN }}
 
   deltaver:
     runs-on: ubuntu-latest
