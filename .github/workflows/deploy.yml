@@ -11,7 +11,7 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python 3.14
         uses: actions/setup-python@v3
         with:
@@ -30,7 +30,7 @@ jobs:
     needs: checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Login to Docker Hub
         uses: docker/login-action@v4
         with:
@@ -75,7 +75,7 @@ jobs:
       - name: Setup SSH
         run: |
           ssh-keyscan -H 87.249.49.217 >> ~/.ssh/known_hosts
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python 3.14
         uses: actions/setup-python@v3
         with:
@@ -105,7 +105,7 @@ jobs:
       - name: Get tag name
         id: tag_name
         run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_SHA})"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
