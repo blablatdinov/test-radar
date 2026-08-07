@@ -41,7 +41,7 @@ dev = [
     "pytest-randomly==4.1.0",
     "lxml==6.1.1",
     "django-stubs-ext==6.0.7",
-    "pytest-test-radar==0.0.1a8",
+    "pytest-test-radar==0.0.1a9",
 ]
 
 [tool.pytest.ini_options]
