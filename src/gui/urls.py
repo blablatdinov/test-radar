@@ -12,6 +12,7 @@ from gui.views import (
     SessionView,
     TestHistoryView,
     TestInfoView,
+    AgentDeleteView,
 )
 
 urlpatterns = [
@@ -27,4 +28,9 @@ urlpatterns = [
     path('test/<pk>', TestInfoView.as_view(), name='test_info'),
     path('session/<uuid:session_id>', SessionView.as_view(), name='session_detail'),
     path('project/<uuid:guid>/test-history', TestHistoryView.as_view(), name='test_history'),
+    path(
+        'project/<uuid:guid>/agents/<uuid:agent_guid>/delete',
+        AgentDeleteView.as_view(),
+        name='agent_delete',
+    ),
 ]

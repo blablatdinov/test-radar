@@ -9,6 +9,7 @@ from gui.views.project_create import ProjectCreateView
 from gui.views.session import SessionView
 from gui.views.test_history import TestHistoryView
 from gui.views.test_info import TestInfoView
+from gui.views.agent_delete import AgentDeleteView
 
 __all__ = [
     'AgentCreateView',
@@ -19,4 +20,5 @@ __all__ = [
     'SessionView',
     'TestHistoryView',
     'TestInfoView',
+    'AgentDeleteView',
 ]
