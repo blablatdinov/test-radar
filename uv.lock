@@ -606,14 +606,14 @@ wheels = [
 
 [[package]]
 name = "model-bakery"
-version = "1.20.4"
+version = "1.24.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/05/dc/6d6260fa30c4d041958f71d6790b722e6f2588fbbca0534779b81a83b66d/model_bakery-1.20.4.tar.gz", hash = "sha256:a0c97e8a27329ecad78136f9d8f573ae392e4282326ea5c5f6daed1173013c4e", size = 21147, upload-time = "2025-02-26T20:10:05.713Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/49/3e5b51d7af52bf39e348767c1feb16c97d18654a8e3f3306eb4b899e98cf/model_bakery-1.24.0.tar.gz", hash = "sha256:6469223c9fb0eccb021d5c33667b914e9208dd2282d7dc1e55394c2310a7687d", size = 28372, upload-time = "2026-06-23T21:55:23.19Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/23/9b30a9c70e1a6df5100ae8c440b98fc1da6a4ce195327a7fba399569a2ec/model_bakery-1.20.4-py3-none-any.whl", hash = "sha256:30ad372604f326a1ba9f949bad9d0f85e6a510db4ef6a0b07be2d6bd7485008b", size = 24154, upload-time = "2025-02-26T20:10:03.988Z" },
+    { url = "https://files.pythonhosted.org/packages/60/8e/9108507501846c9ee2a1b277d35d1f92ae251852bbd1527f6dbf2665d94a/model_bakery-1.24.0-py3-none-any.whl", hash = "sha256:d1f739cfc43e8d403d04734a18c73c8e677f655dd08719e35342c2f5ada1d7e9", size = 30819, upload-time = "2026-06-23T21:55:21.911Z" },
 ]
 
 [[package]]
@@ -998,14 +998,14 @@ dev = [
     { name = "django-stubs-ext", specifier = ">=6.0.7" },
     { name = "djangorestframework-stubs", specifier = "==3.17.1" },
     { name = "lxml", specifier = ">=6.1.1" },
-    { name = "model-bakery", specifier = "==1.20.4" },
+    { name = "model-bakery", specifier = "==1.24.0" },
     { name = "mypy", specifier = "==2.3.0" },
     { name = "ondivi", specifier = "==0.7.3" },
     { name = "pytest-cov", specifier = "==7.1.0" },
     { name = "pytest-django", specifier = "==4.12.0" },
     { name = "pytest-randomly", specifier = ">=4.1.0" },
-    { name = "ruff", specifier = "==0.16.1" },
     { name = "pytest-test-radar", specifier = "==0.0.1a8" },
+    { name = "ruff", specifier = "==0.16.1" },
     { name = "wemake-python-styleguide", specifier = "==1.7.1" },
 ]
 
