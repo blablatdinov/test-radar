@@ -21,7 +21,6 @@ dependencies = [
     "django-axes>=8.3.1",
     "django-ratelimit>=4.1.0",
     "django-anymail[brevo]>=13.0",
-    "pytest-test-radar>=0.0.1a8",
 ]
 
 [tool.setuptools.packages.find]
@@ -43,6 +42,7 @@ dev = [
     "lxml>=6.1.1",
     "django-ratelimit>=4.1.0",
     "django-stubs-ext>=6.0.7",
+    "pytest-test-radar==0.0.1a8",
 ]
 
 [tool.pytest.ini_options]
