@@ -41,7 +41,7 @@ def test_agent_create_creates_agent(client: Client) -> None:
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 302
     agent = Agent.objects.get(name='CI Pipeline')
     assert agent.type == 'ci'
     assert agent.project == Project.objects.get()
@@ -104,6 +104,7 @@ def test_agent_token_shown_with_warning(client: Client) -> None:
     response = client.post(
         reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
         {'name': 'Dev Laptop', 'type': 'local'},
+        follow=True,
     )
 
     assert 'save it now' in response.text
@@ -333,7 +334,7 @@ def test_agent_create_not_n_plus_one(
             {'name': 'CI Pipeline', 'type': 'ci'},
         )
 
-    assert response.status_code == 322, response.headers
+    assert response.status_code == 302, response.headers
 
 
 @pytest.mark.n_plus_one('agent_token_regenerate')
@@ -360,4 +361,4 @@ def test_agent_token_regenerate_not_n_plus_one(
             ),
         )
 
-    assert response.status_code == 422, response.headers
+    assert response.status_code == 302, response.headers
