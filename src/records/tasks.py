@@ -7,7 +7,7 @@ from datetime import timedelta
 from celery import Task, shared_task
 from django.utils import timezone
 
-from records.models import TestRecord, Status
+from records.models import Status, TestRecord
 from records.srv.flaky import detect_flaky_labels
 
 logger = logging.getLogger(__name__)

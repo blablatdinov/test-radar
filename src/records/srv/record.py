@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from records.models import TestRecord, TestSession, Status
+from records.models import Status, TestRecord, TestSession
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
