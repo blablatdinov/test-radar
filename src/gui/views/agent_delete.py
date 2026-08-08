@@ -36,4 +36,4 @@ class AgentDeleteView(View):
         )
         context['sessions'] = TestSession.objects.filter(project=project).only('id')
         context['agent_form'] = AgentForm()
-        return render(request, 'project.html', context)
+        return reverse('project', kwargs={'guid': project.guid)
