@@ -4,13 +4,13 @@
 import pytest
 from model_bakery import baker
 
-from records.tasks import recalculate_flaky_statuses
 from records.models import TestRecord
+from records.tasks import recalculate_flaky_statuses
 
 pytestmark = [pytest.mark.django_db]
 
 
-def test_record_status_nullable():
+def test_record_status_nullable() -> None:
     record = baker.make(TestRecord)
     recalculate_flaky_statuses()
     record.refresh_from_db()

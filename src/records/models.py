@@ -130,7 +130,7 @@ class TestRecord(models.Model):
         verbose_name=_('Project'),
     )
     label = models.TextField(_('Label'))
-    status = models.CharField(
+    status = models.CharField(  # noqa: DJ001
         _('Status'),
         max_length=20,
         choices=Status.choices,
