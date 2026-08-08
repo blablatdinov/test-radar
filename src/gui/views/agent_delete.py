@@ -21,9 +21,6 @@ class AgentDeleteView(View):
     """Delete an agent together with its API token."""
 
     def post(self, request: Any, guid: uuid.UUID, agent_guid: uuid.UUID) -> HttpResponse:
-        if not request.user.is_authenticated:
-            msg = 'User must be authorized.'
-            raise PermissionDenied(msg)
         project = get_object_or_404(Project, guid=guid, owner=request.user)
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         agent.delete()
