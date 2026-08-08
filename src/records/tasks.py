@@ -7,7 +7,7 @@ from datetime import timedelta
 from celery import Task, shared_task
 from django.utils import timezone
 
-from records.models import TestRecord
+from records.models import TestRecord, Status
 from records.srv.flaky import detect_flaky_labels
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ def recalculate_flaky_statuses(self: Task) -> dict[str, int]:  # noqa: WPS210, W
             # Ставим FLAKY для flaky-тестов
             flaky_count = target_records.filter(
                 label__in=flaky_labels_set,
-            ).update(status=TestRecord.Status.FLAKY)
+            ).update(status=Status.FLAKY)
 
             # Возвращаем PASSED/FAILED для тех, кто больше не flaky
             # Восстанавливаем статус на основе success

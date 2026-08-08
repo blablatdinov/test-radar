@@ -16,14 +16,14 @@ services:
 
   test-radar-celery-worker:
     image: blablatdinov/test-radar:${TAG_NAME}
-    command: .venv/bin/celery celery -A server worker -l info
+    command: .venv/bin/celery -A server worker -l info
     restart: always
     env_file:
       - .env
 
   test-radar-celery-beat:
     image: blablatdinov/test-radar:${TAG_NAME}
-    command: .venv/bin/celery celery -A server beat -l info
+    command: .venv/bin/celery -A server beat -l info
     restart: always
     env_file:
       - .env
