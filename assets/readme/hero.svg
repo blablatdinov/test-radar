@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="360" viewBox="0 0 1200 360"
+     role="img" aria-labelledby="hero-title hero-desc">
+  <title id="hero-title">Test Radar — Django test monitoring app</title>
+  <desc id="hero-desc">Test Radar monitors test results from CI and local agents via REST API with a pass/fail matrix web UI.</desc>
+
+  <defs>
+    <radialGradient id="sweep" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.12"/>
+      <stop offset="60%" stop-color="#22c55e" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flaky-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="360" rx="24" fill="#0d1117"/>
+
+  <circle cx="940" cy="180" r="220" fill="url(#sweep)"/>
+
+  <g id="title-block">
+    <text x="56" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="600" fill="#22c55e" letter-spacing="3">
+      DJANGO · TEST MONITORING
+    </text>
+
+    <g transform="translate(56 96)">
+      <text x="0" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+            font-size="56" font-weight="700" fill="#e6edf3">
+        Test Radar
+      </text>
+      <circle cx="268" cy="30" r="5" fill="#22c55e"/>
+    </g>
+
+    <text x="56" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="21" fill="#9198a1">
+      Monitor test results from CI and local agents.
+    </text>
+    <text x="56" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="21" fill="#9198a1">
+      REST API ingestion · pass/fail matrix UI · token auth
+    </text>
+
+    <text x="56" y="272" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="15" fill="#484f58">
+      Python 3.14  ·  Django 6.0  ·  DRF  ·  Tailwind v4
+    </text>
+  </g>
+
+  <g id="proof-matrix" transform="translate(740 52)">
+    <rect width="410" height="272" rx="14" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+
+    <text x="18" y="32" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="13" fill="#6e7681">
+      Test results
+    </text>
+    <rect x="340" y="18" width="52" height="20" rx="5" fill="#22c55e" fill-opacity="0.12"/>
+    <text x="366" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#22c55e" text-anchor="middle">
+      live
+    </text>
+
+    <line x1="18" y1="48" x2="392" y2="48" stroke="#21262d" stroke-width="1"/>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+       font-size="12" fill="#484f58" text-anchor="middle">
+      <text x="170" y="70">s1</text>
+      <text x="225" y="70">s2</text>
+      <text x="280" y="70">s3</text>
+      <text x="335" y="70">s4</text>
+      <text x="390" y="70">s5</text>
+    </g>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+       font-size="13" fill="#6e7681">
+      <text x="18" y="108">test_auth</text>
+      <text x="18" y="150">test_api</text>
+      <text x="18" y="192">test_gui</text>
+      <text x="18" y="234">test_flaky</text>
+    </g>
+
+    <g>
+      <circle cx="170" cy="104" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="170" cy="104" r="4.5" fill="#22c55e"/>
+      <circle cx="225" cy="104" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="225" cy="104" r="4.5" fill="#22c55e"/>
+      <circle cx="280" cy="104" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="280" cy="104" r="4.5" fill="#22c55e"/>
+      <circle cx="335" cy="104" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="335" cy="104" r="4.5" fill="#22c55e"/>
+      <circle cx="390" cy="104" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="390" cy="104" r="4.5" fill="#22c55e"/>
+    </g>
+
+    <g>
+      <circle cx="170" cy="146" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="170" cy="146" r="4.5" fill="#22c55e"/>
+      <circle cx="225" cy="146" r="9" fill="#ef4444" fill-opacity="0.15"/>
+      <circle cx="225" cy="146" r="4.5" fill="#ef4444"/>
+      <circle cx="280" cy="146" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="280" cy="146" r="4.5" fill="#22c55e"/>
+      <circle cx="335" cy="146" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="335" cy="146" r="4.5" fill="#22c55e"/>
+      <circle cx="390" cy="146" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="390" cy="146" r="4.5" fill="#22c55e"/>
+    </g>
+
+    <g>
+      <circle cx="170" cy="188" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="170" cy="188" r="4.5" fill="#22c55e"/>
+      <circle cx="225" cy="188" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="225" cy="188" r="4.5" fill="#22c55e"/>
+      <circle cx="280" cy="188" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="280" cy="188" r="4.5" fill="#22c55e"/>
+      <circle cx="335" cy="188" r="9" fill="#ef4444" fill-opacity="0.15"/>
+      <circle cx="335" cy="188" r="4.5" fill="#ef4444"/>
+      <circle cx="390" cy="188" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="390" cy="188" r="4.5" fill="#22c55e"/>
+    </g>
+
+    <g>
+      <circle cx="170" cy="230" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="170" cy="230" r="4.5" fill="#22c55e"/>
+      <circle cx="225" cy="230" r="9" fill="#ef4444" fill-opacity="0.15"/>
+      <circle cx="225" cy="230" r="4.5" fill="#ef4444"/>
+      <circle cx="280" cy="230" r="9" fill="#ef4444" fill-opacity="0.15"/>
+      <circle cx="280" cy="230" r="4.5" fill="#ef4444"/>
+      <circle cx="335" cy="230" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="335" cy="230" r="4.5" fill="#22c55e"/>
+      <circle cx="390" cy="230" r="9" fill="#22c55e" fill-opacity="0.15"/>
+      <circle cx="390" cy="230" r="4.5" fill="#22c55e"/>
+    </g>
+
+    <rect x="262" y="222" width="36" height="16" rx="4" fill="url(#flaky-grad)" fill-opacity="0.2" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.4"/>
+    <text x="280" y="234" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="10" font-weight="600" fill="#f59e0b" text-anchor="middle">
+      flaky
+    </text>
+  </g>
+</svg>
