@@ -134,6 +134,7 @@ class TestRecord(models.Model):
         _('Status'),
         max_length=20,
         choices=Status.choices,
+        null=True,
     )
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
