@@ -110,6 +110,10 @@ class TestSession(models.Model):
         return str(self.id)
 
 
+class Status(models.TextChoices):
+    FLAKY = 'flaky', _('Flaky')
+
+
 class TestRecord(models.Model):
     __test__ = False
     id = models.CharField(
@@ -126,6 +130,11 @@ class TestRecord(models.Model):
         verbose_name=_('Project'),
     )
     label = models.TextField(_('Label'))
+    status = models.CharField(
+        _('Status'),
+        max_length=20,
+        choices=Status.choices,
+    )
     success = models.BooleanField(_('Success'))
     timestamp = models.DateTimeField(_('Timestamp'))
     logs = models.BinaryField(_('Logs'), blank=True)

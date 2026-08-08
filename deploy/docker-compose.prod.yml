@@ -11,9 +11,21 @@ services:
       - 8012:8012
     env_file:
       - .env
-    volumes:
-      - ./db:/app/db
     environment:
       - APP_VERSION=${TAG_NAME}
+
+  test-radar-celery-worker:
+    image: blablatdinov/test-radar:${TAG_NAME}
+    command: .venv/bin/celery -A server worker -l info
+    restart: always
+    env_file:
+      - .env
+
+  test-radar-celery-beat:
+    image: blablatdinov/test-radar:${TAG_NAME}
+    command: .venv/bin/celery -A server beat -l info
+    restart: always
+    env_file:
+      - .env
 
 # docker build . -t blablatdinov/test-radar:v0.1.0 && TAG_NAME=v0.1.0 docker compose -f deploy/docker-compose.prod.yml up -d
