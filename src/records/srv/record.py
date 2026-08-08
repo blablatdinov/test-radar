@@ -56,7 +56,7 @@ def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix)
     matrix[record.label][col_index[col_key]] = record
 
 
-def _build_matrix(records: QuerySet[TestRecord], flaky_labels: set[str]) -> dict[str, Any]:
+def _build_matrix(records: QuerySet[TestRecord]) -> dict[str, Any]:
     col_index: ColIndex = {}
     matrix: RecordMatrix = defaultdict(dict)
 
@@ -65,7 +65,7 @@ def _build_matrix(records: QuerySet[TestRecord], flaky_labels: set[str]) -> dict
 
     return {
         'columns': _build_columns(col_index),
-        'rows': _build_rows(matrix, len(col_index), flaky_labels),
+        'rows': _build_rows(matrix, len(col_index)),
     }
 
 
