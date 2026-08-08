@@ -362,3 +362,20 @@ def test_agent_token_regenerate_not_n_plus_one(
         )
 
     assert response.status_code == 302, response.headers
+
+
+# TODO #158:30min Implement agent name check and remove `skip`
+@pytest.mark.skip
+@pytest.mark.usefixtures('user')
+def test_uniq_agent_name(client: Client, project: Project) -> None:
+    client.force_login(User.objects.get(username='testuser'))
+    name = 'github-ci'
+    baker.make(Agent, name=name, project=project)
+
+    response = client.post(
+        reverse('agent_create', kwargs={'guid': project.guid}),
+        {'name': name, 'type': 'ci'},
+    )
+
+    assert response.status_code == 200
+    assert Agent.objects.filter(name=name, project=project).count() == 1
