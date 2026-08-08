@@ -54,8 +54,8 @@ def recalculate_flaky_statuses(self: Task) -> dict[str, int]:  # noqa: WPS210, W
             # Возвращаем PASSED/FAILED для тех, кто больше не flaky
             # Восстанавливаем статус на основе success
             non_flaky = target_records.exclude(label__in=flaky_labels_set)
-            passed_count = non_flaky.filter(success=True).update(status=TestRecord.Status.PASSED)
-            failed_count = non_flaky.filter(success=False).update(status=TestRecord.Status.FAILED)
+            passed_count = non_flaky.filter(success=True).update(status=Status.PASSED)
+            failed_count = non_flaky.filter(success=False).update(status=Status.FAILED)
 
             updated_count += flaky_count + passed_count + failed_count
             logger.info(

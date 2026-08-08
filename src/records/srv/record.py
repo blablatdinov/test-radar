@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from records.models import TestRecord, TestSession
+from records.models import TestRecord, TestSession, Status
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -38,7 +38,7 @@ def _build_rows(
             'label': label,
             'cells': [matrix[label].get(col_idx) for col_idx in range(col_count)],
             'is_flaky': any(
-                cell.status == TestRecord.Status.FLAKY
+                cell.status == Status.FLAKY
                 for cell in matrix[label].values()
                 if cell is not None
             ),
