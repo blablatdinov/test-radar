@@ -76,6 +76,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'server.context_processors.registration_enabled',
+                'server.context_processors.app_version',
             ],
         },
     },
@@ -220,3 +221,14 @@ STORAGES = {
     },
 }
 ADMIN_SECRET_PATH = env('ADMIN_SECRET_PATH', default='')
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://redis:6379/0')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://redis:6379/0')
+CELERY_TASK_TIME_LIMIT = 300
+CELERY_TASK_SOFT_TIME_LIMIT = 240
+CELERY_BEAT_SCHEDULE = {
+    'recalculate-flaky-statuses': {
+        'task': 'records.tasks.recalculate_flaky_statuses',
+        'schedule': 300,
+    },
+}

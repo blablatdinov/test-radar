@@ -8,19 +8,20 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14,<4"
 dependencies = [
-    "django==6.0.7",
-    "djangorestframework==3.17.2",
+    "django==6.1",
+    "djangorestframework==3.18.0",
     "django-debug-toolbar==7.0.0",
     "gunicorn==26.0.0",
     "httpx==0.28.1",
     "pytest==9.1.1",
     "django-environ==0.14.0",
-    "bcrypt==4.3.0",
+    "bcrypt==5.0.0",
     "psycopg[binary]==3.3.4",
     "whitenoise[brotli]==6.12.0",
     "django-axes==8.3.1",
     "django-ratelimit==4.1.0",
     "django-anymail[brevo]==15.1",
+    "celery[redis]==5.6.3",
 ]
 
 [tool.setuptools.packages.find]
@@ -32,16 +33,16 @@ dev = [
     "model_bakery==1.24.0",
     "mypy==2.3.0",
     "ondivi==0.7.3",
-    "ruff==0.16.1",
+    "ruff==0.16.2",
     "wemake-python-styleguide==1.7.1",
     "pytest-cov==7.1.0",
     "pytest-django==4.13.0",
     "deltaver==1.0.2",
-    "django-stubs==6.0.8",
+    "django-stubs==6.0.9",
     "pytest-randomly==4.1.0",
     "lxml==6.1.1",
-    "django-stubs-ext==6.0.8",
-    "pytest-test-radar==0.0.1a9",
+    "django-stubs-ext==6.0.9",
+    "pytest-test-radar==0.0.1a12",
 ]
 
 [tool.pytest.ini_options]
