@@ -364,8 +364,6 @@ def test_agent_token_regenerate_not_n_plus_one(
     assert response.status_code == 302, response.headers
 
 
-# TODO #158:30min Implement agent name check and remove `skip`
-@pytest.mark.skip
 @pytest.mark.usefixtures('user')
 def test_uniq_agent_name(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))

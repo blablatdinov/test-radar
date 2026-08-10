@@ -26,6 +26,11 @@ class AgentCreateView(FormView):
     def get_project(self) -> Project:
         return get_object_or_404(Project, guid=self.kwargs[_GUID_KWARG], owner=self.request.user)
 
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['project'] = self.get_project()
+        return kwargs
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         project = self.get_project()
         context = record.filtered_records(project.pk, self.request)
@@ -36,7 +41,7 @@ class AgentCreateView(FormView):
             .only('id', 'name', 'type', _GUID_KWARG, 'created_at', 'token__token_mask')
         )
         context['sessions'] = TestSession.objects.filter(project=project).only('id')
-        context['agent_form'] = kwargs.get('form') or AgentForm()
+        context['agent_form'] = kwargs.get('form') or AgentForm(project=project)
         return context
 
     def form_valid(self, form: AgentForm) -> HttpResponse:
