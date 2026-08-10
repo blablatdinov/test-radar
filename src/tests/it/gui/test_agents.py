@@ -379,7 +379,7 @@ def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
         reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 302
     assert not Agent.objects.filter(pk=agent.pk).exists()
 
 
