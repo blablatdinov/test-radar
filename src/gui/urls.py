@@ -5,6 +5,7 @@ from django.urls import path
 
 from gui.views import (
     AgentCreateView,
+    AgentDeleteView,
     AgentTokenRegenerateView,
     IndexView,
     ProjectCreateView,
@@ -12,7 +13,6 @@ from gui.views import (
     SessionView,
     TestHistoryView,
     TestInfoView,
-    AgentDeleteView,
 )
 
 urlpatterns = [

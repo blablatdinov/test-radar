@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-10 07:50+0000\n"
+"POT-Creation-Date: 2026-08-11 00:19+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -211,6 +211,16 @@ msgstr "Вы уверены, что хотите перегенерироват�
 
 msgid "Regenerate token"
 msgstr "Перегенерировать токен"
+
+#, fuzzy
+#| msgid "Are you sure you want to regenerate the token? The old token will stop working immediately."
+msgid "Are you sure you want to delete this agent? Its token will stop working immediately."
+msgstr "Вы уверены, что хотите перегенерировать токен? Старый токен перестанет работать немедленно."
+
+#, fuzzy
+#| msgid "Create agent"
+msgid "Delete agent"
+msgstr "Создать агента"
 
 msgid "No agents yet."
 msgstr "Агентов пока нет."

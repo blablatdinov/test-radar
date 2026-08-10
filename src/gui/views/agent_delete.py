@@ -3,8 +3,7 @@
 
 from typing import TYPE_CHECKING, Any
 
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View
 
 from records.forms import AgentForm
@@ -33,4 +32,4 @@ class AgentDeleteView(View):
         )
         context['sessions'] = TestSession.objects.filter(project=project).only('id')
         context['agent_form'] = AgentForm()
-        return reverse('project', kwargs={'guid': project.guid)
+        return redirect('project_detail', guid=project.guid)
