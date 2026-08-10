@@ -396,3 +396,29 @@ def test_uniq_agent_name(client: Client, project: Project) -> None:
 
     assert response.status_code == 200
     assert Agent.objects.filter(name=name, project=project).count() == 1
+
+
+@pytest.mark.n_plus_one('agent_delete')
+def test_agent_delete_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='CI Pipeline',
+        type='ci',
+        project=filled_project,
+        owner=user,
+    )
+    client.force_login(user)
+    with django_assert_max_num_queries(8):
+        response = client.post(
+            reverse(
+                'agent_delete',
+                kwargs={'guid': filled_project.guid, 'agent_guid': agent.guid},
+            ),
+        )
+
+    assert response.status_code == 302, response.headers
