@@ -364,6 +364,7 @@ def test_agent_token_regenerate_not_n_plus_one(
     assert response.status_code == 302, response.headers
 
 
+
 def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
     agent = baker.make(
         Agent,
@@ -383,8 +384,6 @@ def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
     assert not Agent.objects.filter(pk=agent.pk).exists()
 
 
-# TODO #158:30min Implement agent name check and remove `skip`
-@pytest.mark.skip
 @pytest.mark.usefixtures('user')
 def test_uniq_agent_name(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))

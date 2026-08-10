@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-08 08:50+0300\n"
+"POT-Creation-Date: 2026-08-10 07:50+0000\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -268,6 +268,9 @@ msgstr "Failed"
 
 msgid "Execution logs"
 msgstr "Execution logs"
+
+msgid "An agent with this name already exists in this project."
+msgstr "An agent with this name already exists in this project."
 
 msgid "Identifier"
 msgstr "Identifier"

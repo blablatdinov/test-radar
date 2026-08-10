@@ -10,7 +10,7 @@ requires-python = ">=3.14,<4"
 dependencies = [
     "django==6.1",
     "djangorestframework==3.18.0",
-    "django-debug-toolbar==7.0.0",
+    "django-debug-toolbar==7.1.0",
     "gunicorn==26.0.0",
     "httpx==0.28.1",
     "pytest==9.1.1",
@@ -36,7 +36,7 @@ dev = [
     "ruff==0.16.2",
     "wemake-python-styleguide==1.7.1",
     "pytest-cov==7.1.0",
-    "pytest-django==4.13.0",
+    "pytest-django==4.14.0",
     "deltaver==1.0.2",
     "django-stubs==6.0.9",
     "pytest-randomly==4.1.0",
