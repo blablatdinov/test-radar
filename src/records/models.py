@@ -57,6 +57,12 @@ class Agent(models.Model):
     class Meta:
         verbose_name = _('Agent')
         verbose_name_plural = _('Agents')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'project'],
+                name='uniq_agent_name_per_project',
+            ),
+        ]
 
     def __str__(self) -> str:
         return str(self.name)
