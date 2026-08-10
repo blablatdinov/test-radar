@@ -27,8 +27,7 @@ class AgentForm(forms.ModelForm):
     def clean_name(self) -> str:
         name = self.cleaned_data['name']
         if (
-            self._project is not None
-            and Agent.objects.filter(
+            self._project is not None and Agent.objects.filter(
                 name=name,
                 project=self._project,
             ).exists()
