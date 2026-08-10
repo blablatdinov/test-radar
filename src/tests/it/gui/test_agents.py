@@ -364,7 +364,6 @@ def test_agent_token_regenerate_not_n_plus_one(
     assert response.status_code == 302, response.headers
 
 
-
 def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
     agent = baker.make(
         Agent,
