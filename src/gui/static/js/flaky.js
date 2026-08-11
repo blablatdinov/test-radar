@@ -77,6 +77,7 @@ function applyFlakyBadges() {
       const badge = row.querySelector('.flaky-badge');
       if (badge) {
         badge.classList.remove('hidden');
+        badge.classList.add('inline-block');
       }
     }
   });
