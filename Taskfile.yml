@@ -8,7 +8,7 @@ tasks:
   compose-setup:
     cmds:
       - docker compose build app
-      - docker compose pull postgres redis
+      - docker compose pull postgres
 
   compose-run:
     cmds:
