@@ -90,7 +90,7 @@ jobs:
     - name: Collect static files
       run: uv run python src/manage.py collectstatic --noinput
       env:
-        DATABASE_URL: sqlite:///:memory:
+        DATABASE_URL: 'sqlite:///:memory:'
     - name: Test
       run: uv run pytest src/tests -vv
       env:
