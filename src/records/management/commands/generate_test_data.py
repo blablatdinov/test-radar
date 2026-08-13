@@ -3,15 +3,13 @@
 
 # flake8: noqa: WPS
 
-from typing import final
-
 import argparse
 import datetime
 import secrets
 import uuid
 from compression import zstd
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, final
 
 from django.core.management.base import BaseCommand
 from model_bakery import baker

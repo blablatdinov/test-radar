@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 import uuid
-
 from typing import final
+
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect

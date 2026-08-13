@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import final
 import secrets
 import uuid
 from compression import zstd
+from typing import final
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _

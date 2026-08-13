@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 from typing import final
+
 from django.apps import AppConfig
 
 
