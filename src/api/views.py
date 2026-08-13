@@ -4,7 +4,7 @@
 import base64
 import logging
 from http import HTTPStatus
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from django.db import transaction
 from rest_framework.response import Response
@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger('api.views')
 
 
+@final
 class BulkCreateTestRecordView(APIView):
     def post(self, request: Request) -> Response:  # noqa: WPS210
         if not isinstance(request.auth, ApiToken):

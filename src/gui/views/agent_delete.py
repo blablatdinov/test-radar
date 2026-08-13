@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, final
 
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from django.http import HttpResponse
 
 
+@final
 class AgentDeleteView(View):
     """Delete an agent together with its API token."""
 

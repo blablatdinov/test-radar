@@ -3,7 +3,7 @@
 
 import datetime
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -20,6 +20,7 @@ _REMOTE_ADDR_KEY = 'REMOTE_ADDR'
 logger = logging.getLogger('api.authentication')
 
 
+@final
 class AgentTokenAuthentication(BaseAuthentication):
     """Authenticate agents via 'Authorization: Token <raw_token>' header."""
 

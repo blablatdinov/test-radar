@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any, Final
+from typing import Any, Final, final
 
 from django import forms
 from django.contrib.auth.password_validation import validate_password
@@ -12,6 +12,7 @@ from auth.models import User
 _USERNAME_MAX_LENGTH: Final = 150
 
 
+@final
 class RegistrationForm(forms.Form):
     username = forms.CharField(
         label=_('Username'),
@@ -61,6 +62,7 @@ class RegistrationForm(forms.Form):
         )
 
 
+@final
 class EmailResendForm(forms.Form):
     email = forms.EmailField(
         label=_('Email'),

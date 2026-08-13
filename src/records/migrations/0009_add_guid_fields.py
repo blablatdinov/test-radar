@@ -1,4 +1,5 @@
 import uuid
+from typing import final
 
 from django.db import migrations, models
 
@@ -14,6 +15,7 @@ def populate_guids(apps, schema_editor):
         agent.save(update_fields=['guid'])
 
 
+@final
 class Migration(migrations.Migration):
     dependencies = [
         ('records', '0008_alter_testrecord_logs'),

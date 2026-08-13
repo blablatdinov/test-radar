@@ -9,7 +9,7 @@ import secrets
 import uuid
 from compression import zstd
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, final
 
 from django.core.management.base import BaseCommand
 from model_bakery import baker
@@ -149,6 +149,7 @@ def _pop_random(items: list[str], count: int) -> list[str]:
     return [items.pop(secrets.randbelow(len(items))) for _ in range(count)]
 
 
+@final
 @dataclass
 class _TestSuite:
     stable_pass: list[str] = field(default_factory=list)
@@ -174,6 +175,7 @@ class _TestSuite:
         return secrets.randbelow(100) < _FLAKY_PASS_PROBABILITY_PERCENT
 
 
+@final
 @dataclass
 class _GenStats:
     projects: int = 0
@@ -185,6 +187,7 @@ class _GenStats:
         return self.projects + self.agents + self.records
 
 
+@final
 @dataclass
 class _RunContext:
     timestamp: datetime.datetime
@@ -262,6 +265,7 @@ def _create_test_runs(
     return sum(_make_single_run(project, agents, suite, now) for _ in range(run_count))
 
 
+@final
 class Command(BaseCommand):
     help = 'Generate test data for local debugging'
 

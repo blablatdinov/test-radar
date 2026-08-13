@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from django.urls import reverse_lazy
 from django.views.generic import FormView
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from django.http import HttpResponse
 
 
+@final
 class ProjectCreateView(FormView):
     """Form page for creating a new project."""
 

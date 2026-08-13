@@ -42,6 +42,7 @@ dev = [
     "lxml==6.1.1",
     "django-stubs-ext==6.1.0",
     "pytest-test-radar==0.0.1a12",
+    "flake8-final>=0.0.3",
 ]
 
 [tool.pytest.ini_options]

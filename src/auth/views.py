@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, final
 
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from django.http import HttpResponse
 
 
+@final
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     redirect_authenticated_user = True
@@ -32,10 +33,12 @@ class CustomLoginView(LoginView):
         return super().form_valid(form)
 
 
+@final
 class CustomLogoutView(LogoutView):
     """Custom logout view."""
 
 
+@final
 @method_decorator(ratelimit(key='ip', rate='5/h', block=True), name='dispatch')
 class RegisterView(FormView):
     template_name = 'register.html'

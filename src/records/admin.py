@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Final
+from typing import Final, final
 
 from django.contrib import admin
 
@@ -29,30 +29,35 @@ _BRANCH: Final = 'branch'
 _COMMIT_HASH: Final = 'commit_hash'
 
 
+@final
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = [_NAME]
     list_display = [_NAME, _OWNER, _CREATED_AT]
 
 
+@final
 @admin.register(Agent)
 class AgentAdmin(admin.ModelAdmin):
     search_fields = [_NAME]
     list_display = [_NAME, _TYPE, _PROJECT, _OWNER, _CREATED_AT]
 
 
+@final
 @admin.register(ApiToken)
 class ApiTokenAdmin(admin.ModelAdmin):
     search_fields = [_TOKEN_MASK]
     list_display = [_TOKEN_MASK, _AGENT, _SCOPES, _EXPIRES_AT, _LAST_USED_AT, _CREATED_AT]
 
 
+@final
 @admin.register(TestRecord)
 class TestRecordAdmin(admin.ModelAdmin):
     search_fields = [_LABEL]
     list_display = [_LABEL, _PROJECT, _TIMESTAMP, _SUCCESS]
 
 
+@final
 @admin.register(TestSession)
 class TestSessionAdmin(admin.ModelAdmin):
     search_fields = [_STARTED_AT, _PROJECT, _BRANCH, _COMMIT_HASH]

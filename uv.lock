@@ -420,6 +420,18 @@ wheels = [
 ]
 
 [[package]]
+name = "flake8-final"
+version = "0.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "flake8" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a5/e4/487558ab03ca54c5f8b277d959fd07ece944fa44384cfd0908e5a1a328d6/flake8_final-0.0.3.tar.gz", hash = "sha256:652c95616199aa4f1bf4ccb60c2cd944797e12dc21b0343f12534e24465b3c43", size = 3292, upload-time = "2024-07-22T13:18:50.064Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a7/7b/1d426852147f4734fede23f2560da7b1715cb52c9df4e4340cdca07e890a/flake8_final-0.0.3-py3-none-any.whl", hash = "sha256:48d375a071c5d0193b5d698100d5751896337e9596ec541886c2895be7f19027", size = 6595, upload-time = "2024-07-22T13:18:49.186Z" },
+]
+
+[[package]]
 name = "gitdb"
 version = "4.0.12"
 source = { registry = "https://pypi.org/simple" }
@@ -985,6 +997,7 @@ dev = [
     { name = "django-stubs" },
     { name = "django-stubs-ext" },
     { name = "djangorestframework-stubs" },
+    { name = "flake8-final" },
     { name = "lxml" },
     { name = "model-bakery" },
     { name = "mypy" },
@@ -1020,6 +1033,7 @@ dev = [
     { name = "django-stubs", specifier = "==6.1.0" },
     { name = "django-stubs-ext", specifier = "==6.1.0" },
     { name = "djangorestframework-stubs", specifier = "==3.18.0" },
+    { name = "flake8-final", specifier = ">=0.0.3" },
     { name = "lxml", specifier = "==6.1.1" },
     { name = "model-bakery", specifier = "==1.24.0" },
     { name = "mypy", specifier = "==2.3.0" },
