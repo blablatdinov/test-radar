@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import final
 import base64
 import logging
 from http import HTTPStatus
@@ -19,6 +20,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger('api.views')
 
 
+@final
 class BulkCreateTestRecordView(APIView):
     def post(self, request: Request) -> Response:  # noqa: WPS210
         if not isinstance(request.auth, ApiToken):

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any
+from typing import Any, final
 
 from django.core.exceptions import PermissionDenied
 from django.views.generic import TemplateView
@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from records.models import Project
 
 
+@final
 class IndexView(TemplateView):
     """Index page of Test Radar — shows list of user projects."""
 

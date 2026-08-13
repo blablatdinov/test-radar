@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from __future__ import annotations
-
 import uuid
 
+from typing import final
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -18,10 +17,12 @@ from auth.forms import EmailResendForm
 from auth.models import EmailConfirmationToken, User
 
 
+@final
 class EmailConfirmationSentView(TemplateView):
     template_name = 'email_confirmation_sent.html'
 
 
+@final
 class EmailConfirmView(View):
     def get(self, request: HttpRequest, token: uuid.UUID) -> HttpResponse:
         try:
@@ -50,6 +51,7 @@ class EmailConfirmView(View):
         return redirect('email_resend')
 
 
+@final
 class EmailResendView(FormView):
     template_name = 'email_resend.html'
     form_class = EmailResendForm

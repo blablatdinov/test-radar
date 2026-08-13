@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import final
 import secrets
 import uuid
 from compression import zstd
@@ -13,6 +14,7 @@ def _hex_token() -> str:
     return secrets.token_hex(16)
 
 
+@final
 class Project(models.Model):
     guid = models.UUIDField(_('Identifier'), default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(_('Name'), max_length=255)
@@ -32,6 +34,7 @@ class Project(models.Model):
         return str(self.name)
 
 
+@final
 class Agent(models.Model):
     class AgentType(models.TextChoices):
         CI = 'ci', _('CI')
@@ -68,6 +71,7 @@ class Agent(models.Model):
         return str(self.name)
 
 
+@final
 class ApiToken(models.Model):
     agent = models.OneToOneField(
         Agent,
@@ -91,6 +95,7 @@ class ApiToken(models.Model):
         return f'{self.token_mask} ({self.agent})'
 
 
+@final
 class TestSession(models.Model):
     __test__ = False
     id = models.UUIDField(_('Identifier'), primary_key=True)
@@ -116,6 +121,7 @@ class TestSession(models.Model):
         return str(self.id)
 
 
+@final
 class TestRecord(models.Model):
     __test__ = False
     id = models.CharField(

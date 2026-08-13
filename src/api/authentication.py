@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import final
 import datetime
 import logging
 from typing import TYPE_CHECKING
@@ -20,6 +21,7 @@ _REMOTE_ADDR_KEY = 'REMOTE_ADDR'
 logger = logging.getLogger('api.authentication')
 
 
+@final
 class AgentTokenAuthentication(BaseAuthentication):
     """Authenticate agents via 'Authorization: Token <raw_token>' header."""
 

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any
+from typing import Any, final
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
@@ -9,17 +9,21 @@ from django.utils.translation import gettext_lazy as _
 from records.models import Agent, Project
 
 
+@final
 class ProjectForm(forms.ModelForm):
+    @final
     class Meta:
         model = Project
         fields = ('name',)
 
 
+@final
 class AgentForm(forms.ModelForm):
     def __init__(self, *args: Any, project: Project | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._project = project
 
+    @final
     class Meta:
         model = Agent
         fields = ('name', 'type')

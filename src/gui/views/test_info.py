@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any
+from typing import Any, final
 
 from django.views.generic import TemplateView
 
 from records.srv import record
 
 
+@final
 class TestInfoView(TemplateView):
     """Page with information about test."""
 

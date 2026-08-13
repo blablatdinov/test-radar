@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import Any
+from typing import Any, final
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -12,6 +12,7 @@ from records.models import Agent, Project, TestSession
 from records.srv import record
 
 
+@final
 class ProjectView(TemplateView):
     """Page with test records for a specific project."""
 

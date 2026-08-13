@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import final
+
 from django.db import migrations, models
 
 
@@ -15,6 +17,7 @@ def populate_session_env_context(apps, schema_editor):
     )
 
 
+@final
 class Migration(migrations.Migration):
 
     dependencies = [

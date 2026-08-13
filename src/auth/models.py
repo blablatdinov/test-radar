@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+from typing import final
+
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
@@ -10,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 _TOKEN_EXPIRY_HOURS = 24
 
 
+@final
 class UserManager(BaseUserManager['User']):
     def create_user(self, username: str, email: str, password: str) -> User:
         user = self.model(username=username, email=email, is_superuser=False)
@@ -25,6 +28,7 @@ class UserManager(BaseUserManager['User']):
         return user
 
 
+@final
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         _('Username'),
@@ -54,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('Users')
 
 
+@final
 class EmailConfirmationToken(models.Model):
     user = models.ForeignKey(
         User,

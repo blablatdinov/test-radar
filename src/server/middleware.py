@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from django.conf import settings
 from django.shortcuts import redirect
@@ -17,6 +16,7 @@ PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
 _EMAIL_PUBLIC_PREFIX = '/email/'
 
 
+@final
 class AuthRequiredMiddleware:
     """Protect all URLs by default, allowing only whitelisted paths for anonymous users."""
 

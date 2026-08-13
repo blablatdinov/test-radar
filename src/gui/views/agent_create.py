@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, final
 
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 _GUID_KWARG = 'guid'
 
 
+@final
 class AgentCreateView(FormView):
     """Create an agent and generate an API token for it."""
 
