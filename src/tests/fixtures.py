@@ -8,7 +8,7 @@ import pytest
 from model_bakery import baker
 
 from auth.models import User
-from records.models import Agent, Project, TestRecord, TestSession
+from records.models import Agent, Membership, Project, TestRecord, TestSession
 from records.srv import token as token_srv
 
 
@@ -37,14 +37,59 @@ def unverified_user() -> User:
     )
 
 
-# @todo #162:30min Create a Membership(user, project, role=OWNER) alongside
-#  every baked Project in these fixtures, and add maintainer/developer
-#  membership fixtures, so RBAC integration tests can reuse them.
-#  Membership creation is unconditional (not gated by RBAC_ENABLED);
-#  tests for new behavior use override_settings(RBAC_ENABLED=True).
 @pytest.fixture
 def project(user: User) -> Project:
-    return baker.make(Project, name='Test project', owner=user)
+    project = baker.make(Project, name='Test project', owner=user)
+    baker.make(Membership, user=user, project=project, role=Membership.Role.OWNER)
+    return project
+
+
+@pytest.fixture
+def maintainer_user() -> User:
+    return User.objects.create_user(
+        username='maintainer',
+        email='maintainer@example.com',
+        password='test-password-123',  # noqa: S106
+    )
+
+
+@pytest.fixture
+def maintainer_membership(maintainer_user: User, project: Project) -> Membership:
+    return baker.make(Membership, user=maintainer_user, project=project, role=Membership.Role.MAINTAINER)
+
+
+@pytest.fixture
+def developer_user() -> User:
+    return User.objects.create_user(
+        username='developer',
+        email='developer@example.com',
+        password='test-password-123',  # noqa: S106
+    )
+
+
+@pytest.fixture
+def developer_membership(developer_user: User, project: Project) -> Membership:
+    return baker.make(Membership, user=developer_user, project=project, role=Membership.Role.DEVELOPER)
+
+
+@pytest.fixture
+def outsider_user() -> User:
+    return User.objects.create_user(
+        username='outsider',
+        email='outsider@example.com',
+        password='test-password-123',  # noqa: S106
+    )
+
+
+@pytest.fixture
+def local_agent(developer_user: User, project: Project) -> Agent:
+    return baker.make(
+        Agent,
+        name='Dev Laptop',
+        type='local',
+        project=project,
+        owner=developer_user,
+    )
 
 
 @pytest.fixture
@@ -96,6 +141,7 @@ def test_record_pk(project: Project, test_session: TestSession) -> str:
 @pytest.fixture
 def filled_project(user: User) -> Project:
     project = baker.make(Project, owner=user)
+    baker.make(Membership, user=user, project=project, role=Membership.Role.OWNER)
     sessions = baker.make(TestSession, project=project, _quantity=15)
     records: list[TestRecord] = []
     for session in sessions:
