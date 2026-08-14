@@ -4,10 +4,12 @@
 from typing import Any, final
 
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from records.models import Project, TestRecord
+from records.srv import permissions
 
 
 @final
@@ -21,10 +23,9 @@ class TestHistoryView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
-        # @todo #162:30min Replace owner check with
-        #  records/srv/permissions.is_project_member. The service keeps legacy
-        #  owner behavior while settings.RBAC_ENABLED is off.
-        project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
+        project = get_object_or_404(Project, guid=kwargs['guid'])
+        if not permissions.is_project_member(self.request.user, project):
+            raise Http404
         label = self.request.GET.get('label', '')
         records = (
             TestRecord.objects.filter(project=project, label=label)

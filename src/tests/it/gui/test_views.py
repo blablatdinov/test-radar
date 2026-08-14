@@ -197,6 +197,33 @@ def test_test_history_redirects_anonymous(client: Client, project: Project) -> N
     assert response.headers['Location'] == reverse('login')
 
 
+def test_test_history_forbidden_for_outsider(
+    client: Client,
+    outsider_user: User,
+    project: Project,
+) -> None:
+    client.force_login(outsider_user)
+
+    response = client.get(f'/project/{project.guid}/test-history?label=foo')
+
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_test_history_allowed_for_member(
+    client: Client,
+    developer_user: User,
+    project: Project,
+    test_record_pk: str,
+) -> None:
+    client.force_login(developer_user)
+
+    response = client.get(f'/project/{project.guid}/test-history?label=test_file.py::test_view')
+
+    assert response.status_code == 200
+
+
 def test_index_redirects_anonymous(client: Client) -> None:
     response = client.get('/')
 
