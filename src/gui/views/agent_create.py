@@ -3,13 +3,15 @@
 
 from typing import TYPE_CHECKING, Any, final
 
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import FormView
 
 from records.forms import AgentForm
 from records.models import Agent, Project, TestSession
-from records.srv import record, token
+from records.srv import permissions, record, token
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
@@ -25,14 +27,10 @@ class AgentCreateView(FormView):
     form_class = AgentForm
 
     def get_project(self) -> Project:
-        # @todo #162:30min Replace owner check with
-        #  records/srv/permissions.can_manage_agent(user, project, agent_type):
-        #  CI agents -> Owner+Maintainer, LOCAL agents -> any project member.
-        #  Raise PermissionDenied (403) on violation. agent_type is available
-        #  in form data on POST; on GET any member may see the form.
-        #  The service keeps legacy owner behavior while
-        #  settings.RBAC_ENABLED is off.
-        return get_object_or_404(Project, guid=self.kwargs[_GUID_KWARG], owner=self.request.user)
+        project = get_object_or_404(Project, guid=self.kwargs[_GUID_KWARG])
+        if not permissions.is_project_member(self.request.user, project):
+            raise Http404
+        return project
 
     def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
@@ -54,6 +52,9 @@ class AgentCreateView(FormView):
 
     def form_valid(self, form: AgentForm) -> HttpResponse:
         project = self.get_project()
+        if not permissions.can_manage_agent(self.request.user, project, form.cleaned_data['type']):
+            msg = 'You do not have permission to create this agent type.'
+            raise PermissionDenied(msg)
         agent = form.save(commit=False)
         agent.project = project
         agent.owner = self.request.user

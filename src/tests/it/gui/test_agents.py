@@ -12,6 +12,7 @@
 from typing import TYPE_CHECKING
 
 import pytest
+from django.test import override_settings
 from django.urls import reverse
 from model_bakery import baker
 
@@ -197,6 +198,53 @@ def test_agent_create_redirects_anonymous(client: Client, project: Project) -> N
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
+
+
+def test_agent_create_forbidden_for_outsider(
+    client: Client,
+    outsider_user: User,
+    project: Project,
+) -> None:
+    client.force_login(outsider_user)
+
+    response = client.get(reverse('agent_create', kwargs={'guid': project.guid}))
+
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_agent_create_local_allowed_for_developer(
+    client: Client,
+    developer_user: User,
+    project: Project,
+) -> None:
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse('agent_create', kwargs={'guid': project.guid}),
+        {'name': 'Local Dev', 'type': 'local'},
+    )
+
+    assert response.status_code == 302
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_agent_create_ci_forbidden_for_developer(
+    client: Client,
+    developer_user: User,
+    project: Project,
+) -> None:
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse('agent_create', kwargs={'guid': project.guid}),
+        {'name': 'CI Pipeline', 'type': 'ci'},
+    )
+
+    assert response.status_code == 403
+    assert Agent.objects.count() == 0
 
 
 @pytest.mark.usefixtures('user')
