@@ -33,9 +33,15 @@ class SessionView(TemplateView):
             TestRecord.objects.filter(session=session)
             .select_related('agent', 'session')
             .only(
-                'id', 'label', 'success', 'timestamp',
-                'session', 'session__branch', 'session__commit_hash',
-                'agent', 'agent__name',
+                'id',
+                'label',
+                'success',
+                'timestamp',
+                'session',
+                'session__branch',
+                'session__commit_hash',
+                'agent',
+                'agent__name',
             )
             .order_by('timestamp')
         )
