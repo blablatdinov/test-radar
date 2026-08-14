@@ -289,3 +289,5 @@ tags
 .env
 
 .deltaver_cache/
+
+static/
