@@ -21,7 +21,8 @@ class TestHistoryView(TemplateView):
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
         # @todo #162:30min Replace owner check with
-        #  records/srv/permissions.is_project_member.
+        #  records/srv/permissions.is_project_member. The service keeps legacy
+        #  owner behavior while settings.RBAC_ENABLED is off.
         project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
         label = self.request.GET.get('label', '')
         records = (

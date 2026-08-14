@@ -3,7 +3,8 @@
 
 # @todo #162:30min After RBAC migration, extend N+1 coverage for membership
 #  joins: prefetch/select_related memberships where views resolve roles and
-#  assert query counts do not grow with member count.
+#  assert query counts do not grow with member count. Cover both
+#  RBAC_ENABLED on and off modes.
 
 
 from typing import TYPE_CHECKING

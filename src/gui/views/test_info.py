@@ -18,4 +18,6 @@ class TestInfoView(TemplateView):
         # @todo #162:30min Add access check: currently any authenticated user
         #  can view any test record by pk. Verify membership for record.project
         #  via records/srv/permissions.is_project_member, return 404 otherwise.
+        #  While settings.RBAC_ENABLED is off, fall back to the legacy
+        #  record.project.owner == user check.
         return record.record_by_id(kwargs['pk'])

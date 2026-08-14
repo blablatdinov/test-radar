@@ -19,8 +19,9 @@ class Project(models.Model):
     guid = models.UUIDField(_('Identifier'), default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(_('Name'), max_length=255)
     # @todo #162:30min Remove the Project.owner field and its remaining usages
-    #  once the RBAC feature (Membership-based permissions) stabilizes.
-    #  All access checks must go through records/srv/permissions.py.
+    #  once the RBAC feature (Membership-based permissions) stabilizes and
+    #  the RBAC_ENABLED flag is removed. All access checks must go through
+    #  records/srv/permissions.py.
     owner = models.ForeignKey(
         'authentication.User',
         on_delete=models.CASCADE,

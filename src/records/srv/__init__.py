@@ -9,3 +9,6 @@
 #  can_manage_members(user, project) and can_delete_project(user, project)
 #  (owner only). Cover the full role x action matrix with unit tests.
 #  No inline role checks in views — everything goes through this service.
+#  Gate the new behavior behind settings.RBAC_ENABLED: when the flag is off,
+#  every function must fall back to the legacy owner-based logic
+#  (project.owner / agent.owner == user) so the rollout stays compatible.

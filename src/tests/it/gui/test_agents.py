@@ -5,8 +5,9 @@
 #  Developer gets 403 on CI agent create/regenerate/delete, 302 on LOCAL
 #  create/regenerate and on deleting own LOCAL agent, 403 on deleting someone
 #  else's LOCAL agent; Maintainer gets 302 for both agent types; non-member
-#  gets 404. Depends on the permissions service and membership fixtures
-#  puzzles.
+#  gets 404. Run each case with override_settings(RBAC_ENABLED=True) and also
+#  verify legacy behavior with the flag off. Depends on the permissions
+#  service and membership fixtures puzzles.
 
 from typing import TYPE_CHECKING
 

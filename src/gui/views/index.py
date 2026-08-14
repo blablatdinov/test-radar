@@ -23,6 +23,7 @@ class IndexView(TemplateView):
         #  records/srv/permissions.is_project_member (or a projects_for(user)
         #  queryset helper) instead of the owner filter. Part of the read-views
         #  RBAC migration together with project.py, session.py, test_history.py,
-        #  test_info.py. Covered by puzzle for unit tests of permissions service.
+        #  test_info.py. The permission service gates the new behavior behind
+        #  settings.RBAC_ENABLED, so this view just calls the service.
         projects = Project.objects.filter(owner=self.request.user)
         return {'projects': projects.only('guid', 'name', 'created_at')}

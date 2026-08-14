@@ -16,10 +16,12 @@ from records.srv import record
 #  change role, remove member) guarded by
 #  records/srv/permissions.can_manage_members (owner only). New view, form,
 #  template; run makemessages/compilemessages for new strings. Separate
-#  release after base RBAC stabilizes.
+#  release after base RBAC stabilizes. May be gated behind
+#  settings.RBAC_ENABLED if shipped before the flag is switched on.
 # @todo #162:30min Add project deletion endpoint guarded by
 #  records/srv/permissions.can_delete_project (owner only). Separate release
-#  after base RBAC stabilizes.
+#  after base RBAC stabilizes. May be gated behind settings.RBAC_ENABLED
+#  if shipped before the flag is switched on.
 @final
 class ProjectView(TemplateView):
     """Page with test records for a specific project."""
@@ -32,7 +34,8 @@ class ProjectView(TemplateView):
             raise PermissionDenied(msg)
         # @todo #162:30min Replace owner check with
         #  records/srv/permissions.is_project_member so all project members
-        #  can view dashboards.
+        #  can view dashboards. The service keeps legacy owner behavior while
+        #  settings.RBAC_ENABLED is off.
         project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project

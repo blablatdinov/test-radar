@@ -311,7 +311,8 @@ class Command(BaseCommand):
             project = baker.make(Project, name=name, owner=user)
             # @todo #162:30min Create Membership records (owner for the
             #  generating user, optionally maintainer/developer users) instead
-            #  of relying on Project.owner only.
+            #  of relying on Project.owner only. Create them unconditionally,
+            #  not gated by settings.RBAC_ENABLED.
             stats.projects += 1
             agents = self._create_agents(project, user, agents_per_project)
             stats.agents += len(agents)

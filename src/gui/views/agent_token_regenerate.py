@@ -28,6 +28,8 @@ class AgentTokenRegenerateView(View):
         #  records/srv/permissions.can_manage_agent(user, project, agent.type)
         #  and drop the agent.owner filter: Maintainer must be able to
         #  regenerate tokens of any agent, Developer only of LOCAL ones.
+        #  The service keeps legacy owner behavior while
+        #  settings.RBAC_ENABLED is off.
         project = get_object_or_404(Project, guid=guid, owner=request.user)
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         raw_token = token.regenerate_token_for_agent(agent)

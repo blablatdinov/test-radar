@@ -25,6 +25,8 @@ class AgentDeleteView(View):
         #  records/srv/permissions.can_delete_agent(user, agent):
         #  CI -> Owner+Maintainer; LOCAL -> Owner+Maintainer or the Developer
         #  who owns the agent (agent.owner == user). Raise PermissionDenied.
+        #  The service keeps legacy owner behavior while
+        #  settings.RBAC_ENABLED is off.
         project = get_object_or_404(Project, guid=guid, owner=request.user)
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         agent.delete()
