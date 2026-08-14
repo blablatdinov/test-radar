@@ -98,4 +98,4 @@ def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
 
 
 def record_by_id(record_id: str) -> dict[str, TestRecord]:
-    return {'record': get_object_or_404(TestRecord, pk=record_id)}
+    return {'record': get_object_or_404(TestRecord.objects.select_related('project'), pk=record_id)}

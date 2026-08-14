@@ -6,6 +6,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 import pytest
+from django.test import override_settings
 from django.urls import reverse
 from lxml import etree
 from model_bakery import baker
@@ -150,6 +151,24 @@ def test_test_info_redirects_anonymous(client: Client, test_record_pk: str) -> N
 
     assert response.status_code == 302
     assert response.headers['Location'] == reverse('login')
+
+
+def test_test_info_forbidden_for_outsider(client: Client, outsider_user: User, test_record_pk: str) -> None:
+    client.force_login(outsider_user)
+
+    response = client.get(f'/test/{test_record_pk}')
+
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_test_info_allowed_for_project_member(client: Client, developer_user: User, test_record_pk: str) -> None:
+    client.force_login(developer_user)
+
+    response = client.get(f'/test/{test_record_pk}')
+
+    assert response.status_code == 200
 
 
 def test_project_create_get(client: Client, user: User) -> None:
