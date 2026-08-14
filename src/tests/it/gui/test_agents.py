@@ -495,6 +495,106 @@ def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
     assert not Agent.objects.filter(pk=agent.pk).exists()
 
 
+def test_delete_agent_forbidden_for_outsider(
+    client: Client,
+    outsider_user: User,
+    project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(outsider_user)
+
+    response = client.post(
+        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+    )
+
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_delete_ci_agent_denied_for_developer(
+    client: Client,
+    developer_user: User,
+    project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+    )
+
+    assert response.status_code == 403
+    assert Agent.objects.filter(pk=agent.pk).exists()
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_delete_own_local_agent_ok_for_developer(
+    client: Client,
+    developer_user: User,
+    project: Project,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='Dev Laptop',
+        type='local',
+        project=project,
+        owner=developer_user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+    )
+
+    assert response.status_code == 302
+    assert not Agent.objects.filter(pk=agent.pk).exists()
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_delete_foreign_local_denied_dev(
+    client: Client,
+    developer_user: User,
+    project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='Dev Laptop',
+        type='local',
+        project=project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+    )
+
+    assert response.status_code == 403
+    assert Agent.objects.filter(pk=agent.pk).exists()
+
+
 @pytest.mark.usefixtures('user')
 def test_uniq_agent_name(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
@@ -525,7 +625,7 @@ def test_agent_delete_not_n_plus_one(
         owner=user,
     )
     client.force_login(user)
-    with django_assert_max_num_queries(8):
+    with django_assert_max_num_queries(9):
         response = client.post(
             reverse(
                 'agent_delete',
