@@ -48,9 +48,28 @@ dev = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "server.settings"
 pythonpath = ["src"]
+addopts = "--cov --cov-report=term-missing"
 markers = ["n_plus_one(url_name): N+1 query test for the given URL name"]
 radar_endpoint = "https://test-radar.ilaletdinov.ru"
 # radar_endpoint = 'http://127.0.0.1:8000'
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+  "src/manage.py",
+  "src/*/migrations/*",
+  "src/tests/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+]
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
