@@ -18,6 +18,9 @@ def _hex_token() -> str:
 class Project(models.Model):
     guid = models.UUIDField(_('Identifier'), default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(_('Name'), max_length=255)
+    # @todo #162:30min Remove the Project.owner field and its remaining usages
+    #  once the RBAC feature (Membership-based permissions) stabilizes.
+    #  All access checks must go through records/srv/permissions.py.
     owner = models.ForeignKey(
         'authentication.User',
         on_delete=models.CASCADE,
@@ -32,6 +35,42 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return str(self.name)
+
+
+@final
+class Membership(models.Model):
+    class Role(models.TextChoices):
+        OWNER = 'owner', _('Owner')
+        MAINTAINER = 'maintainer', _('Maintainer')
+        DEVELOPER = 'developer', _('Developer')
+
+    user = models.ForeignKey(
+        'authentication.User',
+        on_delete=models.CASCADE,
+        related_name='memberships',
+        verbose_name=_('User'),
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='memberships',
+        verbose_name=_('Project'),
+    )
+    role = models.CharField(_('Role'), max_length=20, choices=Role.choices)
+    created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Membership')
+        verbose_name_plural = _('Memberships')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'project'],
+                name='uniq_membership_user_project',
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f'{self.user} @ {self.project} ({self.role})'
 
 
 @final

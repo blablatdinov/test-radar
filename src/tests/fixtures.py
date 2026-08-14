@@ -37,6 +37,9 @@ def unverified_user() -> User:
     )
 
 
+# @todo #162:30min Create a Membership(user, project, role=OWNER) alongside
+#  every baked Project in these fixtures, and add maintainer/developer
+#  membership fixtures, so RBAC integration tests can reuse them.
 @pytest.fixture
 def project(user: User) -> Project:
     return baker.make(Project, name='Test project', owner=user)

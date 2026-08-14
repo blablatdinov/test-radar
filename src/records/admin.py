@@ -5,7 +5,7 @@ from typing import Final, final
 
 from django.contrib import admin
 
-from records.models import Agent, ApiToken, Project, TestRecord, TestSession
+from records.models import Agent, ApiToken, Membership, Project, TestRecord, TestSession
 
 _NAME: Final = 'name'
 _OWNER: Final = 'owner'
@@ -34,6 +34,13 @@ _COMMIT_HASH: Final = 'commit_hash'
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = [_NAME]
     list_display = [_NAME, _OWNER, _CREATED_AT]
+
+
+@final
+@admin.register(Membership)
+class MembershipAdmin(admin.ModelAdmin):
+    search_fields = ['user__username', 'project__name']
+    list_display = ['user', _PROJECT, 'role', _CREATED_AT]
 
 
 @final

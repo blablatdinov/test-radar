@@ -25,6 +25,11 @@ class AgentCreateView(FormView):
     form_class = AgentForm
 
     def get_project(self) -> Project:
+        # @todo #162:30min Replace owner check with
+        #  records/srv/permissions.can_manage_agent(user, project, agent_type):
+        #  CI agents -> Owner+Maintainer, LOCAL agents -> any project member.
+        #  Raise PermissionDenied (403) on violation. agent_type is available
+        #  in form data on POST; on GET any member may see the form.
         return get_object_or_404(Project, guid=self.kwargs[_GUID_KWARG], owner=self.request.user)
 
     def get_form_kwargs(self) -> dict[str, Any]:

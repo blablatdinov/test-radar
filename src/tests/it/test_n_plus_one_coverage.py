@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+# @todo #162:30min After RBAC migration, extend N+1 coverage for membership
+#  joins: prefetch/select_related memberships where views resolve roles and
+#  assert query counts do not grow with member count.
+
 
 from typing import TYPE_CHECKING
 

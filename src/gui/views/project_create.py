@@ -24,4 +24,8 @@ class ProjectCreateView(FormView):
         project = form.save(commit=False)
         project.owner = self.request.user
         project.save()
+        # @todo #162:30min Create a Membership(user=self.request.user,
+        #  project=project, role=Membership.Role.OWNER) here so project
+        #  creators become members. Keep Project.owner assignment until the
+        #  owner-field cleanup puzzle is done.
         return super().form_valid(form)

@@ -20,6 +20,8 @@ class TestHistoryView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
+        # @todo #162:30min Replace owner check with
+        #  records/srv/permissions.is_project_member.
         project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
         label = self.request.GET.get('label', '')
         records = (

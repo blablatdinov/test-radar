@@ -21,6 +21,10 @@ class AgentDeleteView(View):
     """Delete an agent together with its API token."""
 
     def post(self, request: Any, guid: uuid.UUID, agent_guid: uuid.UUID) -> HttpResponse:
+        # @todo #162:30min Replace owner checks with
+        #  records/srv/permissions.can_delete_agent(user, agent):
+        #  CI -> Owner+Maintainer; LOCAL -> Owner+Maintainer or the Developer
+        #  who owns the agent (agent.owner == user). Raise PermissionDenied.
         project = get_object_or_404(Project, guid=guid, owner=request.user)
         agent = get_object_or_404(Agent, guid=agent_guid, project=project, owner=request.user)
         agent.delete()

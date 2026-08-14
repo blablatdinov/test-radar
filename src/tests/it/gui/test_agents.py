@@ -1,6 +1,13 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+# @todo #162:30min Add RBAC integration tests for the full permission matrix:
+#  Developer gets 403 on CI agent create/regenerate/delete, 302 on LOCAL
+#  create/regenerate and on deleting own LOCAL agent, 403 on deleting someone
+#  else's LOCAL agent; Maintainer gets 302 for both agent types; non-member
+#  gets 404. Depends on the permissions service and membership fixtures
+#  puzzles.
+
 from typing import TYPE_CHECKING
 
 import pytest
