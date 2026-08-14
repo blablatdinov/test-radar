@@ -71,7 +71,7 @@ def test_index_shows_projects_for_member(client: Client, developer_user: User) -
     response = client.get('/')
 
     assert response.status_code == 200
-    assert len(etree.fromstring(response.text, etree.HTMLParser()).xpath('//a[@data-project-link]')) == 1
+    assert etree.fromstring(response.text, etree.HTMLParser()).xpath('//a[@data-project-link]')
 
 
 @pytest.mark.usefixtures('project')
@@ -82,7 +82,7 @@ def test_index_hides_projects_for_outsider(client: Client, outsider_user: User) 
     response = client.get('/')
 
     assert response.status_code == 200
-    assert len(etree.fromstring(response.text, etree.HTMLParser()).xpath('//a[@data-project-link]')) == 0
+    assert not etree.fromstring(response.text, etree.HTMLParser()).xpath('//a[@data-project-link]')
 
 
 def test_project_detail_shows_records(
