@@ -113,6 +113,24 @@ def test_test_info(client: Client, user: User, test_record_pk: str) -> None:
     assert response.context_data['record'].pk == test_record_pk
 
 
+def test_project_forbidden_for_outsider(client: Client, outsider_user: User, project: Project) -> None:
+    client.force_login(outsider_user)
+
+    response = client.get(f'/project/{project.guid}')
+
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_project_allowed_for_member(client: Client, developer_user: User, project: Project) -> None:
+    client.force_login(developer_user)
+
+    response = client.get(f'/project/{project.guid}')
+
+    assert response.status_code == 200
+
+
 def test_session_detail(
     client: Client,
     user: User,

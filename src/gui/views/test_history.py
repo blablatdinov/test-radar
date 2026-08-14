@@ -15,6 +15,7 @@ class TestHistoryView(TemplateView):
     """Page with all runs of a specific test across sessions."""
 
     template_name = 'test_history.html'
+    __test__ = False
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         if not self.request.user.is_authenticated:
