@@ -353,7 +353,7 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
     assert response.headers['Location'] == reverse('login')
 
 
-def test_regenerate_token_other_user_forbidden(
+def test_regenerate_token_forbidden_for_outsider(
     client: Client,
     user: User,
     project: Project,
@@ -374,6 +374,62 @@ def test_regenerate_token_other_user_forbidden(
     )
 
     assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_regenerate_ci_token_denied_for_developer(
+    client: Client,
+    developer_user: User,
+    project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='CI Pipeline',
+        type='ci',
+        project=project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse(
+            'agent_token_regenerate',
+            kwargs={'guid': project.guid, 'agent_guid': agent.guid},
+        ),
+    )
+
+    assert response.status_code == 403
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_regenerate_local_token_ok_for_developer(
+    client: Client,
+    developer_user: User,
+    project: Project,
+    user: User,
+) -> None:
+    agent = baker.make(
+        Agent,
+        name='Dev Laptop',
+        type='local',
+        project=project,
+        owner=user,
+    )
+    token_srv.create_token_for_agent(agent)
+    client.force_login(developer_user)
+
+    response = client.post(
+        reverse(
+            'agent_token_regenerate',
+            kwargs={'guid': project.guid, 'agent_guid': agent.guid},
+        ),
+    )
+
+    assert response.status_code == 302
 
 
 @pytest.mark.n_plus_one('agent_create')
