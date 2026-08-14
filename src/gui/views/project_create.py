@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from records.forms import ProjectForm
+from records.models import Membership
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
@@ -24,11 +25,9 @@ class ProjectCreateView(FormView):
         project = form.save(commit=False)
         project.owner = self.request.user
         project.save()
-        # @todo #162:30min Create a Membership(user=self.request.user,
-        #  project=project, role=Membership.Role.OWNER) here so project
-        #  creators become members. Do it unconditionally, regardless of
-        #  settings.RBAC_ENABLED, otherwise projects created while the flag
-        #  is off will have no membership when the flag is switched on.
-        #  Keep Project.owner assignment until the owner-field cleanup
-        #  puzzle is done.
+        Membership.objects.create(
+            user=project.owner,
+            project=project,
+            role=Membership.Role.OWNER,
+        )
         return super().form_valid(form)

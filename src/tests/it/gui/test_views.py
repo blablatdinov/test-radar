@@ -11,7 +11,7 @@ from django.urls import reverse
 from lxml import etree
 from model_bakery import baker
 
-from records.models import Project, TestRecord, TestSession
+from records.models import Membership, Project, TestRecord, TestSession
 
 if TYPE_CHECKING:
     from django.test import Client
@@ -249,6 +249,8 @@ def test_project_create_post(client: Client, user: User) -> None:
     assert response.headers['Location'] == reverse('index_page')
     project = Project.objects.get(name='My new project')
     assert project.owner == user
+    membership = Membership.objects.get(user=user, project=project)
+    assert membership.role == Membership.Role.OWNER
 
 
 def test_project_create_redirects_anonymous(client: Client) -> None:
