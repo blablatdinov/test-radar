@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import QuerySet
 
 from records.models import Agent, Membership, Project
 
@@ -35,6 +36,14 @@ def get_role(user: User | AnonymousUser, project: Project) -> Membership.Role | 
 
 def is_project_member(user: User | AnonymousUser, project: Project) -> bool:
     return get_role(user, project) is not None
+
+
+def projects_for(user: User | AnonymousUser) -> QuerySet[Project]:
+    if not user.is_authenticated:
+        return Project.objects.none()
+    if not settings.RBAC_ENABLED:
+        return Project.objects.filter(owner=user)
+    return Project.objects.filter(memberships__user=user)
 
 
 def can_manage_agent(user: User | AnonymousUser, project: Project, agent_type: str) -> bool:
