@@ -4,12 +4,13 @@
 from typing import Any, final
 
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from records.forms import AgentForm
 from records.models import Agent, Project, TestSession
-from records.srv import record
+from records.srv import permissions, record
 
 
 # @todo #162:30min Add member management UI (list members, add member,
@@ -32,11 +33,9 @@ class ProjectView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
-        # @todo #162:30min Replace owner check with
-        #  records/srv/permissions.is_project_member so all project members
-        #  can view dashboards. The service keeps legacy owner behavior while
-        #  settings.RBAC_ENABLED is off.
-        project = get_object_or_404(Project, guid=kwargs['guid'], owner=self.request.user)
+        project = get_object_or_404(Project, guid=kwargs['guid'])
+        if not permissions.is_project_member(self.request.user, project):
+            raise Http404
         context = record.filtered_records(project.pk, self.request)
         context['project'] = project
         context['agents'] = (
