@@ -20,6 +20,9 @@ class SessionView(TemplateView):
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
             raise PermissionDenied(msg)
+        # @todo #162:30min Replace project__owner filter with a membership
+        #  check via records/srv/permissions.is_project_member. The service
+        #  keeps legacy owner behavior while settings.RBAC_ENABLED is off.
         session = get_object_or_404(
             TestSession,
             pk=kwargs['session_id'],

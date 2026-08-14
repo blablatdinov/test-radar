@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     REGISTRATION_ENABLED=(bool, False),
+    RBAC_ENABLED=(bool, False),
     EMAIL_BACKEND=(str, 'anymail.backends.brevo.EmailBackend'),
 )
 environ.Env.read_env(BASE_DIR.parent / '.env')
@@ -23,6 +24,11 @@ SECRET_KEY = env('SECRET_KEY', default='insecure')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+
+# @todo #162:30min Remove the RBAC_ENABLED feature flag and the legacy
+#  owner-based branches in records/srv/permissions.py after the RBAC
+#  rollout completes and the Project.owner cleanup puzzle is done.
+RBAC_ENABLED = env('RBAC_ENABLED')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 INTERNAL_IPS = ['127.0.0.1']

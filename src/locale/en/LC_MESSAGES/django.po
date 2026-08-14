@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-11 22:55+0300\n"
+"POT-Creation-Date: 2026-08-14 10:40+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -290,6 +290,21 @@ msgstr "Owner"
 
 msgid "Project"
 msgstr "Project"
+
+msgid "Maintainer"
+msgstr "Maintainer"
+
+msgid "Developer"
+msgstr "Developer"
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Membership"
+msgstr "Membership"
+
+msgid "Memberships"
+msgstr "Memberships"
 
 msgid "Token hash"
 msgstr "Token hash"
