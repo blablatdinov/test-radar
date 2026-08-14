@@ -3,9 +3,10 @@
 
 from typing import Any, final
 
+from django.http import Http404
 from django.views.generic import TemplateView
 
-from records.srv import record
+from records.srv import permissions, record
 
 
 @final
@@ -15,9 +16,8 @@ class TestInfoView(TemplateView):
     template_name = 'test_info.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        # @todo #162:30min Add access check: currently any authenticated user
-        #  can view any test record by pk. Verify membership for record.project
-        #  via records/srv/permissions.is_project_member, return 404 otherwise.
-        #  While settings.RBAC_ENABLED is off, fall back to the legacy
-        #  record.project.owner == user check.
-        return record.record_by_id(kwargs['pk'])
+        context = record.record_by_id(kwargs['pk'])
+        project = context['record'].project
+        if project is None or not permissions.is_project_member(self.request.user, project):
+            raise Http404
+        return context
