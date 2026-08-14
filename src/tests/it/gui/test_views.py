@@ -155,6 +155,24 @@ def test_session_detail_redirects_anonymous(client: Client, test_session: TestSe
     assert response.headers['Location'] == reverse('login')
 
 
+def test_session_detail_forbidden_for_outsider(client: Client, outsider_user: User, test_session: TestSession) -> None:
+    client.force_login(outsider_user)
+
+    response = client.get(f'/session/{test_session.pk}')
+
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_session_detail_allowed_for_member(client: Client, developer_user: User, test_session: TestSession) -> None:
+    client.force_login(developer_user)
+
+    response = client.get(f'/session/{test_session.pk}')
+
+    assert response.status_code == 200
+
+
 def test_test_history(
     client: Client,
     user: User,
