@@ -14,6 +14,7 @@ class TestInfoView(TemplateView):
     """Page with information about test."""
 
     template_name = 'test_info.html'
+    __test__ = False
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = record.record_by_id(kwargs['pk'])
