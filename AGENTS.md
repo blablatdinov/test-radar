@@ -32,3 +32,24 @@
 - All imports (stdlib, third-party, local) must be at the top of the file — never inside functions
 - Templates extend `base.html`, Tailwind CSS v4 via CDN, green theme (`bg-green-500`), manual field rendering (label + input + errors)
 - `AuthRequiredMiddleware` protects all URLs except `/login/`, `/logout/`, `/register/`, `/admin/`, `/__debug__/`
+
+## 0pdd — Puzzle-Driven Development
+
+- Keep task scope small: do exactly what was asked, nothing more
+- When you encounter a problem that is out of scope of the current task, do NOT fix it immediately
+- Instead, leave a puzzle comment in the code using the standard 0pdd format:
+  ```
+  @todo #<issue-number>:<time-estimate> <description>
+  ```
+- Puzzles are auto-parsed by 0pdd.com and turned into GitHub issues
+- When closing a puzzle (issue resolved), remove the puzzle comment from code
+- Never expand scope "while you're at it" — log it as a puzzle and move on
+- Focus: one task = one change, committed cleanly
+
+Example puzzle in code:
+
+```python
+# @todo #42:30min Extract validation logic into a separate service class.
+#  Currently duplicated across three views.
+```
+
