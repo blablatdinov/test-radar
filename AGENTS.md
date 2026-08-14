@@ -3,6 +3,7 @@
 ## Commands
 
 - **Run tests:** `uv run pytest`
+- **Coverage:** runs automatically on every pytest run (fail under 80%); HTML report: `uv run pytest src --cov-report=html`
 - **Lint:** `uv run ruff check src && uv run flake8 src/`
 - **Type check:** `uv run mypy src/`
 - **Format:** `uv run ruff format src/`

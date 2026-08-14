@@ -43,6 +43,10 @@ tasks:
       - cd src
       - uv run pytest {{.CLI_ARGS}}
 
+  coverage:
+    cmds:
+      - uv run pytest src --cov-report=html
+
   shell:
     cmds:
       - uv run python src/manage.py shell_plus
