@@ -96,6 +96,24 @@ def test_is_project_member_legacy(user: User, outsider_user: User, project: Proj
     assert permissions.is_project_member(outsider_user, project) is False
 
 
+@pytest.mark.usefixtures('developer_membership')
+def test_projects_for_members(developer_user: User, user: User, project: Project) -> None:
+    assert list(permissions.projects_for(user)) == [project]
+    assert list(permissions.projects_for(developer_user)) == [project]
+
+
+def test_projects_for_denied(outsider_user: User, anonymous: AnonymousUser, project: Project) -> None:
+    assert list(permissions.projects_for(outsider_user)) == []
+    assert list(permissions.projects_for(anonymous)) == []
+
+
+@override_settings(RBAC_ENABLED=False)
+def test_projects_for_legacy(user: User, outsider_user: User, developer_user: User, project: Project) -> None:
+    assert list(permissions.projects_for(user)) == [project]
+    assert list(permissions.projects_for(outsider_user)) == []
+    assert list(permissions.projects_for(developer_user)) == []
+
+
 @pytest.mark.parametrize(
     'membership_fixture',
     [

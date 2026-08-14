@@ -63,6 +63,28 @@ def test_index_no_projects(client: Client, user: User) -> None:
     assert 'No projects yet.' in response.text
 
 
+@pytest.mark.usefixtures('developer_membership')
+@override_settings(RBAC_ENABLED=True)
+def test_index_shows_projects_for_member(client: Client, developer_user: User) -> None:
+    client.force_login(developer_user)
+
+    response = client.get('/')
+
+    assert response.status_code == 200
+    assert len(etree.fromstring(response.text, etree.HTMLParser()).xpath('//a[@data-project-link]')) == 1
+
+
+@pytest.mark.usefixtures('project')
+@override_settings(RBAC_ENABLED=True)
+def test_index_hides_projects_for_outsider(client: Client, outsider_user: User) -> None:
+    client.force_login(outsider_user)
+
+    response = client.get('/')
+
+    assert response.status_code == 200
+    assert len(etree.fromstring(response.text, etree.HTMLParser()).xpath('//a[@data-project-link]')) == 0
+
+
 def test_project_detail_shows_records(
     client: Client,
     user: User,
