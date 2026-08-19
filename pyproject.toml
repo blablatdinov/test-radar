@@ -39,7 +39,7 @@ dev = [
     "deltaver==1.0.2",
     "django-stubs==6.1.0",
     "pytest-randomly==4.1.0",
-    "lxml==6.1.1",
+    "lxml==6.1.2",
     "django-stubs-ext==6.1.0",
     "pytest-test-radar==0.0.1a12",
     "flake8-final>=0.0.3",
