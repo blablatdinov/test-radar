@@ -3,6 +3,7 @@
 
 import datetime
 from collections import defaultdict
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Any
 
 from django.shortcuts import get_object_or_404
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 
 ColIndex = dict[int, int]
 SessionMeta = dict[int, datetime.datetime]
-RecordCell = dict[str, Any]
+RecordCell = Mapping[str, Any]
 RecordMatrix = dict[str, dict[int, RecordCell]]
 _SESSION_PARAM = 'session'
 
@@ -42,7 +43,7 @@ def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
 
 
 def _index_record(
-    record: dict[str, Any],
+    record: RecordCell,
     col_index: ColIndex,
     session_meta: SessionMeta,
     matrix: RecordMatrix,
@@ -56,7 +57,7 @@ def _index_record(
     matrix[record['label']][col_index[session_id]] = record
 
 
-def _build_matrix(records: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_matrix(records: Sequence[RecordCell]) -> dict[str, Any]:
     col_index: ColIndex = {}
     session_meta: SessionMeta = {}
     matrix: RecordMatrix = defaultdict(dict)
