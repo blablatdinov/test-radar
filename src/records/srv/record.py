@@ -3,29 +3,32 @@
 
 import datetime
 from collections import defaultdict
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Any
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from records.models import TestRecord, TestSession
+from records.models import TestRecord
 
 if TYPE_CHECKING:
     from django.http.request import HttpRequest
 
-ColIndex = dict[TestSession, int]
-RecordMatrix = dict[str, dict[int, TestRecord]]
+ColIndex = dict[int, int]
+SessionMeta = dict[int, datetime.datetime]
+RecordCell = Mapping[str, Any]
+RecordMatrix = dict[str, dict[int, RecordCell]]
 _SESSION_PARAM = 'session'
 
 
-def _build_columns(col_index: ColIndex) -> list[dict[str, str]]:
+def _build_columns(col_index: ColIndex, session_meta: SessionMeta) -> list[dict[str, str]]:
     return [
         {
-            'pk': str(key.pk),
-            'date': key.started_at.strftime('%d.%m.%y'),
-            'time': key.started_at.strftime('%H:%M'),
+            'pk': str(session_id),
+            'date': session_meta[session_id].strftime('%d.%m.%y'),
+            'time': session_meta[session_id].strftime('%H:%M'),
         }
-        for key in col_index
+        for session_id in col_index
     ]
 
 
@@ -39,24 +42,31 @@ def _build_rows(matrix: RecordMatrix, col_count: int) -> list[dict[str, Any]]:
     ]
 
 
-def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix) -> None:
-    if not record.session:
+def _index_record(
+    record: RecordCell,
+    col_index: ColIndex,
+    session_meta: SessionMeta,
+    matrix: RecordMatrix,
+) -> None:
+    session_id = record['session']
+    if session_id is None:
         return
-    col_key = record.session
-    if col_key not in col_index:
-        col_index[col_key] = len(col_index)
-    matrix[record.label][col_index[col_key]] = record
+    if session_id not in col_index:
+        col_index[session_id] = len(col_index)
+        session_meta[session_id] = record['session__started_at']
+    matrix[record['label']][col_index[session_id]] = record
 
 
-def _build_matrix(records: list[TestRecord]) -> dict[str, Any]:
+def _build_matrix(records: Sequence[RecordCell]) -> dict[str, Any]:
     col_index: ColIndex = {}
+    session_meta: SessionMeta = {}
     matrix: RecordMatrix = defaultdict(dict)
 
     for record in records:
-        _index_record(record, col_index, matrix)
+        _index_record(record, col_index, session_meta, matrix)
 
     return {
-        'columns': _build_columns(col_index),
+        'columns': _build_columns(col_index, session_meta),
         'rows': _build_rows(matrix, len(col_index)),
     }
 
@@ -87,9 +97,8 @@ def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     filters = _build_filters(project_id, request)
     records = list(
         TestRecord.objects.filter(**filters)
-        .select_related('session')
-        .only(
-            'id', 'label', 'success', 'session', 'session__started_at',
+        .values(
+            'pk', 'label', 'success', 'session', 'session__started_at',
             'session__commit_hash',
         )
         .order_by('timestamp'),
