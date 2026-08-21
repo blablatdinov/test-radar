@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'anymail',
+    'debug_toolbar',
     'rest_framework',
     'axes',
     'auth',
@@ -70,8 +71,6 @@ MIDDLEWARE = [
 if DEBUG:
     INSTALLED_APPS.append('silk')
     MIDDLEWARE.insert(0, 'silk.middleware.SilkyMiddleware')
-    INSTALLED_APPS.append('debug_toolbar')
-    MIDDLEWARE.insert(1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'server.urls'
 
