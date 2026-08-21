@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
-from silk.profiling.profiler import silk_profile # <--- Импортируем декоратор
+from silk.profiling.profiler import silk_profile
 
 from records.forms import AgentForm
 from records.models import Agent, Project, TestSession
@@ -30,7 +30,7 @@ class ProjectView(TemplateView):
 
     template_name = 'project.html'
 
-    @silk_profile(name='ProjectView.get_context_data') # <--- Добавляем декоратор
+    @silk_profile(name='ProjectView.get_context_data')
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         if not self.request.user.is_authenticated:
             msg = 'User must be authorized.'
