@@ -21,6 +21,7 @@ dependencies = [
     "django-axes==8.3.1",
     "django-ratelimit==4.1.0",
     "django-anymail[brevo]==15.1",
+    "django-silk==5.5.2",
 ]
 
 [tool.setuptools.packages.find]
@@ -43,7 +44,6 @@ dev = [
     "django-stubs-ext==6.1.0",
     "pytest-test-radar==0.0.1a12",
     "flake8-final==0.0.4",
-    "django-silk==5.5.2",
 ]
 
 [tool.pytest.ini_options]

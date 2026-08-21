@@ -1044,6 +1044,7 @@ dependencies = [
     { name = "django-debug-toolbar" },
     { name = "django-environ" },
     { name = "django-ratelimit" },
+    { name = "django-silk" },
     { name = "djangorestframework" },
     { name = "gunicorn" },
     { name = "httpx" },
@@ -1055,7 +1056,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "deltaver" },
-    { name = "django-silk" },
     { name = "django-stubs" },
     { name = "django-stubs-ext" },
     { name = "djangorestframework-stubs" },
@@ -1081,6 +1081,7 @@ requires-dist = [
     { name = "django-debug-toolbar", specifier = "==7.1.1" },
     { name = "django-environ", specifier = "==0.14.0" },
     { name = "django-ratelimit", specifier = "==4.1.0" },
+    { name = "django-silk", specifier = "==5.5.2" },
     { name = "djangorestframework", specifier = "==3.18.0" },
     { name = "gunicorn", specifier = "==26.1.0" },
     { name = "httpx", specifier = "==0.28.1" },
@@ -1092,7 +1093,6 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "deltaver", specifier = "==1.0.2" },
-    { name = "django-silk", specifier = "==5.5.2" },
     { name = "django-stubs", specifier = "==6.1.0" },
     { name = "django-stubs-ext", specifier = "==6.1.0" },
     { name = "djangorestframework-stubs", specifier = "==3.18.0" },
