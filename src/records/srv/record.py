@@ -48,6 +48,7 @@ def _index_record(record: TestRecord, col_index: ColIndex, matrix: RecordMatrix)
     matrix[record.label][col_index[col_key]] = record
 
 
+@silk_profile(name='Build Matrix Logic')
 def _build_matrix(records: list[TestRecord]) -> dict[str, Any]:
     col_index: ColIndex = {}
     matrix: RecordMatrix = defaultdict(dict)
@@ -83,6 +84,7 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
     return filters
 
 
+@silk_profile(name='filtered_records')
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     filters = _build_filters(project_id, request)
     records = list(
