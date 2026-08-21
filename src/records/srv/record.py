@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from silk.profiling.profiler import silk_profile
 
 from records.models import TestRecord
 
@@ -57,7 +56,6 @@ def _index_record(
     matrix[record['label']][col_index[session_id]] = record
 
 
-@silk_profile(name='Build Matrix Logic')
 def _build_matrix(records: list[dict[str, Any]]) -> dict[str, Any]:
     col_index: ColIndex = {}
     session_meta: SessionMeta = {}
@@ -94,7 +92,6 @@ def _build_filters(project_id: int, request: HttpRequest) -> dict[str, Any]:
     return filters
 
 
-@silk_profile(name='filtered_records')
 def filtered_records(project_id: int, request: HttpRequest) -> dict[str, Any]:
     filters = _build_filters(project_id, request)
     records = list(
