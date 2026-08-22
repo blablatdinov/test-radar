@@ -34,7 +34,7 @@ dev = [
     "mypy==2.3.1",
     "ondivi==0.7.3",
     "ruff==0.16.4",
-    "wemake-python-styleguide==1.7.1",
+    "wemake-python-styleguide==1.8.0",
     "pytest-cov==7.1.0",
     "pytest-django==4.14.0",
     "deltaver==1.0.2",
