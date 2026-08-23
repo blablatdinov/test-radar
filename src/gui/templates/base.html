@@ -2,7 +2,7 @@
 SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 SPDX-License-Identifier: MIT
 -->
-{% load i18n %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
@@ -20,6 +20,7 @@ SPDX-License-Identifier: MIT
       @custom-variant dark (&:where(.dark, .dark *));
     </style>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" >
   </head>
   <body class="bg-white dark:bg-gray-900 dark:text-gray-100">
     <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center mb-3">
