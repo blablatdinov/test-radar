@@ -1,8 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+# flake8: noqa
+
 import datetime
 import uuid
+from itertools import product
 from typing import TYPE_CHECKING
 
 import pytest
@@ -36,8 +39,15 @@ def one_time_created_records(user: User) -> Project:
                 session=session,
                 project=project,
                 timestamp=dt,
+                label=label,
             )
-            for session in sessions
+            for session, label in product(
+                sessions,
+                [
+                    'test_views.py::test_project_detail',
+                    'test_views.py::test_index_page',
+                ],
+            )
         ],
     )
     return project
@@ -401,3 +411,16 @@ def test_record_not_found(
     response = client.get(f'/test/{uuid.uuid4()}')
 
     assert response.status_code == 404
+
+
+def test_test_name_line_break(
+    client: Client,
+    one_time_created_records: Project,
+    user: User,
+) -> None:
+    client.force_login(user)
+    response = client.get(f'/project/{one_time_created_records.guid}')
+    tree = etree.fromstring(response.text, etree.HTMLParser())
+
+    assert response.status_code == 200
+    assert '\u200b' in tree.xpath('//tr[@data-label]/td[1]/a/text()')[0]
