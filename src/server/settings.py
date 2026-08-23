@@ -10,6 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False),
+    SILK_ENABLE=(bool, False),
     REGISTRATION_ENABLED=(bool, False),
     RBAC_ENABLED=(bool, False),
     EMAIL_BACKEND=(str, 'anymail.backends.brevo.EmailBackend'),
@@ -24,6 +25,8 @@ SECRET_KEY = env('SECRET_KEY', default='insecure')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+
+SILK_ENABLE = env('SILK_ENABLE')
 
 # @todo #162:30min Remove the RBAC_ENABLED feature flag and the legacy
 #  owner-based branches in records/srv/permissions.py after the RBAC
@@ -68,7 +71,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG:
+if SILK_ENABLE:
     INSTALLED_APPS.append('silk')
     MIDDLEWARE.insert(0, 'silk.middleware.SilkyMiddleware')
 
