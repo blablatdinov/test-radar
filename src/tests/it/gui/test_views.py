@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+# flake8: noqa
+
 import datetime
 import uuid
-from typing import TYPE_CHECKING
 from itertools import product
+from typing import TYPE_CHECKING
 
 import pytest
 from django.test import override_settings
@@ -30,10 +32,6 @@ def one_time_created_records(user: User) -> Project:
     project = baker.make(Project, owner=user)
     sessions = baker.make(TestSession, project=project, _quantity=2)
     dt = datetime.datetime(2026, 8, 1, 0, 0, 0, tzinfo=datetime.UTC)
-    test_labels = [
-        'test_views.py::test_project_detail',
-        'test_views.py::test_index_page'
-    ]
     TestRecord.objects.bulk_create(
         [
             baker.prepare(
@@ -43,7 +41,13 @@ def one_time_created_records(user: User) -> Project:
                 timestamp=dt,
                 label=label,
             )
-            for session, label in product(sessions, test_labels)
+            for session, label in product(
+                sessions,
+                [
+                    'test_views.py::test_project_detail',
+                    'test_views.py::test_index_page',
+                ],
+            )
         ],
     )
     return project

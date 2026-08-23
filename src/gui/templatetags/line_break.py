@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 from django import template
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 
 register = template.Library()
 
 
 @register.filter
-def line_break(value):
-    return mark_safe(value.replace('_', '_\u200B'))
+def line_break(test_label: str) -> str:
+    return format_html(test_label.replace('_', '_\u200B'))
