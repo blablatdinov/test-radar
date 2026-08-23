@@ -14,7 +14,7 @@ from records.models import Agent, Membership, Project, TestSession
 from records.srv import permissions, record
 
 
-# @todo #162:30min Add member role change UI (DEVELOPER <-> MAINTAINER).
+# @todo #182:30min Add member role change UI (DEVELOPER <-> MAINTAINER).
 #  Owner should be able to change a member's role between DEVELOPER and
 #  MAINTAINER. Guarded by can_manage_members (owner only). Add a separate
 #  view, URL, and form. Prevent owner from changing own role.
