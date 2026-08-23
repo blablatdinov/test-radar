@@ -3,22 +3,21 @@
 
 from typing import Any, final
 
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
-from records.forms import AgentForm
-from records.models import Agent, Project, TestSession
+from records.forms import AddMemberForm, AgentForm
+from records.models import Agent, Membership, Project, TestSession
 from records.srv import permissions, record
 
 
-# @todo #162:30min Add member management UI (list members, add member,
-#  change role, remove member) guarded by
-#  records/srv/permissions.can_manage_members (owner only). New view, form,
-#  template; run makemessages/compilemessages for new strings. Separate
-#  release after base RBAC stabilizes. May be gated behind
-#  settings.RBAC_ENABLED if shipped before the flag is switched on.
+# @todo #182:30min Add member role change UI (DEVELOPER <-> MAINTAINER).
+#  Owner should be able to change a member's role between DEVELOPER and
+#  MAINTAINER. Guarded by can_manage_members (owner only). Add a separate
+#  view, URL, and form. Prevent owner from changing own role.
 # @todo #162:30min Add project deletion endpoint guarded by
 #  records/srv/permissions.can_delete_project (owner only). Separate release
 #  after base RBAC stabilizes. May be gated behind settings.RBAC_ENABLED
@@ -47,4 +46,12 @@ class ProjectView(TemplateView):
         context['agent_form'] = AgentForm()
         context['new_token'] = self.request.session.pop('new_token', None)
         context['new_agent_name'] = self.request.session.pop('new_agent_name', None)
+        context['members'] = (
+            Membership.objects.filter(project=project)
+            .select_related('user')
+            .order_by('created_at')
+        )
+        context['can_manage_members'] = permissions.can_manage_members(self.request.user, project)
+        context['member_form'] = AddMemberForm(project=project)
+        context['rbac_enabled'] = settings.RBAC_ENABLED
         return context

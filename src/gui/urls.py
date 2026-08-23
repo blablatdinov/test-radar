@@ -8,6 +8,8 @@ from gui.views import (
     AgentDeleteView,
     AgentTokenRegenerateView,
     IndexView,
+    MemberAddView,
+    MemberRemoveView,
     ProjectCreateView,
     ProjectView,
     SessionView,
@@ -32,5 +34,11 @@ urlpatterns = [
         'project/<uuid:guid>/agents/<uuid:agent_guid>/delete',
         AgentDeleteView.as_view(),
         name='agent_delete',
+    ),
+    path('project/<uuid:guid>/members/add', MemberAddView.as_view(), name='member_add'),
+    path(
+        'project/<uuid:guid>/members/<int:user_pk>/remove',
+        MemberRemoveView.as_view(),
+        name='member_remove',
     ),
 ]

@@ -12,7 +12,7 @@ from django.views.generic import FormView
 
 from records.forms import AddMemberForm, AgentForm
 from records.models import Agent, Membership, Project, TestSession
-from records.srv import permissions, record, token
+from records.srv import permissions, record
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
@@ -21,11 +21,11 @@ _GUID_KWARG = 'guid'
 
 
 @final
-class AgentCreateView(FormView):
-    """Create an agent and generate an API token for it."""
+class MemberAddView(FormView):
+    """Add a member to a project."""
 
     template_name = 'project.html'
-    form_class = AgentForm
+    form_class = AddMemberForm
 
     def get_project(self) -> Project:
         project = get_object_or_404(Project, guid=self.kwargs[_GUID_KWARG])
@@ -45,35 +45,33 @@ class AgentCreateView(FormView):
         context['agents'] = (
             Agent.objects.filter(project=project)
             .select_related('token')
-            .only('id', 'name', 'type', _GUID_KWARG, 'created_at', 'token__token_mask')
+            .only('id', 'name', 'type', 'guid', 'created_at', 'token__token_mask')
         )
         context['sessions'] = TestSession.objects.filter(project=project).only('id')
-        context['agent_form'] = kwargs.get('form') or AgentForm(project=project)
+        context['agent_form'] = kwargs.get('agent_form') or AgentForm()
+        context['member_form'] = kwargs.get('form') or AddMemberForm(project=project)
         context['members'] = (
             Membership.objects.filter(project=project)
             .select_related('user')
             .order_by('created_at')
         )
         context['can_manage_members'] = permissions.can_manage_members(self.request.user, project)
-        context['member_form'] = AddMemberForm(project=project)
         context['rbac_enabled'] = settings.RBAC_ENABLED
         return context
 
-    def form_valid(self, form: AgentForm) -> HttpResponse:
+    def form_valid(self, form: AddMemberForm) -> HttpResponse:
         project = self.get_project()
-        if not permissions.can_manage_agent(self.request.user, project, form.cleaned_data['type']):
-            msg = 'You do not have permission to create this agent type.'
+        if not permissions.can_manage_members(self.request.user, project):
+            msg = 'You do not have permission to manage members.'
             raise PermissionDenied(msg)
-        agent = form.save(commit=False)
-        agent.project = project
-        agent.owner = self.request.user
-        agent.save()
-        raw_token = token.create_token_for_agent(agent)
-        self.request.session['new_token'] = raw_token
-        self.request.session['new_agent_name'] = agent.name
+        Membership.objects.create(
+            user=form.cleaned_data['user'],
+            project=project,
+            role=form.cleaned_data['role'],
+        )
         return redirect(self.get_success_url())
 
-    def form_invalid(self, form: AgentForm) -> HttpResponse:
+    def form_invalid(self, form: AddMemberForm) -> HttpResponse:
         context = self.get_context_data(form=form)
         return self.render_to_response(context)
 

@@ -188,6 +188,95 @@
   </div>
 </div>
 
+{% if rbac_enabled %}
+<div class="max-w-full mx-auto px-3 mb-6">
+  <div class="bg-white dark:bg-gray-900 rounded shadow p-4 space-y-4">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">{% trans "Members" %}</h2>
+
+    {% if can_manage_members %}
+    <form method="post" action="{% url 'member_add' project.guid %}" class="flex items-end space-x-3">
+      {% csrf_token %}
+      <div>
+        <label for="id_member_identifier" class="block text-sm text-gray-700 dark:text-white dark:text-gray-300 mb-1">{% trans "Username or email" %}</label>
+        <input
+          type="text"
+          name="identifier"
+          id="id_member_identifier"
+          required
+          maxlength="150"
+          class="border border-gray-300 dark:border-gray-600 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:text-gray-100"
+        />
+        {% if member_form.identifier.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ member_form.identifier.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label for="id_member_role" class="block text-sm text-gray-700 dark:text-white dark:text-gray-300 mb-1">{% trans "Role" %}</label>
+        <select
+          name="role"
+          id="id_member_role"
+          class="border border-gray-300 dark:border-gray-600 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:text-gray-100"
+        >
+          <option value="developer">{% trans "Developer" %}</option>
+          <option value="maintainer">{% trans "Maintainer" %}</option>
+        </select>
+      </div>
+      <button
+        type="submit"
+        class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition cursor-pointer"
+      >
+        {% trans "Add member" %}
+      </button>
+    </form>
+    {% endif %}
+
+    {% if members %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+          <tr>
+            <th class="py-2 pr-4">{% trans "User" %}</th>
+            <th class="py-2 pr-4">{% trans "Email" %}</th>
+            <th class="py-2 pr-4">{% trans "Role" %}</th>
+            <th class="py-2 pr-4">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in members %}
+          <tr class="border-b border-gray-100 dark:border-gray-700">
+            <td class="py-2 pr-4">{{ member.user.username }}</td>
+            <td class="py-2 pr-4">{{ member.user.email }}</td>
+            <td class="py-2 pr-4">{{ member.get_role_display }}</td>
+            <td class="py-2 pr-4">
+              {% if can_manage_members and member.user != request.user %}
+              <form
+                method="post"
+                action="{% url 'member_remove' project.guid member.user.pk %}"
+                class="inline"
+                onsubmit="return confirm('{% trans "Are you sure you want to remove this member?" %}')"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="text-red-600 hover:underline text-sm cursor-pointer"
+                >
+                  {% trans "Remove" %}
+                </button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "No members yet." %}</p>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
 <div class="max-w-full mx-auto px-3">
   <div class="overflow-auto max-h-[80vh]">
     <table class="text-sm text-left border-collapse">
