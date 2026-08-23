@@ -41,12 +41,12 @@ def test_project_detail_shows_agents_section(client: Client, user: User, project
     assert response.context_data.get('agent_form') is not None
 
 
-@pytest.mark.usefixtures('user', 'project')
-def test_agent_create_creates_agent(client: Client) -> None:
+@pytest.mark.usefixtures('user')
+def test_agent_create_creates_agent(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
@@ -58,13 +58,13 @@ def test_agent_create_creates_agent(client: Client) -> None:
     assert hasattr(agent, 'token')
 
 
-@pytest.mark.usefixtures('user', 'project')
-def test_agent_create_redirects_to_project(client: Client) -> None:
+@pytest.mark.usefixtures('user')
+def test_agent_create_redirects_to_project(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
     project_guid = Project.objects.get().guid
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': project_guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
@@ -72,12 +72,12 @@ def test_agent_create_redirects_to_project(client: Client) -> None:
     assert response.headers['Location'] == reverse('project_detail', kwargs={'guid': project_guid})
 
 
-@pytest.mark.usefixtures('user', 'project')
-def test_agent_create_returns_plain_token(client: Client) -> None:
+@pytest.mark.usefixtures('user')
+def test_agent_create_returns_plain_token(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'CI Pipeline', 'type': 'ci'},
         follow=True,
     )
@@ -89,12 +89,12 @@ def test_agent_create_returns_plain_token(client: Client) -> None:
     assert new_token.startswith('ci_')
 
 
-@pytest.mark.usefixtures('user', 'project')
-def test_agent_shows_plain_token_once(client: Client) -> None:
+@pytest.mark.usefixtures('user')
+def test_agent_shows_plain_token_once(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'Dev Laptop', 'type': 'local'},
         follow=True,
     )
@@ -106,12 +106,12 @@ def test_agent_shows_plain_token_once(client: Client) -> None:
     assert new_token.startswith('dev_')
 
 
-@pytest.mark.usefixtures('user', 'project')
-def test_agent_token_shown_with_warning(client: Client) -> None:
+@pytest.mark.usefixtures('user')
+def test_agent_token_shown_with_warning(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'Dev Laptop', 'type': 'local'},
         follow=True,
     )
@@ -119,12 +119,12 @@ def test_agent_token_shown_with_warning(client: Client) -> None:
     assert 'save it now' in response.text
 
 
-@pytest.mark.usefixtures('user', 'project')
-def test_project_view_no_token_after_creation(client: Client) -> None:
+@pytest.mark.usefixtures('user')
+def test_project_view_no_token_after_creation(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     creation_response = client.post(
-        reverse('agent_create', kwargs={'guid': Project.objects.get().guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'Dev Laptop', 'type': 'local'},
         follow=True,
     )
@@ -142,7 +142,7 @@ def test_agent_token_mask_stored_not_plain(client: Client, project: Project) -> 
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': project.guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'CI Pipeline', 'type': 'ci'},
         follow=True,
     )
@@ -185,7 +185,7 @@ def test_agent_create_invalid_data(client: Client, user: User, project: Project)
     client.force_login(user)
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': project.guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': '', 'type': 'ci'},
     )
 
@@ -222,7 +222,7 @@ def test_agent_create_local_allowed_for_developer(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': project.guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'Local Dev', 'type': 'local'},
     )
 
@@ -239,7 +239,7 @@ def test_agent_create_ci_forbidden_for_developer(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': project.guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': 'CI Pipeline', 'type': 'ci'},
     )
 
@@ -280,7 +280,7 @@ def test_regenerate_token_creates_new_token(client: Client, project: Project) ->
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_token_regenerate', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        '/project/{0}/agents/{1}/regenerate-token'.format(project.guid, agent.guid),
         follow=True,
     )
     new_raw = response.context['new_token']
@@ -346,7 +346,7 @@ def test_regenerate_token_redirects_anonymous(client: Client, project: Project) 
     token_srv.create_token_for_agent(agent)
 
     response = client.post(
-        f'project/{project.guid}/agents/{agent.guid}/regenerate-token',
+        f'/project/{project.guid}/agents/{agent.guid}/regenerate-token',
     )
 
     assert response.status_code == 302
@@ -370,7 +370,7 @@ def test_regenerate_token_forbidden_for_outsider(
     client.force_login(other)
 
     response = client.post(
-        f'project/{project.guid}/agents/{agent.guid}/regenerate-token',
+        f'/project/{project.guid}/agents/{agent.guid}/regenerate-token',
     )
 
     assert response.status_code == 404
@@ -395,10 +395,7 @@ def test_regenerate_ci_token_denied_for_developer(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse(
-            'agent_token_regenerate',
-            kwargs={'guid': project.guid, 'agent_guid': agent.guid},
-        ),
+        '/project/{0}/agents/{1}/regenerate-token'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 403
@@ -423,10 +420,7 @@ def test_regenerate_local_token_ok_for_developer(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse(
-            'agent_token_regenerate',
-            kwargs={'guid': project.guid, 'agent_guid': agent.guid},
-        ),
+        '/project/{0}/agents/{1}/regenerate-token'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 302
@@ -442,7 +436,7 @@ def test_agent_create_not_n_plus_one(
     client.force_login(user)
     with django_assert_max_num_queries(10):
         response = client.post(
-            reverse('agent_create', kwargs={'guid': filled_project.guid}),
+            '/project/{0}/agents/create'.format(filled_project.guid),
             {'name': 'CI Pipeline', 'type': 'ci'},
         )
 
@@ -467,10 +461,7 @@ def test_agent_token_regenerate_not_n_plus_one(
     client.force_login(user)
     with django_assert_max_num_queries(11):
         response = client.post(
-            reverse(
-                'agent_token_regenerate',
-                kwargs={'guid': filled_project.guid, 'agent_guid': agent.guid},
-            ),
+            '/project/{0}/agents/{1}/regenerate-token'.format(filled_project.guid, agent.guid),
         )
 
     assert response.status_code == 302, response.headers
@@ -488,7 +479,7 @@ def test_delete_agent_removes_agent(client: Client, project: Project) -> None:
     client.force_login(User.objects.get(username='testuser'))
 
     response = client.post(
-        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        '/project/{0}/agents/{1}/delete'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 302
@@ -512,7 +503,7 @@ def test_delete_agent_forbidden_for_outsider(
     client.force_login(outsider_user)
 
     response = client.post(
-        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        '/project/{0}/agents/{1}/delete'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 404
@@ -537,7 +528,7 @@ def test_delete_ci_agent_denied_for_developer(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        '/project/{0}/agents/{1}/delete'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 403
@@ -562,7 +553,7 @@ def test_delete_own_local_agent_ok_for_developer(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        '/project/{0}/agents/{1}/delete'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 302
@@ -588,7 +579,7 @@ def test_delete_foreign_local_denied_dev(
     client.force_login(developer_user)
 
     response = client.post(
-        reverse('agent_delete', kwargs={'guid': project.guid, 'agent_guid': agent.guid}),
+        '/project/{0}/agents/{1}/delete'.format(project.guid, agent.guid),
     )
 
     assert response.status_code == 403
@@ -602,7 +593,7 @@ def test_uniq_agent_name(client: Client, project: Project) -> None:
     baker.make(Agent, name=name, project=project)
 
     response = client.post(
-        reverse('agent_create', kwargs={'guid': project.guid}),
+        '/project/{0}/agents/create'.format(project.guid),
         {'name': name, 'type': 'ci'},
     )
 
@@ -627,10 +618,7 @@ def test_agent_delete_not_n_plus_one(
     client.force_login(user)
     with django_assert_max_num_queries(9):
         response = client.post(
-            reverse(
-                'agent_delete',
-                kwargs={'guid': filled_project.guid, 'agent_guid': agent.guid},
-            ),
+            '/project/{0}/agents/{1}/delete'.format(filled_project.guid, agent.guid),
         )
 
     assert response.status_code == 302, response.headers
