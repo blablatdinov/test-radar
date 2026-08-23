@@ -4,6 +4,7 @@
 import datetime
 import uuid
 from typing import TYPE_CHECKING
+from itertools import product
 
 import pytest
 from django.test import override_settings
@@ -29,6 +30,10 @@ def one_time_created_records(user: User) -> Project:
     project = baker.make(Project, owner=user)
     sessions = baker.make(TestSession, project=project, _quantity=2)
     dt = datetime.datetime(2026, 8, 1, 0, 0, 0, tzinfo=datetime.UTC)
+    test_labels = [
+        'test_views.py::test_project_detail',
+        'test_views.py::test_index_page'
+    ]
     TestRecord.objects.bulk_create(
         [
             baker.prepare(
@@ -36,8 +41,9 @@ def one_time_created_records(user: User) -> Project:
                 session=session,
                 project=project,
                 timestamp=dt,
+                label=label,
             )
-            for session in sessions
+            for session, label in product(sessions, test_labels)
         ],
     )
     return project
@@ -401,3 +407,16 @@ def test_record_not_found(
     response = client.get(f'/test/{uuid.uuid4()}')
 
     assert response.status_code == 404
+
+
+def test_test_name_line_break(
+    client: Client,
+    one_time_created_records: Project,
+    user: User,
+) -> None:
+    client.force_login(user)
+    response = client.get(f'/project/{one_time_created_records.guid}')
+    tree = etree.fromstring(response.text, etree.HTMLParser())
+
+    assert response.status_code == 200
+    assert '\u200b' in tree.xpath('//tr[@data-label]/td[1]/a/text()')[0]
