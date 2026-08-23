@@ -197,6 +197,7 @@
     <form method="post" action="{% url 'member_add' project.guid %}" class="flex items-end space-x-3">
       {% csrf_token %}
       <div>
+        {# @todo #182:30min Implement ajax search #}
         <label for="id_member_identifier" class="block text-sm text-gray-700 dark:text-white dark:text-gray-300 mb-1">{% trans "Username or email" %}</label>
         <input
           type="text"
