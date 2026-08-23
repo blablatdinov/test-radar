@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 10:40+0300\n"
+"POT-Creation-Date: 2026-08-23 20:13+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: Russian\n"
@@ -225,6 +225,33 @@ msgstr "Создать агента"
 msgid "No agents yet."
 msgstr "Агентов пока нет."
 
+msgid "Members"
+msgstr "Участники"
+
+msgid "Username or email"
+msgstr "Имя пользователя или email"
+
+msgid "Role"
+msgstr "Роль"
+
+msgid "Developer"
+msgstr "Разработчик"
+
+msgid "Maintainer"
+msgstr "Мейнтейнер"
+
+msgid "Add member"
+msgstr "Добавить участника"
+
+msgid "Are you sure you want to remove this member?"
+msgstr "Вы уверены, что хотите удалить этого участника?"
+
+msgid "Remove"
+msgstr "Удалить"
+
+msgid "No members yet."
+msgstr "Участников пока нет."
+
 msgid "Test"
 msgstr "Тест"
 
@@ -282,6 +309,12 @@ msgstr "Логи выполнения"
 msgid "An agent with this name already exists in this project."
 msgstr "Агент с таким именем уже существует в этом проекте."
 
+msgid "User not found."
+msgstr "Пользователь не найден."
+
+msgid "This user is already a member of the project."
+msgstr "Этот пользователь уже является участником проекта."
+
 msgid "Identifier"
 msgstr "Идентификатор"
 
@@ -290,15 +323,6 @@ msgstr "Владелец"
 
 msgid "Project"
 msgstr "Проект"
-
-msgid "Maintainer"
-msgstr "Мейнтейнер"
-
-msgid "Developer"
-msgstr "Разработчик"
-
-msgid "Role"
-msgstr "Роль"
 
 msgid "Membership"
 msgstr "Участие в проекте"

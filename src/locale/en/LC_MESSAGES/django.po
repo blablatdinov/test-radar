@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test-radar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 10:40+0300\n"
+"POT-Creation-Date: 2026-08-23 20:13+0300\n"
 "PO-Revision-Date: 2026-07-28 09:12+0300\n"
 "Last-Translator: Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>\n"
 "Language-Team: English\n"
@@ -225,6 +225,33 @@ msgstr "Create agent"
 msgid "No agents yet."
 msgstr "No agents yet."
 
+msgid "Members"
+msgstr "Members"
+
+msgid "Username or email"
+msgstr "Username or email"
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Developer"
+msgstr "Developer"
+
+msgid "Maintainer"
+msgstr "Maintainer"
+
+msgid "Add member"
+msgstr "Add member"
+
+msgid "Are you sure you want to remove this member?"
+msgstr "Are you sure you want to remove this member?"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "No members yet."
+msgstr "No members yet."
+
 msgid "Test"
 msgstr "Test"
 
@@ -282,6 +309,12 @@ msgstr "Execution logs"
 msgid "An agent with this name already exists in this project."
 msgstr "An agent with this name already exists in this project."
 
+msgid "User not found."
+msgstr "User not found."
+
+msgid "This user is already a member of the project."
+msgstr "This user is already a member of the project."
+
 msgid "Identifier"
 msgstr "Identifier"
 
@@ -290,15 +323,6 @@ msgstr "Owner"
 
 msgid "Project"
 msgstr "Project"
-
-msgid "Maintainer"
-msgstr "Maintainer"
-
-msgid "Developer"
-msgstr "Developer"
-
-msgid "Role"
-msgstr "Role"
 
 msgid "Membership"
 msgstr "Membership"

@@ -295,7 +295,7 @@ def test_project_page_not_n_plus_one(
     user: User,
 ) -> None:
     client.force_login(user)
-    with django_assert_max_num_queries(7):
+    with django_assert_max_num_queries(9):
         response = client.get(f'/project/{filled_project.guid}')
 
     assert response.status_code == 200, response.headers
