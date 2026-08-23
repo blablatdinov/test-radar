@@ -7,13 +7,14 @@ import pytest
 from django.test import override_settings
 from django.urls import reverse
 from lxml import etree
+from model_bakery import baker
 
+from auth.models import User
 from records.models import Membership, Project
 
 if TYPE_CHECKING:
     from django.test import Client
-
-    from auth.models import User
+    from pytest_django import DjangoAssertNumQueries
 
 pytestmark = [
     pytest.mark.django_db,
@@ -69,6 +70,7 @@ def test_developer_no_member_management(
     assert response.context_data.get('can_manage_members') is False
 
 
+@override_settings(RBAC_ENABLED=False)
 def test_members_hidden_no_rbac(
     client: Client,
     user: User,
@@ -296,3 +298,41 @@ def test_member_remove_form_absent_for_self(
     tree = etree.fromstring(response.text, etree.HTMLParser())
     remove_forms = tree.xpath('//form[contains(@action, "remove")]')
     assert len(remove_forms) == 0
+
+
+@pytest.mark.n_plus_one('member_add')
+@override_settings(RBAC_ENABLED=True)
+def test_member_add_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_project: Project,
+    user: User,
+) -> None:
+    baker.make(User, username='extra', email='extra@example.com')
+    client.force_login(user)
+    with django_assert_max_num_queries(11):
+        response = client.post(
+            f'/project/{filled_project.guid}/members/add',
+            {'identifier': 'extra', 'role': 'developer'},
+        )
+
+    assert response.status_code == 302, response.headers
+
+
+@pytest.mark.n_plus_one('member_remove')
+@override_settings(RBAC_ENABLED=True)
+def test_member_remove_not_n_plus_one(
+    client: Client,
+    django_assert_max_num_queries: DjangoAssertNumQueries,
+    filled_project: Project,
+    user: User,
+) -> None:
+    extra_user: User = baker.make(User, username='extra', email='extra@example.com')
+    baker.make(Membership, user=extra_user, project=filled_project, role=Membership.Role.DEVELOPER)
+    client.force_login(user)
+    with django_assert_max_num_queries(7):
+        response = client.post(
+            f'/project/{filled_project.guid}/members/{extra_user.pk}/remove',
+        )
+
+    assert response.status_code == 302, response.headers

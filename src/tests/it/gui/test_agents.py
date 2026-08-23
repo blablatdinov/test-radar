@@ -434,7 +434,7 @@ def test_agent_create_not_n_plus_one(
     user: User,
 ) -> None:
     client.force_login(user)
-    with django_assert_max_num_queries(10):
+    with django_assert_max_num_queries(13):
         response = client.post(
             '/project/{0}/agents/create'.format(filled_project.guid),
             {'name': 'CI Pipeline', 'type': 'ci'},

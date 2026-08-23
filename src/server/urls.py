@@ -13,7 +13,7 @@ urlpatterns = [
     path('', include('gui.urls')),
     path('api/v1/', include('api.urls')),
 ]
-if settings.DEBUG:
+if settings.SILK_ENABLE:
     urlpatterns += [
         path('silk/', include('silk.urls', namespace='silk')),
     ]

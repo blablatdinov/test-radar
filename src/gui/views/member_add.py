@@ -3,6 +3,7 @@
 
 from typing import TYPE_CHECKING, Any, final
 
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -55,6 +56,7 @@ class MemberAddView(FormView):
             .order_by('created_at')
         )
         context['can_manage_members'] = permissions.can_manage_members(self.request.user, project)
+        context['rbac_enabled'] = settings.RBAC_ENABLED
         return context
 
     def form_valid(self, form: AddMemberForm) -> HttpResponse:
