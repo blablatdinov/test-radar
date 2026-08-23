@@ -247,7 +247,6 @@
             <td class="py-2 pr-4">{{ member.user.email }}</td>
             <td class="py-2 pr-4">{{ member.get_role_display }}</td>
             <td class="py-2 pr-4">
-              {# @todo #162:30min Add role change UI (DEVELOPER <-> MAINTAINER). #}
               {% if can_manage_members and member.user != request.user %}
               <form
                 method="post"

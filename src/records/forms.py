@@ -67,7 +67,7 @@ class AddMemberForm(forms.Form):
             return identifier
         user = self._find_user(identifier)
         if user is None:
-            # @todo #162:30min Implement invite flow for non-existent users.
+            # @todo #182:30min Implement invite flow for non-existent users.
             #  When a user with the given email/username does not exist, send
             #  an invitation email instead of showing an error.
             raise forms.ValidationError(_('User not found.'))
