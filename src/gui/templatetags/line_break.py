@@ -9,4 +9,4 @@ register = template.Library()
 
 @register.filter
 def line_break(test_label: str) -> str:
-    return format_html(test_label.replace('_', '_\u200B'))
+    return format_html('{}', test_label.replace('_', '_\u200B'))
