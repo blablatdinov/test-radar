@@ -133,8 +133,8 @@
       <circle cx="390" cy="230" r="4.5" fill="#22c55e"/>
     </g>
 
-    <rect x="262" y="222" width="36" height="16" rx="4" fill="url(#flaky-grad)" fill-opacity="0.2" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.4"/>
-    <text x="280" y="234" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <rect x="100" y="222" width="36" height="16" rx="4" fill="url(#flaky-grad)" fill-opacity="0.2" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.4"/>
+    <text x="118" y="234" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="10" font-weight="600" fill="#f59e0b" text-anchor="middle">
       flaky
     </text>
