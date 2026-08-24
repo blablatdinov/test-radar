@@ -90,63 +90,63 @@ sequenceDiagram
 ## Domain model
 
 ```mermaid
-erDiagram
-    User ||--o{ Project : owns
-    User ||--o{ Membership : has
-    User ||--o{ Agent : owns
-    Project ||--o{ Membership : has
-    Project ||--o{ Agent : has
-    Project ||--o{ TestSession : has
-    Project ||--o{ TestRecord : has
-    Agent ||--|| ApiToken : has
-    Agent ||--o{ TestRecord : submits
-    TestSession ||--o{ TestRecord : contains
+classDiagram
+    User "1" --o "*" Project : owns
+    User "1" --o "*" Membership : has
+    User "1" --o "*" Agent : owns
+    Project "1" --o "*" Membership : has
+    Project "1" --o "*" Agent : has
+    Project "1" --o "*" TestSession : has
+    Project "1" --o "*" TestRecord : has
+    Agent "1" --|| "1" ApiToken : has
+    Agent "1" --o "*" TestRecord : submits
+    TestSession "1" --o "*" TestRecord : contains
 
-    Project {
-        uuid guid
-        string name
-        fk owner
-        datetime created_at
+    class Project {
+        UUIDField guid
+        CharField name
+        ForeignKey owner
+        DateTimeField created_at
     }
-    Membership {
-        fk user
-        fk project
-        enum role
+    class Membership {
+        ForeignKey user
+        ForeignKey project
+        CharField role
     }
-    Agent {
-        string name
-        enum type
-        uuid guid
-        fk project
-        fk owner
+    class Agent {
+        CharField name
+        CharField type
+        UUIDField guid
+        ForeignKey project
+        ForeignKey owner
     }
-    ApiToken {
-        string token_hash
-        string token_mask
-        string scopes
-        datetime expires_at
-        datetime last_used_at
-        ip last_used_ip
+    class ApiToken {
+        CharField token_hash
+        CharField token_mask
+        CharField scopes
+        DateTimeField expires_at
+        DateTimeField last_used_at
+        GenericIPAddressField last_used_ip
     }
-    TestSession {
-        uuid id
-        fk project
-        datetime started_at
-        string os
-        string os_version
-        string arch
-        string branch
-        string commit_hash
+    class TestSession {
+        UUIDField id
+        ForeignKey project
+        DateTimeField started_at
+        CharField os
+        CharField os_version
+        CharField arch
+        CharField branch
+        CharField commit_hash
     }
-    TestRecord {
-        hex id
-        fk project
-        fk agent
-        fk session
-        text label
-        bool success
-        datetime timestamp
-        binary logs
+    class TestRecord {
+        CharField id
+        ForeignKey project
+        ForeignKey agent
+        ForeignKey session
+        TextField label
+        BooleanField success
+        DateTimeField timestamp
+        BinaryField logs
     }
 ```
 
