@@ -1,0 +1,3 @@
+# Dual permission system with RBAC feature flag
+
+The project uses a dual permission system controlled by the `RBAC_ENABLED` environment variable. When disabled, access is determined solely by `Project.owner` (legacy mode). When enabled, access is determined by `Membership` roles (Owner, Maintainer, Developer). This dual system exists because RBAC was introduced incrementally — the legacy owner-based system is still the default in production, and the RBAC migration is tracked via 0pdd puzzles (issue #162). The feature flag allows safe rollout and rollback without schema changes. Once RBAC stabilizes, the `Project.owner` field and legacy code paths will be removed.

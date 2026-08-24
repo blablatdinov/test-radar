@@ -1,0 +1,3 @@
+# Hex token primary key for TestRecord
+
+TestRecord uses a 32-character hex token (`secrets.token_hex(16)`) as its primary key instead of an auto-incrementing integer or UUID. This decision was made so that test record IDs are unpredictable, preventing enumeration of test results by guessing sequential IDs. The hex format is also more compact than a UUID string (32 chars vs 36 chars with hyphens) and works naturally as a URL path segment. The trade-off is that hex tokens are not sortable by creation time like auto-incrementing IDs, but test records are always accessed via session or label context, never by global ordering.
