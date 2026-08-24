@@ -91,16 +91,16 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
-    User "1" --o "*" Project : owns
-    User "1" --o "*" Membership : has
-    User "1" --o "*" Agent : owns
-    Project "1" --o "*" Membership : has
-    Project "1" --o "*" Agent : has
-    Project "1" --o "*" TestSession : has
-    Project "1" --o "*" TestRecord : has
-    Agent "1" --|| "1" ApiToken : has
-    Agent "1" --o "*" TestRecord : submits
-    TestSession "1" --o "*" TestRecord : contains
+    User --o Project : owns
+    User --o Membership : has
+    User --o Agent : owns
+    Project --o Membership : has
+    Project --o Agent : has
+    Project --o TestSession : has
+    Project --o TestRecord : has
+    Agent --|> ApiToken : has
+    Agent --o TestRecord : submits
+    TestSession --o TestRecord : contains
 
     class Project {
         UUIDField guid
