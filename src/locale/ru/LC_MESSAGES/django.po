@@ -164,7 +164,7 @@ msgid "All agents"
 msgstr "Агенты"
 
 msgid "Branch:"
-msgstr "Branch:"
+msgstr "Ветка:"
 
 msgid "e.g. main"
 msgstr "н-р main"
@@ -220,7 +220,7 @@ msgstr "Вы уверены, что хотите перегенерироват�
 #, fuzzy
 #| msgid "Create agent"
 msgid "Delete agent"
-msgstr "Создать агента"
+msgstr "Удалить агента"
 
 msgid "No agents yet."
 msgstr "Агентов пока нет."
