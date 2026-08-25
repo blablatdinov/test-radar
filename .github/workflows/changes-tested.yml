@@ -20,8 +20,10 @@ jobs:
         filters: |
           code:
             - 'src/**/*.py'
+            - 'src/gui/static/js/**/*.js'
           tests:
             - 'src/tests/**/*.py'
+            - 'src/gui/static/js/**/*.test.js'
 
     - name: Ensure code changes have corresponding tests
       if: steps.filter.outputs.code == 'true' && steps.filter.outputs.tests != 'true'

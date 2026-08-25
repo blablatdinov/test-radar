@@ -83,4 +83,8 @@ function applyFlakyBadges() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', applyFlakyBadges);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applyFlakyBadges);
+} else {
+  applyFlakyBadges();
+}
