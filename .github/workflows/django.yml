@@ -98,6 +98,20 @@ jobs:
         RADAR_TOKEN: ${{ secrets.TEST_RADAR_TOKEN }}
         REGISTRATION_ENABLED: true
 
+  test-js:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install dependencies
+      run: npm install
+    - name: Run JS tests
+      run: npm run test:js
+
   deltaver:
     runs-on: ubuntu-latest
     needs: build
