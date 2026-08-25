@@ -200,6 +200,9 @@ class TestRecord(models.Model):
     class Meta:
         verbose_name = _('Test record')
         verbose_name_plural = _('Test records')
+        indexes = [
+            models.Index(fields=['project', 'timestamp']),
+        ]
 
     def __str__(self) -> str:
         return str(self.label)
