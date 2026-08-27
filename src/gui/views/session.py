@@ -3,7 +3,6 @@
 
 from typing import Any, final
 
-from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
@@ -19,9 +18,6 @@ class SessionView(TemplateView):
     template_name = 'session.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        if not self.request.user.is_authenticated:
-            msg = 'User must be authorized.'
-            raise PermissionDenied(msg)
         session = get_object_or_404(
             TestSession.objects.select_related('project'),
             pk=kwargs['session_id'],
