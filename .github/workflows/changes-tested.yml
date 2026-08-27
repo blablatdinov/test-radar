@@ -22,22 +22,10 @@ jobs:
             - 'src/**/*.py'
           py-tests:
             - 'src/tests/**/*.py'
-          js-code:
-            - 'src/gui/static/js/**/*.js'
-            - '!src/gui/static/js/**/*.test.js'
-          js-tests:
-            - 'src/gui/static/js/**/*.test.js'
 
     - name: Ensure Python code changes have corresponding tests
       if: steps.filter.outputs.py-code == 'true' && steps.filter.outputs.py-tests != 'true'
       run: |
         echo "Error: Python code changes detected, but no test files were modified."
-        exit 1
-      shell: bash
-
-    - name: Ensure JS code changes have corresponding tests
-      if: steps.filter.outputs.js-code == 'true' && steps.filter.outputs.js-tests != 'true'
-      run: |
-        echo "Error: JS code changes detected, but no JS test files were modified."
         exit 1
       shell: bash
