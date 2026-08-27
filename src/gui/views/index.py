@@ -3,7 +3,6 @@
 
 from typing import Any, final
 
-from django.core.exceptions import PermissionDenied
 from django.views.generic import TemplateView
 
 from records.srv import permissions
