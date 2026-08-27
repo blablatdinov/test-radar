@@ -33,7 +33,7 @@ dev = [
     "model_bakery==1.24.0",
     "mypy==2.3.1",
     "ondivi==0.7.3",
-    "ruff==0.16.4",
+    "ruff==0.16.5",
     "wemake-python-styleguide==1.8.0",
     "pytest-cov==7.1.0",
     "pytest-django==4.14.0",
