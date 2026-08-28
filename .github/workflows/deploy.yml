@@ -93,7 +93,7 @@ jobs:
         run: DATABASE_URL=${{ secrets.PROD_DATABASE_URL }} uv run python src/manage.py migrate
 
   deploy-blue-green:
-    needs: [build-and-push, run-migrations]
+    needs: [build-and-push]
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH Key

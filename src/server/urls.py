@@ -23,7 +23,7 @@ urlpatterns = [
     path('{0}admin/'.format(settings.ADMIN_SECRET_PATH), admin.site.urls),
     path('', include('auth.urls')),
     path('', include('gui.urls')),
-    path('/health', include('gui.urls')),
+    path('/health/', include('gui.urls')),
     path('api/v1/', include('api.urls')),
 ]
 if settings.SILK_ENABLE:
