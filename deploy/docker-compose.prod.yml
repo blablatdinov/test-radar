@@ -24,7 +24,7 @@ services:
     command: .venv/bin/gunicorn server.wsgi:application -b 0.0.0.0:8013
     restart: always
     ports:
-      - "8013:8012"  # Green экземпляр
+      - "8013:8013"  # Green экземпляр
     env_file:
       - .env
     environment:

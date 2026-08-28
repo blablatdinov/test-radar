@@ -21,7 +21,7 @@ def health_view(_: HttpRequest) -> JsonResponse:
 urlpatterns = [
     *debug_toolbar_urls(),
     path('{0}admin/'.format(settings.ADMIN_SECRET_PATH), admin.site.urls),
-    path('health/', include('gui.urls')),
+    path('health/', health_view),
     path('', include('auth.urls')),
     path('', include('gui.urls')),
     path('api/v1/', include('api.urls')),
