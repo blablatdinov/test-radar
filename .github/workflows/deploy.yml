@@ -159,11 +159,11 @@ jobs:
       - name: Stop old environment
         run: |
           OLD_COLOR="${{ steps.active_color.outputs.CURRENT_ACTIVE }}"
-          ssh www@87.249.49.217 '
+          ssh www@87.249.49.217 "
             cd /home/www/code/test-radar
-            echo "Stopping old $OLD_COLOR environment"
+            echo 'Stopping old $OLD_COLOR environment'
             docker stop test-radar-http-$OLD_COLOR || true
-          '
+          "
       - name: Remove old images
         run: |
           ssh www@87.249.49.217 '
