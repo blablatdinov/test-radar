@@ -155,7 +155,7 @@ jobs:
           NEW_COLOR="${{ steps.active_color.outputs.NEW_ACTIVE }}"
         
           ssh www@87.249.49.217 "
-            /home/www/scripts/switch-nginx.sh $NEW_COLOR
+            /home/www/code/test-radar/deploy/swith-backend.sh $NEW_COLOR
           "
       - name: Stop old environment
         run: |
