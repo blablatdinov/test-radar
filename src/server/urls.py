@@ -6,15 +6,17 @@ import os
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.contrib import admin
+from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
-from django.http import JsonResponse
 
-def health_view(request):
+
+def health_view(_: HttpRequest) -> JsonResponse:
     return JsonResponse({
         'status': 'ok',
         'color': os.environ.get('DEPLOY_COLOR', 'unknown'),
         'version': os.environ.get('APP_VERSION', 'unknown'),
     })
+
 
 urlpatterns = [
     *debug_toolbar_urls(),
