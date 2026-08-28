@@ -141,7 +141,7 @@ jobs:
         run: |
           NEW_PORT="${{ steps.active_color.outputs.NEW_PORT }}"
           for i in {1..15}; do
-            if curl -s -f -o /dev/null "http://87.249.49.217:$NEW_PORT/health/"; then
+            if ssh www@87.249.49.217 "curl -s -f -o /dev/null http://localhost:$NEW_PORT/health/"; then
               echo "Health check passed"
               exit 0
             fi
@@ -149,8 +149,7 @@ jobs:
             sleep 5
           done
           echo "Health check failed"
-          exit 1
-      
+          exit 1      
       - name: Switch traffic to new environment
         run: |
           NEW_PORT="${{ steps.active_color.outputs.NEW_PORT }}"
