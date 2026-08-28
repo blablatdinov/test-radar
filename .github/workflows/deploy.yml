@@ -100,7 +100,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDyRsXjQSzzB0b/g9mm1/ET01bx3BTUpm1DRLeG03UY7X+NfAQLskQWl7NP5rp8AVIwFmcRtiZo+Stle2Xo3wNCHRDFu0zU2RixTeelJ046Kcu6xSeIgwvi+OK1MaFPJwd1Em+U/aq624FNI7aJe05UCOy77W9Xa5TzKW3htG9ZLN0ykQ3AUEJ0ZnDLoOY1/4g4x1KqeRRnh61mwxGqzQ/kub/GVooKzfqrfY07/5E7hw3VLMZrQwuUhe9XJOZZjO/rObZdChmHxHwBsmprbYmWEjiRJRms4OZ70kVV7O2HjEVCkQQdtWrxhXzoDB4+oJq1STSEv9hEM2lpZERm1muTIYsLn3z4Ejget0iA/H5PJRLxRZs9y/q/vxptI/cX+VDKWstOQKu/Ic7v8LIhTe0mPUAHqp0eu60ZHp2JLpJ6pko9RptflM2cjPawINulmINOE43wrTzFhhhgrdxtYEt7dnCVAfooanbB9vYoH5LGBVOPxiqUnJzMvlJ0z9rpk/0='
       - name: Setup SSH
         run: |
           ssh-keyscan -H 87.249.49.217 >> ~/.ssh/known_hosts
