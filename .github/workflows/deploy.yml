@@ -1,10 +1,8 @@
 name: Deploy
 
 on:
-  # push:
-  #   branches: [ "master" ]
   push:
-    branches: [ "*" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
