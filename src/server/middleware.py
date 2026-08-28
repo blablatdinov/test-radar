@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
     from django.http import HttpRequest, HttpResponse
 
-PUBLIC_PREFIXES = ('/admin/', '/__debug__/')
+PUBLIC_PREFIXES = ('/admin/', '/__debug__/', '/health/')
 _EMAIL_PUBLIC_PREFIX = '/email/'
 
 
