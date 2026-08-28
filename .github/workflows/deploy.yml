@@ -1,8 +1,10 @@
 name: Deploy
 
 on:
+  # push:
+  #   branches: [ "master" ]
   push:
-    branches: [ "master" ]
+    branches: [ "*" ]
 
 permissions:
   contents: read
@@ -90,35 +92,121 @@ jobs:
       - name: Run migrations
         run: DATABASE_URL=${{ secrets.PROD_DATABASE_URL }} uv run python src/manage.py migrate
 
-  update-remote-container:
-    needs: build-and-push
+  deploy-blue-green:
+    needs: [build-and-push, run-migrations]
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
-          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDyRsXjQSzzB0b/g9mm1/ET01bx3BTUpm1DRLeG03UY7X+NfAQLskQWl7NP5rp8AVIwFmcRtiZo+Stle2Xo3wNCHRDFu0zU2RixTeelJ046Kcu6xSeIgwvi+OK1MaFPJwd1Em+U/aq624FNI7aJe05UCOy77W9Xa5TzKW3htG9ZLN0ykQ3AUEJ0ZnDLoOY1/4g4x1KqeRRnh61mwxGqzQ/kub/GVooKzfqrfY07/5E7hw3VLMZrQwuUhe9XJOZZjO/rObZdChmHxHwBsmprbYmWEjiRJRms4OZ70kVV7O2HjEVCkQQdtWrxhXzoDB4+oJq1STSEv9hEM2lpZERm1muTIYsLn3z4Ejget0iA/H5PJRLxRZs9y/q/vxptI/cX+VDKWstOQKu/Ic7v8LIhTe0mPUAHqp0eu60ZHp2JLpJ6pko9RptflM2cjPawINulmINOE43wrTzFhhhgrdxtYEt7dnCVAfooanbB9vYoH5LGBVOPxiqUnJzMvlJ0z9rpk/0='
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Setup SSH
         run: |
           ssh-keyscan -H 87.249.49.217 >> ~/.ssh/known_hosts
       - name: Get tag name
         id: tag_name
-        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_SHA})"
+        run: echo "tag_name=${GITHUB_SHA}" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v7
-      - name: Deploy with docker-compose on remote server
+      - name: Determine current active environment
+        id: active_color
         run: |
-          ssh www@87.249.49.217 'echo "Connected!"'
-          scp deploy/docker-compose.prod.yml www@87.249.49.217:/home/www/code/test-radar/deploy/docker-compose.prod.yml
-          ssh www@87.249.49.217 'cd /home/www/code/test-radar && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f deploy/docker-compose.prod.yml down && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f deploy/docker-compose.prod.yml up -d'
+          # Проверяем какой контейнер сейчас активен через Nginx
+          CURRENT=$(ssh www@87.249.49.217 "grep 'server 127.0.0.1:' /etc/nginx/sites-enabled/test_radar_nginx.conf | grep -o '801[23]' || echo '8012'")
+          if [ "$CURRENT" == "8012" ]; then
+            echo "CURRENT_ACTIVE=blue" >> $GITHUB_OUTPUT
+            echo "NEW_ACTIVE=green" >> $GITHUB_OUTPUT
+            echo "CURRENT_PORT=8012" >> $GITHUB_OUTPUT
+            echo "NEW_PORT=8013" >> $GITHUB_OUTPUT
+          else
+            echo "CURRENT_ACTIVE=green" >> $GITHUB_OUTPUT
+            echo "NEW_ACTIVE=blue" >> $GITHUB_OUTPUT
+            echo "CURRENT_PORT=8013" >> $GITHUB_OUTPUT
+            echo "NEW_PORT=8012" >> $GITHUB_OUTPUT
+          fi
+      - name: Deploy to inactive environment
+        run: |
+          ssh www@87.249.49.217 '
+            cd /home/www/code/test-radar
+            NEW_COLOR="${{ steps.active_color.outputs.NEW_ACTIVE }}"
+            NEW_PORT="${{ steps.active_color.outputs.NEW_PORT }}"
+            echo "Deploying to $NEW_COLOR environment on port $NEW_PORT"
+            docker stop test-radar-$NEW_COLOR || true
+            docker rm test-radar-$NEW_COLOR || true
+            TAG_NAME=${{ steps.tag_name.outputs.tag_name }} \
+            docker compose -f deploy/docker-compose.prod.yml up -d test-radar-$NEW_COLOR
+          '
+      
+      - name: Health check new environment
+        run: |
+          NEW_PORT="${{ steps.active_color.outputs.NEW_PORT }}"
+          for i in {1..15}; do
+            if curl -s -f -o /dev/null "http://87.249.49.217:$NEW_PORT/health/"; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Waiting for health check... ($i/15)"
+            sleep 5
+          done
+          echo "Health check failed"
+          exit 1
+      
+      - name: Switch traffic to new environment
+        run: |
+          NEW_PORT="${{ steps.active_color.outputs.NEW_PORT }}"
+          NEW_COLOR="${{ steps.active_color.outputs.NEW_ACTIVE }}"
+          ssh www@87.249.49.217 '
+            sudo sed -i "s/server 127.0.0.1:[0-9]\\{4\\}/server 127.0.0.1:$NEW_PORT/g" /etc/nginx/sites-enabled/test_radar_nginx.conf
+            sudo nginx -t || exit 1
+            sudo systemctl reload nginx
+            echo "Switched traffic to $NEW_COLOR environment on port $NEW_PORT"
+          '
+      - name: Stop old environment
+        run: |
+          OLD_COLOR="${{ steps.active_color.outputs.CURRENT_ACTIVE }}"
+          ssh www@87.249.49.217 '
+            cd /home/www/code/test-radar
+            echo "Stopping old $OLD_COLOR environment"
+            # Останавливаем старый контейнер
+            docker stop test-radar-$OLD_COLOR || true
+            # Опционально: удаляем старый контейнер
+            # docker rm test-radar-$OLD_COLOR || true
+          '
       - name: Remove old images
         run: |
           ssh www@87.249.49.217 '
-            IMAGES=$(docker image ls blablatdinov/test-radar --format "{{.ID}}" | tail -n +2)
-            if [ -n "$IMAGES" ]; then
-              echo "$IMAGES" | xargs docker rmi -f
-              echo "Removed old images"
-            else
-              echo "No old images to remove"
-            fi
+            # Удаляем старые образы, сохраняя последние 2 (blue и green)
+            docker images blablatdinov/test-radar --format "{{.ID}} {{.CreatedAt}}" | sort -k2 | head -n -2 | awk "{print \$1}" | xargs -r docker rmi -f || true
+            echo "Cleaned up old images"
+          '
+      - name: Update deployment status
+        run: |
+          echo "Deployment successful!"
+          echo "Active environment: ${{ steps.active_color.outputs.NEW_ACTIVE }}"
+          echo "Active port: ${{ steps.active_color.outputs.NEW_PORT }}"
+
+  rollback:
+    needs: deploy-blue-green
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Setup SSH
+        run: |
+          ssh-keyscan -H 87.249.49.217 >> ~/.ssh/known_hosts
+      - name: Rollback to previous environment
+        run: |
+          OLD_PORT="${{ steps.active_color.outputs.CURRENT_PORT }}"
+          OLD_COLOR="${{ steps.active_color.outputs.CURRENT_ACTIVE }}"
+          
+          ssh www@87.249.49.217 '
+            # Возвращаем предыдущую конфигурацию Nginx
+            sudo sed -i "s/server 127.0.0.1:[0-9]\\{4\\}/server 127.0.0.1:$OLD_PORT/g" /etc/nginx/sites-available/test-radar
+            sudo nginx -t && sudo systemctl reload nginx
+            
+            echo "Rolled back to $OLD_COLOR environment on port $OLD_PORT"
           '
