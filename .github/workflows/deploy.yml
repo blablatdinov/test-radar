@@ -131,10 +131,10 @@ jobs:
             NEW_COLOR="${{ steps.active_color.outputs.NEW_ACTIVE }}"
             NEW_PORT="${{ steps.active_color.outputs.NEW_PORT }}"
             echo "Deploying to $NEW_COLOR environment on port $NEW_PORT"
-            docker stop test-radar-$NEW_COLOR || true
-            docker rm test-radar-$NEW_COLOR || true
+            docker stop test-radar-http-$NEW_COLOR || true
+            docker rm test-radar-http-$NEW_COLOR || true
             TAG_NAME=${{ steps.tag_name.outputs.tag_name }} \
-            docker compose -f deploy/docker-compose.prod.yml up -d test-radar-$NEW_COLOR
+            docker compose -f deploy/docker-compose.prod.yml up -d test-radar-http-$NEW_COLOR
           '
       
       - name: Health check new environment
@@ -168,9 +168,9 @@ jobs:
             cd /home/www/code/test-radar
             echo "Stopping old $OLD_COLOR environment"
             # Останавливаем старый контейнер
-            docker stop test-radar-$OLD_COLOR || true
+            docker stop test-radar-http-$OLD_COLOR || true
             # Опционально: удаляем старый контейнер
-            # docker rm test-radar-$OLD_COLOR || true
+            # docker rm test-radar-http-$OLD_COLOR || true
           '
       - name: Remove old images
         run: |
