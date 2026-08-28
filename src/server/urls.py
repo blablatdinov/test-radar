@@ -10,11 +10,11 @@ from django.urls import include, path
 from django.http import JsonResponse
 
 def health_view(request):
-    return JsonResponse(
+    return JsonResponse({
         'status': 'ok',
         'color': os.environ.get('DEPLOY_COLOR', 'unknown'),
         'version': os.environ.get('APP_VERSION', 'unknown'),
-    )
+    })
 
 urlpatterns = [
     *debug_toolbar_urls(),
