@@ -1,8 +1,10 @@
 name: Deploy
 
 on:
+  # push:
+  #   branches: [ "master" ]
   push:
-    branches: [ "master" ]
+    branches: [ "*" ]
 
 permissions:
   contents: read
@@ -109,7 +111,7 @@ jobs:
       - name: Determine current active environment
         id: active_color
         run: |
-          CURRENT=$(ssh www@87.249.49.217 "grep 'server 127.0.0.1:' /etc/nginx/sites-enabled/test_radar_nginx.conf | grep -o '801[23]' || echo '8012'")
+          CURRENT=$(ssh www@87.249.49.217 "grep '\$backend "127.0.0.1:' /etc/nginx/sites-enabled/test_radar_nginx.conf | grep -o '801[23]' || echo '8012'")
           if [ "$CURRENT" == "8012" ]; then
             echo "CURRENT_ACTIVE=blue" >> $GITHUB_OUTPUT
             echo "NEW_ACTIVE=green" >> $GITHUB_OUTPUT
