@@ -109,7 +109,7 @@ jobs:
       - name: Determine current active environment
         id: active_color
         run: |
-          CURRENT=$(ssh www@87.249.49.217 "grep 'server 127.0.0.1:' /etc/nginx/sites-enabled/test_radar_nginx.conf | grep -o '801[23]' || echo '8012'")
+          CURRENT=$(ssh www@87.249.49.217 "grep '\$backend \"127.0.0.1:' /etc/nginx/sites-enabled/test_radar_nginx.conf | grep -o '801[23]' || echo '8012'")
           if [ "$CURRENT" == "8012" ]; then
             echo "CURRENT_ACTIVE=blue" >> $GITHUB_OUTPUT
             echo "NEW_ACTIVE=green" >> $GITHUB_OUTPUT
@@ -157,11 +157,10 @@ jobs:
       - name: Stop old environment
         run: |
           OLD_COLOR="${{ steps.active_color.outputs.CURRENT_ACTIVE }}"
-          ssh www@87.249.49.217 '
+          ssh www@87.249.49.217 "
             cd /home/www/code/test-radar
-            echo "Stopping old $OLD_COLOR environment"
-            docker stop test-radar-http-$OLD_COLOR || true
-          '
+            docker compose -f deploy/docker-compose.prod.yml down test-radar-http-$OLD_COLOR
+          "
       - name: Remove old images
         run: |
           ssh www@87.249.49.217 '
