@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 COLOR=$1
-NGINX_SITE="/etc/nginx/sites-available/test-radar.ilaletdinov.ru"
+NGINX_SITE="/etc/nginx/sites-enabled/test_radar_nginx.conf"
 
 if [ -z "$COLOR" ]; then
     echo "Usage: $0 {blue|green}"
@@ -22,9 +22,9 @@ fi
 
 echo "Switching to $COLOR (port $PORT)"
 
-if ! curl -s -f "http://127.0.0.1:$PORT/health/" > /dev/null; then
+if ! curl -s -f "http://localhost:$PORT/health/" > /dev/null; then
     echo "ERROR: $COLOR environment is not healthy!"
-    echo "Health check failed for http://127.0.0.1:$PORT/health/"
+    echo "Health check failed for http://localhost:$PORT/health/"
     exit 1
 fi
 
