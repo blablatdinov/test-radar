@@ -3,6 +3,7 @@
 
 from typing import Any, final
 
+from django.db.models import Max
 from django.views.generic import TemplateView
 
 from records.srv import permissions
@@ -15,5 +16,7 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:  # noqa: ARG002
-        projects = permissions.projects_for(self.request.user)
+        projects = permissions.projects_for(self.request.user).annotate(
+            last_update=Max('records__timestamp'),
+        )
         return {'projects': projects.only('guid', 'name', 'created_at')}

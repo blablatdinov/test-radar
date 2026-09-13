@@ -26,6 +26,11 @@
       <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
         {% trans "Created:" %} {{ project.created_at|date:'d.m.Y' }}
       </div>
+      {% if project.last_update %}
+      <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        {% trans "Last update:" %} {{ project.last_update|date:'d.m.Y' }}
+      </div>
+      {% endif %}
     </a>
     {% endfor %}
   </div>

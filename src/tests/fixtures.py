@@ -139,6 +139,20 @@ def test_record_pk(project: Project, test_session: TestSession) -> str:
 
 
 @pytest.fixture
+def project_with_record(project: Project, test_session: TestSession) -> Project:
+    baker.make(
+        TestRecord,
+        label='test_file.py::test_view',
+        timestamp=datetime.datetime(2026, 9, 10, 12, 0, 0, tzinfo=datetime.UTC),
+        success=True,
+        logs=b'',
+        project=project,
+        session=test_session,
+    )
+    return project
+
+
+@pytest.fixture
 def filled_project(user: User) -> Project:
     project = baker.make(Project, owner=user)
     baker.make(Membership, user=user, project=project, role=Membership.Role.OWNER)
