@@ -64,6 +64,26 @@ def test_index_shows_projects(client: Client, user: User, project) -> None:  # n
     assert response.context_data.get('projects') is not None
 
 
+def test_index_shows_last_update(client: Client, user: User, project_with_record: Project) -> None:
+    client.force_login(user)
+
+    response = client.get('/')
+
+    assert response.status_code == 200
+    assert 'Last update:' in response.text
+    assert '10.09.2026' in response.text
+
+
+@pytest.mark.usefixtures('project')
+def test_index_hides_last_update_without_records(client: Client, user: User) -> None:
+    client.force_login(user)
+
+    response = client.get('/')
+
+    assert response.status_code == 200
+    assert 'Last update:' not in response.text
+
+
 def test_index_no_projects(client: Client, user: User) -> None:
     client.force_login(user)
 
