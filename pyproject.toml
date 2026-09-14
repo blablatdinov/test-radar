@@ -41,7 +41,7 @@ dev = [
     "django-stubs==6.1.1",
     "pytest-randomly==5.0.0",
     "lxml==6.1.3",
-    "django-stubs-ext==6.1.0",
+    "django-stubs-ext==6.1.1",
     "pytest-test-radar==0.0.1a12",
     "flake8-final==0.0.4",
 ]
