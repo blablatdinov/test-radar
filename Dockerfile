@@ -12,7 +12,7 @@ RUN uv export --no-dev -o requirements.txt
 
 FROM base AS build
 COPY --from=uv-export /app/requirements.txt /tmp/requirements.txt
-RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
+RUN apt-get update && apt-get install -y --no-install-recommends gettext gcc && \
   python -m venv /app/.venv && \
   /app/.venv/bin/pip install -r /tmp/requirements.txt
 
