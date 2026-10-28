@@ -31,7 +31,7 @@ where = ["."]
 dev = [
     "djangorestframework-stubs==3.18.1",
     "model_bakery==1.24.2",
-    "mypy==2.4.0",
+    "mypy==2.4.1",
     "ondivi==0.7.3",
     "ruff==0.16.10",
     "wemake-python-styleguide==1.8.1",
