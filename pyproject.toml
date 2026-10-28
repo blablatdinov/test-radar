@@ -13,7 +13,7 @@ dependencies = [
     "django-debug-toolbar==8.0.0",
     "gunicorn==26.2.0",
     "httpx==0.28.1",
-    "pytest==9.1.1",
+    "pytest==9.2.0",
     "django-environ==0.14.0",
     "bcrypt==5.0.0",
     "psycopg[binary]==3.3.6",
