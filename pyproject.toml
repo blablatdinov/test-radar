@@ -16,7 +16,7 @@ dependencies = [
     "pytest==9.2.0",
     "django-environ==0.14.0",
     "bcrypt==5.0.0",
-    "psycopg[binary]==3.3.6",
+    "psycopg[binary]==3.3.9",
     "whitenoise[brotli]==6.12.0",
     "django-axes==9.0.0",
     "django-ratelimit==4.1.0",
