@@ -29,7 +29,7 @@ where = ["."]
 
 [dependency-groups]
 dev = [
-    "djangorestframework-stubs==3.18.1",
+    "djangorestframework-stubs==3.18.2",
     "model_bakery==1.24.2",
     "mypy==2.4.1",
     "ondivi==0.7.3",
